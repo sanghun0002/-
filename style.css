@@ -15,14 +15,6 @@ body {
     align-items: center;
 }
 
-/* 전체적인 컨테이너 너비 설정 */
-.container {
-    width: 100%;
-    max-width: 1024px; /* 최대 너비 */
-    padding: 0 20px; /* 좌우 여백 */
-}
-
-
 /* 1. 상단 헤더 */
 .top-header {
     width: 100%;
@@ -45,8 +37,7 @@ body {
     margin-left: 20px; /* 메뉴 사이 간격 */
 }
 
-
-/* 2. 메인 소개 섹션 */
+/* 2. 메인 소개 섹션 (index.html) */
 .hero-section {
     width: 100%;
     max-width: 1024px;
@@ -78,7 +69,7 @@ body {
 }
 
 
-/* 3. 공지사항 및 빠른 예약 섹션 */
+/* 3. 공지사항 및 빠른 예약 섹션 (index.html) */
 .info-section {
     width: 100%;
     max-width: 1024px;
@@ -87,8 +78,7 @@ body {
     margin-top: 20px;
 }
 
-/* 공통 카드 스타일 */
-.card {
+.notice-card, .booking-card, .location-card, .recommend-card {
     background-color: white;
     border: 1px solid #e9ecef;
     border-radius: 12px;
@@ -118,7 +108,7 @@ body {
     border-bottom: none;
 }
 
-.notice-card span.tag {
+.notice-card span {
     background-color: #ffe3e3;
     color: #d94848;
     font-size: 0.8rem;
@@ -156,7 +146,7 @@ body {
 }
 
 
-/* 4. 위치 및 주변 추천 장소 섹션 */
+/* 4. 위치 및 주변 추천 장소 섹션 (index.html) */
 .location-section {
     width: 100%;
     max-width: 1024px;
@@ -203,7 +193,7 @@ body {
     color: #868e96;
 }
 
-.recommend-card span.tag {
+.recommend-card h4 span {
     font-size: 0.8rem;
     color: #868e96;
     font-weight: normal;
@@ -211,7 +201,7 @@ body {
 }
 
 
-/* 5. 하단 푸터 */
+/* 5. 하단 푸터 (모든 페이지 공통) */
 .main-footer {
     width: 100%;
     text-align: center;
@@ -219,4 +209,144 @@ body {
     margin-top: 40px;
     color: #868e96;
     font-size: 0.9rem;
+}
+
+/* ------------------------------------------- */
+/* --- booking.html 예약 페이지 전용 스타일 --- */
+/* ------------------------------------------- */
+
+.booking-container {
+    width: 100%;
+    max-width: 800px; /* 단계 표시를 위해 너비를 약간 넓게 설정 */
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+/* 단계 표시기 */
+.step-indicator {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    color: #868e96; /* 기본 회색 */
+    font-weight: 500;
+}
+
+.step .icon {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #ced4da;
+    border-radius: 50%; /* 동그란 아이콘 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+}
+
+/* 활성화된 단계 스타일 */
+.step.active {
+    color: #007bff; /* 활성화된 파란색 */
+    font-weight: bold;
+}
+
+.step.active .icon {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* 달력 카드 */
+.calendar-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* 은은한 그림자 효과 */
+}
+
+.calendar-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #868e96;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7개의 열을 동일한 너비로 생성 */
+    gap: 10px;
+    text-align: center;
+}
+
+.day-name {
+    font-weight: bold;
+    color: #868e96;
+    font-size: 0.9rem;
+}
+
+.day {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%; /* 날짜를 동그랗게 */
+    transition: background-color 0.2s; /* 부드러운 효과 */
+}
+
+.day:hover {
+    background-color: #e9ecef;
+}
+
+.day.prev-month, .day.next-month {
+    color: #ced4da; /* 이전/다음 달 날짜는 회색으로 */
+}
+
+.day.today {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* 이전/다음 버튼 */
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #868e96;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ced4da;
 }
