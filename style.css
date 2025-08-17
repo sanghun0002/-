@@ -32,23 +32,15 @@ body {
     font-size: 1.5rem; /* 로고 크기를 약간 키움 */
 }
 
-/* --- 더 이상 사용하지 않는 스타일 --- */
-/*
-.top-header .top-nav a {
-    text-decoration: none;
-    color: #555;
-    margin-left: 20px;
-}
-*/
-
 /* ======================================= */
-/* === 추가된 바로가기 메뉴 스타일 === */
+/* === 바로가기 메뉴 스타일 (수정됨) === */
 /* ======================================= */
 .shortcuts {
     width: 100%;
     max-width: 1024px;
     display: flex;
     justify-content: space-around;
+    align-items: center; /* 세로 방향 가운데 정렬 추가 */
     background-color: white;
     padding: 20px 0;
     margin-top: 20px;
@@ -59,7 +51,7 @@ body {
 
 .shortcut-item {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* 아이콘과 텍스트를 세로로 유지 */
     align-items: center;
     text-decoration: none;
     color: #333;
@@ -86,7 +78,7 @@ body {
 }
 
 .hero-section h1 {
-    font-size: 2.8rem; /* rem은 상대적인 크기 단위 */
+    font-size: 2.8rem;
     margin-bottom: 16px;
     line-height: 1.3;
 }
@@ -111,7 +103,7 @@ body {
     width: 100%;
     max-width: 1024px;
     display: flex;
-    gap: 20px; /* 카드 사이의 간격 */
+    gap: 20px;
     margin-top: 20px;
 }
 
@@ -124,7 +116,7 @@ body {
 }
 
 .notice-card {
-    flex: 2; /* 예약 카드보다 2배 넓게 */
+    flex: 2;
 }
 
 .notice-card h3, .booking-card h3, .location-card h3, .recommend-card h3 {
@@ -155,7 +147,7 @@ body {
 }
 
 .booking-card {
-    flex: 1; /* 공지 카드보다 1배 넓게 */
+    flex: 1;
     text-align: center;
 }
 
@@ -254,7 +246,7 @@ body {
 
 .booking-container {
     width: 100%;
-    max-width: 800px; /* 단계 표시를 위해 너비를 약간 넓게 설정 */
+    max-width: 800px;
     margin-top: 40px;
     padding: 0 20px;
 }
@@ -270,7 +262,7 @@ body {
 .step {
     display: flex;
     align-items: center;
-    color: #868e96; /* 기본 회색 */
+    color: #868e96;
     font-weight: 500;
 }
 
@@ -278,7 +270,7 @@ body {
     width: 32px;
     height: 32px;
     border: 2px solid #ced4da;
-    border-radius: 50%; /* 동그란 아이콘 배경 */
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -287,7 +279,7 @@ body {
 
 /* 활성화된 단계 스타일 */
 .step.active {
-    color: #007bff; /* 활성화된 파란색 */
+    color: #007bff;
     font-weight: bold;
 }
 
@@ -303,7 +295,7 @@ body {
     padding: 30px;
     border-radius: 16px;
     border: 1px solid #e9ecef;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* 은은한 그림자 효과 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .calendar-card h2 {
@@ -330,7 +322,7 @@ body {
 
 .calendar-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr); /* 7개의 열을 동일한 너비로 생성 */
+    grid-template-columns: repeat(7, 1fr);
     gap: 10px;
     text-align: center;
 }
@@ -344,8 +336,8 @@ body {
 .day {
     padding: 10px;
     cursor: pointer;
-    border-radius: 50%; /* 날짜를 동그랗게 */
-    transition: background-color 0.2s; /* 부드러운 효과 */
+    border-radius: 50%;
+    transition: background-color 0.2s;
 }
 
 .day:hover {
@@ -353,7 +345,7 @@ body {
 }
 
 .day.prev-month, .day.next-month {
-    color: #ced4da; /* 이전/다음 달 날짜는 회색으로 */
+    color: #ced4da;
 }
 
 .day.today {
