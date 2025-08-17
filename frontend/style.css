@@ -1,0 +1,381 @@
+/* 기본 설정: 여백 제거, 박스 크기 계산 방식 변경, 기본 폰트 설정 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fa; /* 전체 페이지 배경색 */
+    color: #333; /* 기본 글자색 */
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 1. 상단 헤더 (수정됨) */
+.top-header {
+    width: 100%;
+    max-width: 1024px;
+    display: flex;
+    justify-content: center; /* 로고를 가운데로 정렬 */
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+}
+
+.top-header .logo {
+    font-weight: bold;
+    color: #007bff; /* 로고 색상 */
+    font-size: 1.5rem; /* 로고 크기를 약간 키움 */
+}
+
+/* ======================================= */
+/* === 추가된 바로가기 메뉴 스타일 === */
+/* ======================================= */
+.shortcuts {
+    width: 100%;
+    max-width: 1024px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center; /* 세로 방향 가운데 정렬 추가 */
+    background-color: white;
+    padding: 20px 0;
+    margin-top: 20px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.shortcut-item {
+    display: flex;
+    flex-direction: column; /* 아이콘과 텍스트를 세로로 유지 */
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.shortcut-item .icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+/* ======================================= */
+/* ======================================= */
+
+
+/* 2. 메인 소개 섹션 (index.html) */
+.hero-section {
+    width: 100%;
+    max-width: 1024px;
+    background: linear-gradient(135deg, #00b09b, #00d47d); /* 초록색 계열 그라데이션 */
+    color: white;
+    padding: 80px 40px;
+    border-radius: 16px; /* 모서리 둥글게 */
+    margin-top: 20px;
+}
+
+.hero-section h1 {
+    font-size: 2.8rem;
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+.hero-section p {
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.hero-section .cta-button {
+    background-color: white;
+    color: #007bff;
+    padding: 12px 24px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+
+/* 3. 공지사항 및 빠른 예약 섹션 (index.html) */
+.info-section {
+    width: 100%;
+    max-width: 1024px;
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.notice-card, .booking-card, .location-card, .recommend-card {
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.notice-card {
+    flex: 2;
+}
+
+.notice-card h3, .booking-card h3, .location-card h3, .recommend-card h3 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.notice-card ul {
+    list-style: none;
+}
+
+.notice-card li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.notice-card li:last-child {
+    border-bottom: none;
+}
+
+.notice-card span {
+    background-color: #ffe3e3;
+    color: #d94848;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.booking-card {
+    flex: 1;
+    text-align: center;
+}
+
+.booking-card .price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.booking-card .booking-button {
+    display: block;
+    width: 100%;
+    background-color: #343a40;
+    color: white;
+    padding: 14px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin: 20px 0;
+}
+
+.booking-card .contact-info strong {
+    color: #007bff;
+    font-size: 1.4rem;
+}
+
+
+/* 4. 위치 및 주변 추천 장소 섹션 (index.html) */
+.location-section {
+    width: 100%;
+    max-width: 1024px;
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.location-card {
+    flex: 1;
+}
+
+.map-placeholder {
+    width: 100%;
+    height: 200px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #868e96;
+    margin-bottom: 16px;
+}
+
+.recommend-card {
+    flex: 1;
+}
+
+.recommend-card ul {
+    list-style: none;
+}
+
+.recommend-card li {
+    margin-bottom: 16px;
+}
+
+.recommend-card h4 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.recommend-card p {
+    font-size: 0.9rem;
+    color: #868e96;
+}
+
+.recommend-card h4 span {
+    font-size: 0.8rem;
+    color: #868e96;
+    font-weight: normal;
+    margin-left: 8px;
+}
+
+
+/* 5. 하단 푸터 (모든 페이지 공통) */
+.main-footer {
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 40px;
+    color: #868e96;
+    font-size: 0.9rem;
+}
+
+/* ------------------------------------------- */
+/* --- booking.html 예약 페이지 전용 스타일 --- */
+/* ------------------------------------------- */
+
+.booking-container {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+/* 단계 표시기 */
+.step-indicator {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    color: #868e96;
+    font-weight: 500;
+}
+
+.step .icon {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #ced4da;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+}
+
+/* 활성화된 단계 스타일 */
+.step.active {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.step.active .icon {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* 달력 카드 */
+.calendar-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #868e96;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    text-align: center;
+}
+
+.day-name {
+    font-weight: bold;
+    color: #868e96;
+    font-size: 0.9rem;
+}
+
+.day {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.day:hover {
+    background-color: #e9ecef;
+}
+
+.day.prev-month, .day.next-month {
+    color: #ced4da;
+}
+
+.day.today {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* 이전/다음 버튼 */
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #868e96;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ced4da;
+}
