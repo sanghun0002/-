@@ -15,12 +15,12 @@ body {
     align-items: center;
 }
 
-/* 1. 상단 헤더 */
+/* 1. 상단 헤더 (수정됨) */
 .top-header {
     width: 100%;
     max-width: 1024px;
     display: flex;
-    justify-content: space-between; /* 로고와 메뉴를 양쪽 끝으로 */
+    justify-content: center; /* 로고를 가운데로 정렬 */
     align-items: center;
     padding: 20px;
     background-color: white;
@@ -29,13 +29,50 @@ body {
 .top-header .logo {
     font-weight: bold;
     color: #007bff; /* 로고 색상 */
+    font-size: 1.5rem; /* 로고 크기를 약간 키움 */
 }
 
+/* --- 더 이상 사용하지 않는 스타일 --- */
+/*
 .top-header .top-nav a {
     text-decoration: none;
     color: #555;
-    margin-left: 20px; /* 메뉴 사이 간격 */
+    margin-left: 20px;
 }
+*/
+
+/* ======================================= */
+/* === 추가된 바로가기 메뉴 스타일 === */
+/* ======================================= */
+.shortcuts {
+    width: 100%;
+    max-width: 1024px;
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    padding: 20px 0;
+    margin-top: 20px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.shortcut-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.shortcut-item .icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+/* ======================================= */
+/* ======================================= */
+
 
 /* 2. 메인 소개 섹션 (index.html) */
 .hero-section {
