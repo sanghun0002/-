@@ -379,3 +379,34 @@ body {
     color: #333;
     border: 1px solid #ced4da;
 }
+
+/* booking-step3, 4 용 아이템 선택 버튼 스타일 */
+.item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-select-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    text-align: left;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.item-select-btn:hover {
+    background-color: #e9ecef;
+}
+
+.item-select-btn.selected {
+    background-color: #e3f2fd;
+    border-color: #007bff;
+    font-weight: bold;
+    color: #007bff;
+}
+/* booking-step3, 4 용 아이템 선택 버튼 스타일 */

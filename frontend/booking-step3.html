@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>날짜 선택 - 쉬어가 계곡</title>
+    <title>계곡 선택 - 쉬어가 계곡</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,20 +17,25 @@
 
     <main class="booking-container">
         <div class="step-indicator">
-            <div class="step active"><span>날짜 선택</span></div>
+            <div class="step"><span>날짜 선택</span></div>
             <div class="step"><span>지역 선택</span></div>
-            <div class="step"><span>계곡/구역 선택</span></div>
+            <div class="step active"><span>계곡/구역 선택</span></div>
             <div class="step"><span>평상 선택</span></div>
         </div>
+
         <div class="calendar-card">
-            <h2>날짜를 선택해주세요</h2>
-            <div id="calendar-area"></div> 
+            <h2>계곡을 선택해주세요</h2>
+            <div id="valley-list" class="item-list">
+                <p>선택하신 지역의 계곡을 불러오는 중입니다...</p>
+            </div>
         </div>
-         <div class="nav-buttons">
-            <a href="index.html" class="btn btn-secondary">← 홈으로</a>
-            <button id="next-step-btn" class="btn btn-primary" disabled>다음 →</button>
+
+        <div class="nav-buttons">
+             <a href="booking-step2.html" class="btn btn-secondary">← 이전</a>
+             <button id="next-step-btn" class="btn btn-primary" disabled>다음 →</button>
         </div>
     </main>
+
     <footer class="main-footer"></footer>
     <script src="booking.js"></script>
 </body>
