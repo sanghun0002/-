@@ -1,1 +1,60 @@
+// 3단계: 계곡 선택 (booking-step3.html)
+    if (currentPage === 'booking-step3.html') {
+        const valleyListDiv = document.getElementById('valley-list');
+        fetch(`http://localhost:3000/api/valleys?city_id=${bookingSelection.cityId}`)
+            .then(res => res.json())
+            .then(valleys => {
+                valleyListDiv.innerHTML = '';
+                valleys.forEach(valley => {
+                    const item = document.createElement('button');
+                    item.className = 'item-select-btn';
+                    item.textContent = valley.name;
+                    item.onclick = () => {
+                        bookingSelection.valleyId = valley.id;
+                        // 선택된 항목 강조 (CSS로 구현)
+                        document.querySelectorAll('.item-select-btn').forEach(btn => btn.classList.remove('selected'));
+                        item.classList.add('selected');
+                        if(nextBtn) nextBtn.disabled = false;
+                    };
+                    valleyListDiv.appendChild(item);
+                });
+            });
 
+        if(nextBtn) {
+            nextBtn.onclick = () => {
+                window.location.href = `booking-step4.html?date=${bookingSelection.date}&valleyId=${bookingSelection.valleyId}`;
+            };
+        }
+    }
+
+    // 4단계: 평상 선택 (booking-step4.html)
+    if (currentPage === 'booking-step4.html') {
+        const spotMapDiv = document.getElementById('spot-map');
+        const paymentBtn = document.getElementById('payment-btn');
+        
+        fetch(`http://localhost:3000/api/spots?valley_id=${bookingSelection.valleyId}`)
+            .then(res => res.json())
+            .then(spots => {
+                spotMapDiv.innerHTML = '';
+                spots.forEach(spot => {
+                    const item = document.createElement('button');
+                    item.className = 'item-select-btn';
+                    item.textContent = spot.name;
+                    // (실제로는 예약 가능 여부를 확인하고 비활성화 처리해야 함)
+                    item.onclick = () => {
+                        bookingSelection.spotId = spot.id;
+                        document.querySelectorAll('.item-select-btn').forEach(btn => btn.classList.remove('selected'));
+                        item.classList.add('selected');
+                        if(paymentBtn) paymentBtn.disabled = false;
+                    };
+                    spotMapDiv.appendChild(item);
+                });
+            });
+
+        if(paymentBtn) {
+            paymentBtn.onclick = () => {
+                alert(`최종 예약 정보:\n날짜: ${bookingSelection.date}\n평상: ${bookingSelection.spotId}\n이제 결제 시스템을 연동합니다.`);
+                // window.location.href = `payment.html?spotId=${bookingSelection.spotId}`;
+            };
+        }
+    }
