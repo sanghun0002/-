@@ -303,6 +303,29 @@ body {
     margin-bottom: 20px;
 }
 
+.selection-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#date-input {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+label[for="date-input"] {
+    font-size: 18px;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
 .calendar-header {
     display: flex;
     justify-content: space-between;
