@@ -12,20 +12,47 @@ document.addEventListener('DOMContentLoaded', () => {
         spotId: null
     };
 
-    // 1단계: 날짜 선택 (booking.html)
-    if (currentPage === 'booking.html' || currentPage === '') {
-        const calendarArea = document.getElementById('calendar-area');
-        calendarArea.innerHTML = '<p>여기에 달력 라이브러리를 연동하여 달력을 표시합니다.<br>우선 테스트를 위해 날짜를 임의로 선택했다고 가정합니다.</p>';
-        
-        // 날짜를 선택했다고 가정하고 다음 버튼 활성화
-        bookingSelection.date = '2025-08-23'; 
-        if(nextBtn) {
-            nextBtn.disabled = false;
-            nextBtn.onclick = () => { 
-                window.location.href = `booking-step2.html?date=${bookingSelection.date}`; 
-            };
-        }
+// 1단계: 날짜 선택 (booking.html)
+if (currentPage === 'booking.html' || currentPage === '') {
+    // 1. HTML에서 날짜 입력 필드를 가져옵니다.
+    const dateInput = document.getElementById('date-input');
+
+    // 2. 페이지 로드 시 '다음' 버튼 비활성화 (기존 코드에서는 이미 활성화되어 있었음)
+    if(nextBtn) {
+        nextBtn.disabled = true;
     }
+
+    // 3. 사용자가 날짜를 선택할 때마다 실행될 이벤트 리스너를 추가합니다.
+    dateInput.addEventListener('change', () => {
+        // 입력 필드에 값이 있는지 확인
+        if (dateInput.value) {
+            // 값이 있다면 bookingSelection 객체에 저장
+            bookingSelection.date = dateInput.value;
+            // '다음' 버튼 활성화
+            if(nextBtn) {
+                nextBtn.disabled = false;
+            }
+        } else {
+            // 값이 없다면 '다음' 버튼 비활성화
+            bookingSelection.date = null;
+            if(nextBtn) {
+                nextBtn.disabled = true;
+            }
+        }
+    });
+
+    // 4. '다음' 버튼 클릭 시 다음 페이지로 이동
+    if(nextBtn) {
+        nextBtn.onclick = () => { 
+            // bookingSelection.date에 실제 선택된 날짜가 들어있습니다.
+            if (bookingSelection.date) {
+                window.location.href = `booking-step2.html?date=${bookingSelection.date}`;
+            } else {
+                alert('날짜를 먼저 선택해주세요.');
+            }
+        };
+    }
+}
 
     // 2단계: 지역 선택 (booking-step2.html)
     if (currentPage === 'booking-step2.html') {
