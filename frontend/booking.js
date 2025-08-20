@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inline: true, // 캘린더를 항상 보이도록 설정
         dateFormat: "Y-m-d", // 날짜 형식 설정
         minDate: "today", // 오늘 이전 날짜는 선택할 수 없게 설정
+        locale: 'ko',
         // 캘린더가 렌더링될 때마다 실행되는 콜백 함수
         onReady: (selectedDates, dateStr, instance) => {
             // 초기 '다음' 버튼 비활성화
