@@ -293,17 +293,17 @@ body {
 
 .flatpickr-calendar {
     font-size: 1rem;
-    width: 400px; /* 원하는 너비로 설정 */
+    width: 600px; /* 원하는 너비로 설정 */
     max-width: none;
 }
 
 .flatpickr-day,
 .flatpickr-weekday {
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .flatpickr-month {
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 /* 이전/다음 버튼 */
