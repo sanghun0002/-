@@ -306,6 +306,36 @@ body {
     font-size: 1rem;
 }
 
+/* 선택된 날짜의 배경색과 글자색 변경 */
+.flatpickr-day.selected {
+    background: #007bff; /* 파란색 배경 */
+    color: white; /* 흰색 글자 */
+    border-color: #007bff; /* 테두리색 */
+}
+
+/* 마우스를 올렸을 때의 색상 변경 */
+.flatpickr-day.selected:hover {
+    background: #0056b3; /* 더 진한 파란색 */
+    border-color: #0056b3;
+}
+
+/* 오늘 날짜의 글자색과 테두리 변경 */
+.flatpickr-day.today {
+    color: #007bff; /* 파란색 글자 */
+    border: 1px solid #007bff; /* 파란색 테두리 */
+}
+
+/* 이전/다음 달 화살표 색상 변경 */
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+    fill: #007bff; /* 파란색으로 채움 */
+}
+
+/* 비활성화된 날짜의 투명도 조절 */
+.flatpickr-day.disabled {
+    opacity: 0.5;
+}
+
 /* 이전/다음 버튼 */
 .nav-buttons {
     display: flex;
