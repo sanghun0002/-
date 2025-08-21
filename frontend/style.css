@@ -146,6 +146,23 @@ body {
     margin-left: 8px;
 }
 
+
+/* ------------------------------------------- */
+/* ---   하단 푸터 (모든 페이지 공통)         --- */
+/* ------------------------------------------- */
+.main-footer {
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 40px;
+    color: #868e96;
+    font-size: 0.9rem;
+}
+
+/* ------------------------------------------- */
+/* --- booking.html 예약 페이지 전용 스타일 --- */
+/* ------------------------------------------- */
+
 .booking-card {
     flex: 1;
     text-align: center;
@@ -173,76 +190,6 @@ body {
     color: #007bff;
     font-size: 1.4rem;
 }
-
-
-/* 4. 위치 및 주변 추천 장소 섹션 (index.html) */
-.location-section {
-    width: 100%;
-    max-width: 1024px;
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.location-card {
-    flex: 1;
-}
-
-.map-placeholder {
-    width: 100%;
-    height: 200px;
-    background-color: #e9ecef;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #868e96;
-    margin-bottom: 16px;
-}
-
-.recommend-card {
-    flex: 1;
-}
-
-.recommend-card ul {
-    list-style: none;
-}
-
-.recommend-card li {
-    margin-bottom: 16px;
-}
-
-.recommend-card h4 {
-    font-size: 1rem;
-    margin-bottom: 4px;
-}
-
-.recommend-card p {
-    font-size: 0.9rem;
-    color: #868e96;
-}
-
-.recommend-card h4 span {
-    font-size: 0.8rem;
-    color: #868e96;
-    font-weight: normal;
-    margin-left: 8px;
-}
-
-
-/* 5. 하단 푸터 (모든 페이지 공통) */
-.main-footer {
-    width: 100%;
-    text-align: center;
-    padding: 40px 20px;
-    margin-top: 40px;
-    color: #868e96;
-    font-size: 0.9rem;
-}
-
-/* ------------------------------------------- */
-/* --- booking.html 예약 페이지 전용 스타일 --- */
-/* ------------------------------------------- */
 
 .booking-container {
     width: 100%;
@@ -402,11 +349,52 @@ body {
     font-weight: bold;
     color: #007bff;
 }
-/* booking-step3, 4 용 아이템 선택 버튼 스타일 */
+/* ------------------------------------------- */
+/* - booking.html 예약 페이지 전용 스타일--END  - */
+/* ------------------------------------------- */
 
 /* ============================= */
-/* 공지사항 목록 스타일 (아래 추가) */
+/*            공지사항            */
 /* ============================= */
+
+.notice-card, .booking-card, .location-card, .recommend-card {
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.notice-card {
+    flex: 2;
+}
+
+.notice-card h3, .booking-card h3, .location-card h3, .recommend-card h3 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.notice-card ul {
+    list-style: none;
+}
+
+.notice-card li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.notice-card li:last-child {
+    border-bottom: none;
+}
+
+.notice-card span {
+    background-color: #ffe3e3;
+    color: #d94848;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
 
 /* <ul> 태그 자체의 스타일 */
 #notice-list {
@@ -470,3 +458,7 @@ body {
 .delete-btn:hover {
     background-color: #cc0000; /* 더 진한 색으로 변경 */
 }
+
+/* ============================= */
+/*            공지사항-END        */
+/* ============================= */
