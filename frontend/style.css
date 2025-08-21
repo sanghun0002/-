@@ -20,7 +20,7 @@ body {
     width: 100%;
     max-width: 1024px;
     display: flex;
-    justify-content: center; /* 로고를 가운데로 정렬 */
+    justify-content: left; /* 로고를 가운데로 정렬 */
     align-items: center;
     padding: 20px;
     background-color: white;
