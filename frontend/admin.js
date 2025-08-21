@@ -1,37 +1,32 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const noticeForm = document.getElementById('notice-form');
-    const noticeTitle = document.getElementById('notice-title');
-    const noticeContent = document.getElementById('notice-content');
+// admin.js (수정)
+document.getElementById('notice-form').addEventListener('submit', function(e) {
+    e.preventDefault(); // 폼 제출 시 새로고침 방지
 
-    noticeForm.addEventListener('submit', (event) => {
-        // 폼의 기본 제출 동작(페이지 새로고침)을 막습니다.
-        event.preventDefault(); 
+    // 입력된 값 가져오기
+    const title = document.getElementById('title').value;
+    const department = document.getElementById('department').value;
+    const isSticky = document.getElementById('is-sticky').checked;
 
-        // 현재 날짜를 YYYY-MM-DD 형식으로 만듭니다.
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
+    // 새 공지사항 객체 생성
+    const newNotice = {
+        id: Date.now(), // 고유 ID
+        title: title,
+        department: department,
+        date: new Date().toLocaleDateString('ko-KR'), // YYYY. M. D. 형식
+        views: Math.floor(Math.random() * 100), // 0~99 사이의 임시 조회수
+        isSticky: isSticky
+    };
 
-        // 새 공지사항 객체를 만듭니다.
-        const newNotice = {
-            title: noticeTitle.value,
-            content: noticeContent.value,
-            date: formattedDate
-        };
+    // 기존 localStorage 데이터 불러오기
+    const notices = JSON.parse(localStorage.getItem('notices') || '[]');
+    
+    // 새 데이터를 배열의 맨 앞에 추가 (최신글이 위로 오도록)
+    notices.unshift(newNotice);
 
-        // 기존에 저장된 공지사항을 불러옵니다. 없으면 빈 배열로 시작합니다.
-        const notices = JSON.parse(localStorage.getItem('notices') || '[]');
-        
-        // 새 공지사항을 배열에 추가합니다.
-        notices.push(newNotice);
+    // 다시 localStorage에 저장
+    localStorage.setItem('notices', JSON.stringify(notices));
 
-        // 업데이트된 배열을 다시 localStorage에 저장합니다.
-        localStorage.setItem('notices', JSON.stringify(notices));
-
-        // 저장이 완료되면 공지사항 목록 페이지로 돌아갑니다.
-        alert('공지사항이 저장되었습니다.');
-        window.location.href = 'notice.html';
-    });
+    // 저장 후 목록 페이지로 이동
+    alert('공지사항이 등록되었습니다.');
+    window.location.href = 'notice-list.html'; // 이동할 페이지 이름 확인
 });

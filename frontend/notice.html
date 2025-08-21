@@ -3,31 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공지사항 - 쉬어가 계곡</title>
+    <title>공지사항</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <div class="board-container">
+        <header class="board-header">
+            <a href="index.html" class="home-link"><i class="fas fa-home"></i> 홈</a>
+            <nav>
+                <a href="admin.html" class="write-btn-nav">글쓰기</a>
+            </nav>
+        </header>
 
-    <header class="top-header">
-        <a href="index.html" class="logo">쉬어가 - 계곡</a>
-    </header>
+        <main>
+            <h1 class="board-title">공지사항</h1>
+            
+            <table class="board-table">
+                <thead>
+                    <tr>
+                        <th class="col-num">번호</th>
+                        <th class="col-title">제목</th>
+                        <th class="col-dept">작성부서</th>
+                        <th class="col-date">등록일</th>
+                        <th class="col-views">조회수</th>
+                    </tr>
+                </thead>
+                <tbody id="board-body">
+                </tbody>
+            </table>
 
-    <main class="container">
-        <div class="notice-card">
-            <div class="notice-header">
-                <h1>📢 공지사항</h1>
-                <button id="write-button" class="write-btn">작성하기</button>
+            <div class="pagination">
+                <a href="#">&laquo;</a><a href="#">&lsaquo;</a>
+                <a href="#" class="active">1</a>
+                <a href="#">2</a><a href="#">3</a>
+                <a href="#">&rsaquo;</a><a href="#">&raquo;</a>
             </div>
-            <p>새로운 소식들을 확인해보세요.</p>
-            <hr>
-            <ul id="notice-list"></ul>
-        </div>
-    </main>
-
-    <footer class="main-footer">
-        <p>© 2025 쉬어가-계곡. All rights reserved.</p>
-        <p>문의: 1588-0000 | 이메일: info@swieoga-valley.com</p>
-    </footer>
+        </main>
+    </div>
 
     <script src="notice.js"></script>
 </body>

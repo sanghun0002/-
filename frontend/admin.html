@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자: 공지 작성 - 쉬어가 계곡</title>
+    <title>관리자: 공지 작성</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="top-header">
-        <a href="index.html" class="logo">쉬어가 - 계곡 (관리자 모드)</a>
-    </header>
-
-    <main class="container">
-        <div class="notice-card">
-            <h1>📝 공지사항 작성</h1>
+    <div class="board-container">
+        <main style="padding: 30px;">
+            <h1 class="board-title">공지사항 작성</h1>
             <form id="notice-form">
-                <input type="text" id="notice-title" placeholder="제목을 입력하세요" required>
-                <textarea id="notice-content" placeholder="내용을 입력하세요" rows="10" required></textarea>
-                <button type="submit" class="write-btn">저장하기</button>
+                <div class="form-group">
+                    <label for="title">제목</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="department">작성부서</label>
+                    <input type="text" id="department" required>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="is-sticky">
+                    <label for="is-sticky">중요 공지로 등록 (목록 상단에 고정)</label>
+                </div>
+                <button type="submit" class="save-btn">저장하기</button>
             </form>
-        </div>
-    </main>
-
-    <footer class="main-footer">
-        <p>© 2025 쉬어가-계곡. All rights reserved.</p>
-    </footer>
-
+        </main>
+    </div>
     <script src="admin.js"></script>
 </body>
 </html>
