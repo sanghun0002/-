@@ -28,5 +28,5 @@ document.getElementById('notice-form').addEventListener('submit', function(e) {
 
     // 저장 후 목록 페이지로 이동
     alert('공지사항이 등록되었습니다.');
-    window.location.href = 'notice-list.html'; // 이동할 페이지 이름 확인
+    window.location.href = 'notice.html'; // 이동할 페이지 이름 확인
 });
