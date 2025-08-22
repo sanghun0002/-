@@ -1,24 +1,30 @@
-// admin.js (수정)
-document.getElementById('notice-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+// 파일 위치: site/frontend/admin.js
 
+document.getElementById('notice-form').addEventListener('submit', async function(e) {
+    e.preventDefault(); // 폼 기본 동작 방지
+
+    // 폼에서 입력된 데이터 가져오기
     const title = document.getElementById('title').value;
     const department = document.getElementById('department').value;
     const isSticky = document.getElementById('is-sticky').checked;
 
-    const newNotice = {
-        id: Date.now(),
-        title: title,
-        department: department,
-        date: new Date().toLocaleDateString('ko-KR'),
-        views: 0, // 조회수는 0으로 시작
-        isSticky: isSticky
-    };
+    try {
+        // 백엔드 서버에 새 공지사항 등록을 요청
+        const response = await fetch('/api/notices', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, department, isSticky })
+        });
 
-    const notices = JSON.parse(localStorage.getItem('notices') || '[]');
-    notices.unshift(newNotice);
-    localStorage.setItem('notices', JSON.stringify(notices));
+        if (!response.ok) {
+            throw new Error('서버 응답이 올바르지 않습니다.');
+        }
 
-    alert('공지사항이 등록되었습니다.');
-    window.location.href = 'notice.html';
+        alert('공지사항이 성공적으로 등록되었습니다.');
+        window.location.href = 'notice.html'; // 목록 페이지로 이동
+
+    } catch (error) {
+        console.error("Error creating notice:", error);
+        alert('공지사항 등록 중 오류가 발생했습니다.');
+    }
 });
