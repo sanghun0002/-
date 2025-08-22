@@ -9,11 +9,21 @@ const app = express();
 // Render 배포 환경 또는 로컬 3000번 포트 사용
 const PORT = process.env.PORT || 3000;
 
+
+// ▼▼▼ CORS(Cross-Origin Resource Sharing) 설정 ▼▼▼
+// Netlify 프론트엔드 주소에서의 요청을 허용하기 위한 설정입니다.
+const corsOptions = {
+    origin: 'https://restinginthevalley.netlify.app', // 여기에 허용할 프론트엔드 주소를 입력합니다.
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+// ▲▲▲ CORS 설정 끝 ▲▲▲
+
+
 // 미들웨어 설정
-app.use(cors()); // CORS 허용
 app.use(express.json()); // JSON 데이터 파싱 허용
 
-// ▼▼▼ frontend 폴더를 static 파일 경로로 지정 (사용자 구조에 맞게 수정됨) ▼▼▼
+// frontend 폴더를 static 파일 경로로 지정
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // 서버 메모리에 임시로 저장할 데이터 (데이터베이스 역할)
