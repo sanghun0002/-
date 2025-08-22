@@ -64,6 +64,7 @@ app.get('/api/notices', (req, res) => {
         totalPages: totalPages,
         currentPage: page,
         totalNormalNotices: normalNotices.length
+        normalNoticesOnFirstPage: normalNoticesOnFirstPage
     });
 });
 
