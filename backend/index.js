@@ -85,7 +85,7 @@ app.post('/api/notices', (req, res) => {
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'notice.html'));
 });
-
+/*정검*/
 app.listen(PORT, () => {
     console.log(`🚀 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
-});
+}); 
