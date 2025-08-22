@@ -15,8 +15,16 @@ app.use(express.json());
 // 프론트엔드 파일 경로 설정
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-// 임시 인메모리 데이터베이스
+// 임시 인메모리 데이터베이스 (20개 이상)
 let notices = [
+    { id: 23, title: "테스트 공지 8", department: "테스트팀", date: "2025-08-28", views: 5, isSticky: false },
+    { id: 22, title: "테스트 공지 7", department: "테스트팀", date: "2025-08-28", views: 5, isSticky: false },
+    { id: 21, title: "테스트 공지 6", department: "테스트팀", date: "2025-08-28", views: 5, isSticky: false },
+    { id: 20, title: "테스트 공지 5", department: "테스트팀", date: "2025-08-27", views: 10, isSticky: false },
+    { id: 19, title: "테스트 공지 4", department: "테스트팀", date: "2025-08-26", views: 15, isSticky: false },
+    { id: 18, title: "테스트 공지 3", department: "테스트팀", date: "2025-08-25", views: 20, isSticky: false },
+    { id: 17, title: "테스트 공지 2", department: "테스트팀", date: "2025-08-24", views: 25, isSticky: false },
+    { id: 16, title: "테스트 공지 1", department: "테스트팀", date: "2025-08-24", views: 30, isSticky: false },
     { id: 15, title: "시스템 정기 점검 안내 (25일 02:00)", department: "개발팀", date: "2025-08-23", views: 10, isSticky: false },
     { id: 14, title: "주차장 이용 정책 변경 안내", department: "시설팀", date: "2025-08-22", views: 55, isSticky: false },
     { id: 13, title: "분실물 센터 위치 안내", department: "운영팀", date: "2025-08-21", views: 32, isSticky: false },
@@ -33,9 +41,9 @@ let notices = [
     { id: 2, title: "보증금 현장 인증 시스템 도입", department: "개발팀", date: "2025-08-10", views: 120, isSticky: true },
     { id: 1, title: "여름 성수기 예약 안내", department: "운영팀", date: "2025-08-11", views: 256, isSticky: false },
 ];
-let nextId = 16;
+let nextId = 24;
 
-// [API] 공지사항 목록 가져오기 (페이지네이션, 중요공지 포함 10개 로직 적용)
+// [API] 공지사항 목록 가져오기
 app.get('/api/notices', (req, res) => {
     const page = parseInt(req.query.page || '1', 10);
     const noticesPerPage = 10;
@@ -43,11 +51,12 @@ app.get('/api/notices', (req, res) => {
     const stickyNotices = notices.filter(n => n.isSticky).sort((a, b) => b.id - a.id);
     const normalNotices = notices.filter(n => !n.isSticky).sort((a, b) => b.id - a.id);
 
-    const totalPages = Math.ceil(normalNotices.length / noticesPerPage);
-    let paginatedNotices;
-    
     const normalNoticesOnFirstPage = Math.max(0, noticesPerPage - stickyNotices.length);
+    
+    const remainingNotices = normalNotices.length - normalNoticesOnFirstPage;
+    const totalPages = remainingNotices > 0 ? 1 + Math.ceil(remainingNotices / noticesPerPage) : 1;
 
+    let paginatedNotices;
     if (page === 1) {
         paginatedNotices = normalNotices.slice(0, normalNoticesOnFirstPage);
     } else {
@@ -69,7 +78,9 @@ app.get('/api/notices', (req, res) => {
 // [API] 새 공지사항 등록하기
 app.post('/api/notices', (req, res) => {
     const { title, department, isSticky } = req.body;
-    if (!title || !department) return res.status(400).json({ message: '필수 값 누락' });
+    if (!title || !department) {
+        return res.status(400).json({ message: '필수 값 누락' });
+    }
     const newNotice = {
         id: nextId++,
         title,
