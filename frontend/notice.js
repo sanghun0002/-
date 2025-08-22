@@ -3,15 +3,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     const boardBody = document.getElementById('board-body');
     const paginationContainer = document.getElementById('pagination');
-    let currentData = null; // 서버에서 받은 전체 데이터 저장용
+    let currentData = null;
 
-    // 특정 페이지의 공지사항을 불러오는 함수
     async function loadNotices(page = 1) {
         try {
             const response = await fetch(`https://o70albxd7n.onrender.com/api/notices?page=${page}`);
+            if (!response.ok) throw new Error('서버에서 데이터를 가져오지 못했습니다.');
+
             const data = await response.json();
             currentData = data;
-            
+
             renderTable();
             renderPagination();
 
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 테이블 내용을 그리는 함수
+    // 테이블 내용을 그리는 함수 (수정됨)
     function renderTable() {
         boardBody.innerHTML = '';
         const { notices, stickyNotices, currentPage, totalNormalNotices } = currentData;
@@ -35,20 +36,18 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // 일반 공지 표시
+        // 일반 공지 표시 (게시글 번호 계산 로직 수정)
         notices.forEach((notice, index) => {
-            // 게시글 번호 계산
             const noticeNumber = totalNormalNotices - ((currentPage - 1) * 10) - index;
             const row = createRow(notice, noticeNumber);
             boardBody.appendChild(row);
         });
     }
-    
+
     // 페이지네이션 버튼을 그리는 함수
     function renderPagination() {
         paginationContainer.innerHTML = '';
         const { totalPages, currentPage } = currentData;
-
         if (totalPages <= 1) return;
 
         for (let i = 1; i <= totalPages; i++) {
@@ -81,6 +80,5 @@ document.addEventListener('DOMContentLoaded', function() {
         return tr;
     }
 
-    // 최초 실행
     loadNotices(1);
 });
