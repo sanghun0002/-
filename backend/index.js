@@ -93,7 +93,6 @@ app.post('/api/notices', (req, res) => {
     res.status(201).json(newNotice);
 });
 
-// 모든 그 외의 요청은 프론트엔드로 연결
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'notice.html'));
 });
