@@ -347,6 +347,51 @@ body {
     background-color: #cc0000;
 }
 
+/* === 추가된 게시판 스타일 === */
+
+/* 중요 공지(sticky) 행 스타일 */
+.board-table tbody tr.sticky {
+    background-color: #f8f9fa; /* 연한 회색 배경 */
+    font-weight: bold; /* 글씨 굵게 */
+}
+
+.board-table tbody tr.sticky td:first-child::before {
+    content: '📢'; /* 맨 앞에 아이콘 추가 */
+    margin-right: 8px;
+}
+
+/* 페이지네이션 컨테이너 스타일 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 8px;
+}
+
+/* 페이지네이션 버튼(a 태그) 스타일 */
+.pagination a {
+    color: #007bff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* 페이지네이션 버튼에 마우스를 올렸을 때 */
+.pagination a:hover {
+    background-color: #e9ecef;
+}
+
+/* 현재 활성화된 페이지 버튼 스타일 */
+.pagination a.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    cursor: default;
+}
+
 /* ============================= */
 /*          공지사항 ---END       */
 /* ============================= */
