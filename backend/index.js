@@ -12,7 +12,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-// 데이터에 content(상세 내용) 속성 추가
 let notices = [
     { id: 3, title: "우천시 예약 취소 정책", department: "운영팀", date: "2025-08-03", views: 78, isSticky: true, content: "기상청 예보 기준, 방문 예정일의 강수 확률이 70% 이상일 경우 위약금 없이 예약을 취소할 수 있습니다. 취소는 방문 하루 전까지 가능합니다." },
     { id: 2, title: "보증금 현장 인증 시스템 도입", department: "개발팀", date: "2025-08-10", views: 120, isSticky: true, content: "이제 QR코드를 통해 보증금을 현장에서 즉시 인증하고 반환받을 수 있습니다. 퇴실 시 비치된 QR코드를 스캔해주세요." },
@@ -20,7 +19,6 @@ let notices = [
 ];
 let nextId = 4;
 
-// [API 1] 공지사항 목록 가져오기
 app.get('/api/notices', (req, res) => {
     const page = parseInt(req.query.page || '1', 10);
     const noticesPerPage = 10;
@@ -47,29 +45,34 @@ app.get('/api/notices', (req, res) => {
     });
 });
 
-// [API 2] 새 공지사항 등록하기
+// ▼▼▼ 새 공지사항 등록 API 수정 ▼▼▼
 app.post('/api/notices', (req, res) => {
-    const { title, department, isSticky } = req.body;
-    if (!title || !department) return res.status(400).json({ message: '필수 값 누락' });
+    // body에서 content를 추가로 받습니다.
+    const { title, department, isSticky, content } = req.body;
+
+    if (!title || !department || !content) {
+         return res.status(400).json({ message: '제목, 작성부서, 내용은 필수입니다.' });
+    }
+
     const newNotice = {
         id: nextId++,
         title,
         department,
         date: new Date().toISOString().split('T')[0],
-        views: 0, // 조회수는 0에서 시작
+        views: 0,
         isSticky: isSticky || false,
-        content: "새로 등록된 공지사항의 상세 내용입니다." // 임시 상세 내용
+        content: content // 임시 내용 대신 실제 받은 content를 저장합니다.
     };
     notices.unshift(newNotice);
     res.status(201).json(newNotice);
 });
+// ▲▲▲ API 수정 끝 ▲▲▲
 
-// [API 3] 특정 ID의 공지사항 가져오기 (+ 조회수 증가)
 app.get('/api/notices/:id', (req, res) => {
     const noticeId = parseInt(req.params.id, 10);
     const notice = notices.find(n => n.id === noticeId);
     if (notice) {
-        notice.views++; // 조회수 1 증가
+        notice.views++;
         res.json(notice);
     } else {
         res.status(404).json({ message: '공지사항을 찾을 수 없습니다.' });
