@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: your-service-name # Render 대시보드에 표시될 이름
+    env: node
+    rootDir: backend # backend 폴더에서 명령을 실행하도록 설정
+    buildCommand: npm install
+    startCommand: node index.js # 👈 이렇게 수정!
