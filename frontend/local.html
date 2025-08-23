@@ -103,10 +103,14 @@
             statusDiv.textContent = message;
         }
 
-        // --- 키워드 목록 수정 ---
+        // --- 키워드 및 필터 목록 수정 ---
         const restaurantKeywords = ['맛집', '카페'];
         const entertainmentKeywords = ['공원', '시장', '전시회'];
-        const franchiseBlocklist = ['파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', '투썸플레이스'];
+        const franchiseBlocklist = [
+            '파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', 
+            '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', 
+            '투썸플레이스', '더벤티', '메가커피', '봄봄'
+        ];
 
         categorySelector.addEventListener('click', (e) => {
             if (e.target.classList.contains('category-btn')) {
@@ -164,7 +168,6 @@
                         const uniquePlaces = Array.from(allPlaces.values());
 
                         if (uniquePlaces.length > 0) {
-                            statusDiv.textContent = `총 ${uniquePlaces.length}개의 장소를 찾았습니다!`;
                             displayPlaces(uniquePlaces, map);
                         } else {
                             statusDiv.textContent = '주변 1.5km 내에 장소 정보가 없습니다.';
@@ -182,7 +185,7 @@
             let displayedCount = 0;
 
             places.forEach(place => {
-                // --- 프랜차이즈 필터링 로직 추가 ---
+                // --- 프랜차이즈 필터링 로직 ---
                 const isFranchise = franchiseBlocklist.some(franchise => place.place_name.includes(franchise));
                 if (place.category === '맛집' && isFranchise) {
                     return; // 프랜차이즈인 경우 건너뛰기
@@ -226,7 +229,6 @@
                 kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
             });
 
-            // 필터링 후 결과가 없는 경우 처리
             if (displayedCount === 0) {
                 statusDiv.textContent = '주변 1.5km 내에 추천할 장소가 없습니다.';
             } else {
