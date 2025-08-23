@@ -1,73 +1,50 @@
-// 2단계: 지역 선택 (booking-step2.html)
-
 document.addEventListener('DOMContentLoaded', () => {
-    // URL에서 매개변수를 가져옵니다.
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // 사용자의 선택을 저장하는 객체
-    let bookingSelection = {
-        date: urlParams.get('date'),
-        regionId: null,
-        cityId: null,
-        valleyId: null,
-        spotId: null
-    };
-    
-    // 필요한 DOM 요소들을 가져옵니다.
-    const regionSelect = document.getElementById('region-select');
-    const citySelect = document.getElementById('city-select');
-    const nextBtn = document.getElementById('next-step-btn');
-    
-    // 페이지 로드 시 '다음' 버튼 비활성화
-    if (nextBtn) {
-        nextBtn.disabled = true;
-    }
-    
-    // 지역 목록을 불러옵니다.
-    fetch('http://localhost:3000/api/regions')
-        .then(res => res.json())
-        .then(regions => {
-            regions.forEach(r => regionSelect.add(new Option(r.name, r.id)));
-        });
-    
-    // 도/특별시 선택 시 시/군/구 목록 업데이트
-    regionSelect.onchange = () => {
-        citySelect.disabled = true;
-        citySelect.innerHTML = '<option>시/군/구 선택</option>';
-        if (!regionSelect.value) {
-            if (nextBtn) {
-                nextBtn.disabled = true;
-            }
-            return;
-        }
-    
-        fetch(`http://localhost:3000/api/cities?region_id=${regionSelect.value}`)
-            .then(res => res.json())
-            .then(cities => {
-                cities.forEach(c => citySelect.add(new Option(c.name, c.id)));
-                citySelect.disabled = false;
+    const mapObject = document.getElementById('korea-map');
+    const selectedRegionNameSpan = document.getElementById('selected-region-name');
+    const nextButton = document.getElementById('next-button');
+
+    let selectedRegionId = null;
+
+    // SVG 파일 로드가 완료되면 이벤트 리스너를 추가
+    mapObject.addEventListener('load', () => {
+        const svgDoc = mapObject.contentDocument;
+        const provinces = svgDoc.querySelectorAll('path, polygon'); // 행정구역을 나타내는 모든 path 또는 polygon 태그
+
+        provinces.forEach(province => {
+            province.addEventListener('click', (event) => {
+                // 이전에 선택된 지역의 'selected' 클래스 제거
+                if (selectedRegionId) {
+                    const prevSelected = svgDoc.getElementById(selectedRegionId);
+                    if (prevSelected) {
+                        prevSelected.classList.remove('selected');
+                    }
+                }
+
+                // 현재 클릭된 지역을 선택
+                const currentProvince = event.target;
+                currentProvince.classList.add('selected');
+                selectedRegionId = currentProvince.id;
+
+                // 선택된 지역의 이름을 가져와서 화면에 표시
+                const regionName = currentProvince.getAttribute('data-name') || currentProvince.getAttribute('title') || currentProvince.id;
+                selectedRegionNameSpan.textContent = regionName;
+
+                // 다음 버튼 활성화
+                nextButton.disabled = false;
             });
-    };
-    
-    // 시/군/구 선택 시 '다음' 버튼 활성화
-    citySelect.onchange = () => {
-        if (citySelect.value) {
-            bookingSelection.regionId = regionSelect.value;
-            bookingSelection.cityId = citySelect.value;
-            if (nextBtn) {
-                nextBtn.disabled = false;
-            }
-        } else {
-            if (nextBtn) {
-                nextBtn.disabled = true;
-            }
+        });
+    });
+
+    // "다음" 버튼 클릭 시
+    nextButton.addEventListener('click', () => {
+        if (selectedRegionId) {
+            // 여기에 선택된 지역 정보를 다음 페이지로 전달하는 로직 추가
+            // 예: 로컬 스토리지에 저장
+            localStorage.setItem('selectedRegionId', selectedRegionId);
+            
+            // 다음 페이지로 이동
+            alert(`${selectedRegionNameSpan.textContent}을(를) 선택했습니다. 다음 단계로 이동합니다.`);
+            window.location.href = 'booking-step3.html'; // 다음 페이지 URL
         }
-    };
-    
-    // '다음' 버튼 클릭 시 다음 페이지로 이동
-    if (nextBtn) {
-        nextBtn.onclick = () => {
-            window.location.href = `booking-step3.html?date=${bookingSelection.date}&cityId=${bookingSelection.cityId}`;
-        };
-    }
+    });
 });
