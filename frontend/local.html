@@ -103,13 +103,16 @@
             statusDiv.textContent = message;
         }
 
-        // --- 키워드 및 필터 목록 수정 ---
         const restaurantKeywords = ['맛집', '카페'];
         const entertainmentKeywords = ['공원', '시장', '전시회'];
         const franchiseBlocklist = [
             '파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', 
             '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', 
-            '투썸플레이스', '더벤티', '메가커피', '봄봄'
+            '투썸플레이스', '더벤티', '메가MGC커피', '봄봄', '더리터', '청솔로'
+        ];
+        const marketExclusionList = [
+            '공단', '마트', '주차장', '족발', '국밥', '방앗간', '슈퍼', 
+            '상가', '참기름', '정육', '식당', '떡집', '김밥', '칼국수', '청과'
         ];
 
         categorySelector.addEventListener('click', (e) => {
@@ -156,7 +159,8 @@
                         data.forEach(place => {
                             if (!allPlaces.has(place.id)) {
                                 const category = restaurantKeywords.includes(keyword) ? '맛집' : '놀거리';
-                                allPlaces.set(place.id, { ...place, category: category });
+                                // 원래 검색 키워드를 저장하여 필터링에 사용
+                                allPlaces.set(place.id, { ...place, category: category, originalKeyword: keyword });
                             }
                         });
                     } else if (status !== kakao.maps.services.Status.ZERO_RESULT) {
@@ -166,12 +170,7 @@
                     if (searchesCompleted === keywords.length) {
                         loader.classList.add('hidden');
                         const uniquePlaces = Array.from(allPlaces.values());
-
-                        if (uniquePlaces.length > 0) {
-                            displayPlaces(uniquePlaces, map);
-                        } else {
-                            statusDiv.textContent = '주변 1.5km 내에 장소 정보가 없습니다.';
-                        }
+                        displayPlaces(uniquePlaces, map);
                     }
                 }, { 
                     location: userLocation, 
@@ -185,10 +184,17 @@
             let displayedCount = 0;
 
             places.forEach(place => {
-                // --- 프랜차이즈 필터링 로직 ---
-                const isFranchise = franchiseBlocklist.some(franchise => place.place_name.includes(franchise));
-                if (place.category === '맛집' && isFranchise) {
-                    return; // 프랜차이즈인 경우 건너뛰기
+                const placeName = place.place_name.replace(/\s/g, '').toLowerCase();
+
+                // --- 강화된 필터링 로직 ---
+                if (place.category === '맛집') {
+                    const isFranchise = franchiseBlocklist.some(franchise => placeName.includes(franchise.replace(/\s/g, '').toLowerCase()));
+                    if (isFranchise) return;
+                }
+
+                if (place.originalKeyword === '시장') {
+                    const isExcludedMarketItem = marketExclusionList.some(exclude => place.place_name.includes(exclude));
+                    if (isExcludedMarketItem) return;
                 }
 
                 displayedCount++;
@@ -208,12 +214,13 @@
                     </div>
                 `;
                 placeList.appendChild(card);
-
-                const markerImageUrl = isRestaurant 
-                    ? 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png'
-                    : 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_green.png';
                 
-                const imageSize = isRestaurant ? new kakao.maps.Size(24, 35) : new kakao.maps.Size(36, 37);
+                // --- 마커 이미지 수정 ---
+                const markerImageUrl = isRestaurant 
+                    ? 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png' // 맛집: 노란 별
+                    : 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_B.png'; // 놀거리: 파란색 핀
+                
+                const imageSize = new kakao.maps.Size(24, 35);
                 const markerImage = new kakao.maps.MarkerImage(markerImageUrl, imageSize);
 
                 const marker = new kakao.maps.Marker({
