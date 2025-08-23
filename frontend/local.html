@@ -6,7 +6,6 @@
     <title>내 주변 맛집 & 놀거리 찾기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- 카카오 지도 API 라이브러리 로드 (defer 속성 추가) -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services" defer></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -195,17 +194,19 @@
                 `;
                 placeList.appendChild(card);
 
+                // --- 수정된 부분 ---
                 const markerImageUrl = isRestaurant 
                     ? 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png' // 맛집: 노란 별 마커
-                    : 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png'; // 놀거리: 빨간색 마커
+                    : null; // 놀거리: 기본 마커 사용 (빨간색)
                 
-                const imageSize = isRestaurant ? new kakao.maps.Size(24, 35) : new kakao.maps.Size(33, 36);
-                const markerImage = new kakao.maps.MarkerImage(markerImageUrl, imageSize);
+                const imageSize = isRestaurant ? new kakao.maps.Size(24, 35) : null;
+                const markerImage = isRestaurant ? new kakao.maps.MarkerImage(markerImageUrl, imageSize) : null;
+                // --- 여기까지 수정 ---
 
                 const marker = new kakao.maps.Marker({
                     map: map,
                     position: new kakao.maps.LatLng(place.y, place.x),
-                    image: markerImage
+                    image: markerImage // 맛집일 때만 커스텀 이미지 적용, 놀거리는 기본 이미지
                 });
 
                 const infowindow = new kakao.maps.InfoWindow({
