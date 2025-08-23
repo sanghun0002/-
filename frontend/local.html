@@ -6,6 +6,7 @@
     <title>내 주변 맛집 & 놀거리 찾기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 카카오 지도 API 라이브러리 로드 (defer 속성 추가) -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services" defer></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -60,25 +61,18 @@
         const mapContainer = document.getElementById('map-container');
         let map, userPosition;
 
-        // 1. '내 주변 찾기' 버튼 클릭 이벤트
         findBtn.addEventListener('click', () => {
             placeList.innerHTML = '';
             statusDiv.textContent = '';
             mapContainer.classList.add('hidden');
             loader.classList.remove('hidden');
             findBtn.disabled = true;
+            categorySelector.classList.add('hidden');
             
             if ('geolocation' in navigator) {
                 statusDiv.textContent = '위치 정보를 가져오는 중입니다...';
-                
-                const options = {
-                    enableHighAccuracy: false,
-                    timeout: 5000,
-                    maximumAge: 0
-                };
-                
+                const options = { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 };
                 navigator.geolocation.getCurrentPosition(success, error, options);
-
             } else {
                 statusDiv.textContent = '이 브라우저에서는 위치 정보를 사용할 수 없습니다.';
                 loader.classList.add('hidden');
@@ -86,7 +80,6 @@
             }
         });
         
-        // 성공 콜백
         function success(position) {
             userPosition = position;
             loader.classList.add('hidden');
@@ -95,7 +88,6 @@
             categorySelector.classList.remove('hidden');
         }
 
-        // 실패 콜백
         function error(err) {
             loader.classList.add('hidden');
             findBtn.disabled = false;
@@ -110,8 +102,6 @@
             statusDiv.textContent = message;
         }
 
-
-        // 2. 카테고리 버튼 클릭 이벤트
         categorySelector.addEventListener('click', (e) => {
             if (e.target.classList.contains('category-btn')) {
                 const keyword = e.target.dataset.keyword;
@@ -126,35 +116,37 @@
             }
         });
 
-        // 3. 여러 키워드로 장소 검색을 실행하는 함수
+        // --- 검색 로직 수정 ---
         async function searchPlacesByKeywords(keywords) {
             const latitude = userPosition.coords.latitude;
             const longitude = userPosition.coords.longitude;
             const userLocation = new kakao.maps.LatLng(latitude, longitude);
 
             mapContainer.classList.remove('hidden');
-            map = new kakao.maps.Map(document.getElementById('map'), { center: userLocation, level: 4 });
+            map = new kakao.maps.Map(document.getElementById('map'), { center: userLocation, level: 5 });
 
             const ps = new kakao.maps.services.Places();
-            
-            const searchPromises = keywords.map(keyword => {
-                return new Promise((resolve, reject) => {
-                    ps.keywordSearch(keyword, (data, status) => {
-                        if (status === kakao.maps.services.Status.OK) {
-                            const taggedData = data.map(place => ({ ...place, searchKeyword: keyword }));
-                            resolve(taggedData);
-                        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                            resolve([]);
-                        } else {
-                            reject(new Error(`'${keyword}' 검색 실패`));
-                        }
-                    }, { location: userLocation, radius: 1500 });
-                });
-            });
+            let allPlaces = [];
 
+            // Promise.all 대신 for...of 루프를 사용하여 순차적으로 검색
             try {
-                const results = await Promise.all(searchPromises);
-                const allPlaces = results.flat();
+                for (const keyword of keywords) {
+                    const searchPromise = new Promise((resolve, reject) => {
+                        ps.keywordSearch(keyword, (data, status) => {
+                            if (status === kakao.maps.services.Status.OK) {
+                                const taggedData = data.map(place => ({ ...place, searchKeyword: keyword }));
+                                resolve(taggedData);
+                            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+                                resolve([]);
+                            } else {
+                                reject(new Error(`'${keyword}' 검색 실패`));
+                            }
+                        }, { location: userLocation, radius: 1500 });
+                    });
+                    const places = await searchPromise;
+                    allPlaces.push(...places);
+                }
+
                 const uniquePlaces = Array.from(new Map(allPlaces.map(place => [place.id, place])).values());
 
                 loader.classList.add('hidden');
@@ -164,14 +156,14 @@
                 } else {
                     statusDiv.textContent = '주변 1.5km 내에 장소 정보가 없습니다.';
                 }
+
             } catch (error) {
                 loader.classList.add('hidden');
-                statusDiv.textContent = '장소 정보를 가져오는 중 오류가 발생했습니다.';
-                console.error(error);
+                statusDiv.textContent = '검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                console.error("API 검색 중 오류 발생:", error);
             }
         }
 
-        // 4. 검색된 장소를 화면에 표시하는 함수
         function displayPlaces(places) {
             places.forEach(place => {
                 const card = document.createElement('div');
@@ -194,19 +186,17 @@
                 `;
                 placeList.appendChild(card);
 
-                // --- 수정된 부분 ---
                 const markerImageUrl = isRestaurant 
                     ? 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png' // 맛집: 노란 별 마커
-                    : null; // 놀거리: 기본 마커 사용 (빨간색)
+                    : 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_green.png'; // 놀거리: 초록색 마커
                 
-                const imageSize = isRestaurant ? new kakao.maps.Size(24, 35) : null;
-                const markerImage = isRestaurant ? new kakao.maps.MarkerImage(markerImageUrl, imageSize) : null;
-                // --- 여기까지 수정 ---
+                const imageSize = isRestaurant ? new kakao.maps.Size(24, 35) : new kakao.maps.Size(36, 37);
+                const markerImage = new kakao.maps.MarkerImage(markerImageUrl, imageSize);
 
                 const marker = new kakao.maps.Marker({
                     map: map,
                     position: new kakao.maps.LatLng(place.y, place.x),
-                    image: markerImage // 맛집일 때만 커스텀 이미지 적용, 놀거리는 기본 이미지
+                    image: markerImage
                 });
 
                 const infowindow = new kakao.maps.InfoWindow({
