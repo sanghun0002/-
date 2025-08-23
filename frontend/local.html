@@ -6,7 +6,7 @@
     <title>내 주변 맛집 & 놀거리 찾기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?18a27bfefd7b461ecd35f7533947ff19&libraries=services" defer></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services" defer></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .loader {
@@ -163,13 +163,12 @@
         }
 
         function displayPlaces(places) {
-            // 기존 카드와 마커를 지우지 않고, 새로운 결과만 추가합니다.
-            places.forEach(place => {
-                // 이미 표시된 장소인지 확인 (중복 방지)
-                if (document.getElementById(`card-${place.id}`)) return;
+            // 이 함수는 이제 모든 검색이 끝난 후 한 번만 호출됩니다.
+            placeList.innerHTML = ''; // 목록을 새로 그리기 전에 초기화
 
+            places.forEach(place => {
                 const card = document.createElement('div');
-                card.id = `card-${place.id}`; // 카드에 고유 ID 부여
+                card.id = `card-${place.id}`;
                 card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-all duration-300';
                 
                 const isRestaurant = place.searchKeyword === '맛집';
