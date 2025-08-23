@@ -6,7 +6,6 @@
     <title>내 주변 맛집 & 놀거리 찾기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- autoload=false 파라미터를 추가하여 수동으로 로드하도록 변경 -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services&autoload=false"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -103,18 +102,16 @@
             statusDiv.textContent = message;
         }
 
+        // --- 키워드 및 필터 목록 강화 ---
         const restaurantKeywords = ['맛집', '카페'];
         const entertainmentKeywords = ['공원', '시장', '전시회'];
         const franchiseBlocklist = [
             '파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', 
             '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', 
-            '투썸플레이스', '더벤티', '메가MGC커피', '봄봄', '더리터', '청솔로'
+            '투썸플레이스', '더벤티', '메가MGC커피', '봄봄', '더리터', '청솔로',
+            '컴포즈', '도미노피자'
         ];
-        const marketExclusionList = [
-            '공단', '마트', '주차장', '족발', '국밥', '방앗간', '슈퍼', 
-            '상가', '참기름', '정육', '식당', '떡집', '김밥', '칼국수', '청과'
-        ];
-
+        
         categorySelector.addEventListener('click', (e) => {
             if (e.target.classList.contains('category-btn')) {
                 const category = e.target.dataset.category;
@@ -185,20 +182,23 @@
             places.forEach(place => {
                 const placeName = place.place_name.replace(/\s/g, '');
 
-                // --- 강화된 필터링 로직 ---
+                // --- 최종 필터링 로직 ---
                 // 1. 맛집 & 프랜차이즈 필터링
                 if (place.category === '맛집') {
                     const isFranchise = franchiseBlocklist.some(franchise => placeName.includes(franchise.replace(/\s/g, '')));
                     if (isFranchise) return;
                 }
 
-                // 2. 놀거리 & 시장 필터링
-                if (place.originalKeyword === '시장') {
-                    // 카테고리 이름에 '시장'이 포함되지 않으면 제외 (예: 시장순대국밥)
-                    if (!place.category_name.includes('시장')) return;
-                    // 제외 목록에 포함되면 건너뛰기 (예: 시장 주차장)
-                    const isExcludedMarketItem = marketExclusionList.some(exclude => place.place_name.includes(exclude));
-                    if (isExcludedMarketItem) return;
+                // 2. 놀거리 필터링
+                if (place.category === '놀거리') {
+                    // '시장' 검색 시, 카테고리가 '시장'이 아니면 제외 (가장 정확한 방법)
+                    if (place.originalKeyword === '시장' && !place.category_name.includes('> 시장')) {
+                        return;
+                    }
+                    // 놀거리 결과 중 음식점 카테고리 제외
+                    if (place.category_name.includes('음식점')) {
+                        return;
+                    }
                 }
 
                 displayedCount++;
@@ -222,9 +222,9 @@
                 // --- 마커 이미지 수정 ---
                 const markerImageUrl = isRestaurant 
                     ? 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png' // 맛집: 노란 별
-                    : 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png'; // 놀거리: 파란색 핀
+                    : 'http://t1.daumcdn.net/mapjsapi/images/marker_b.png'; // 놀거리: 파란색 핀 (더 안정적인 주소)
                 
-                const imageSize = isRestaurant ? new kakao.maps.Size(24, 35) : new kakao.maps.Size(36, 37);
+                const imageSize = new kakao.maps.Size(isRestaurant ? 24 : 28, 35);
                 const markerImage = new kakao.maps.MarkerImage(markerImageUrl, imageSize);
 
                 const marker = new kakao.maps.Marker({
