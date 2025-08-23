@@ -6,8 +6,7 @@
     <title>내 주변 맛집 & 놀거리 찾기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- 카카오 지도 API 라이브러리 로드 (defer 속성 추가) -->
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services" defer></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?18a27bfefd7b461ecd35f7533947ff19&libraries=services" defer></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .loader {
@@ -60,6 +59,7 @@
         const placeList = document.getElementById('place-list');
         const mapContainer = document.getElementById('map-container');
         let map, userPosition;
+        let allPlaces = new Map(); // 검색 결과를 누적할 Map
 
         findBtn.addEventListener('click', () => {
             placeList.innerHTML = '';
@@ -108,65 +108,68 @@
                 const keywords = keyword === '모두' ? ['맛집', '놀거리'] : [keyword];
                 
                 placeList.innerHTML = '';
+                allPlaces.clear(); // 이전 검색 결과 초기화
                 statusDiv.textContent = '주변 장소를 검색하고 있습니다...';
                 loader.classList.remove('hidden');
                 categorySelector.classList.add('hidden');
 
-                searchPlacesByKeywords(keywords);
+                const latitude = userPosition.coords.latitude;
+                const longitude = userPosition.coords.longitude;
+                const userLocation = new kakao.maps.LatLng(latitude, longitude);
+
+                mapContainer.classList.remove('hidden');
+                map = new kakao.maps.Map(document.getElementById('map'), { center: userLocation, level: 5 });
+
+                searchAndDisplay(keywords);
             }
         });
 
-        // --- 검색 로직 수정 ---
-        async function searchPlacesByKeywords(keywords) {
-            const latitude = userPosition.coords.latitude;
-            const longitude = userPosition.coords.longitude;
-            const userLocation = new kakao.maps.LatLng(latitude, longitude);
-
-            mapContainer.classList.remove('hidden');
-            map = new kakao.maps.Map(document.getElementById('map'), { center: userLocation, level: 5 });
-
+        // --- 검색 로직 수정: 안정적인 콜백 방식으로 변경 ---
+        function searchAndDisplay(keywords) {
             const ps = new kakao.maps.services.Places();
-            let allPlaces = [];
+            let searchesCompleted = 0;
 
-            // Promise.all 대신 for...of 루프를 사용하여 순차적으로 검색
-            try {
-                for (const keyword of keywords) {
-                    const searchPromise = new Promise((resolve, reject) => {
-                        ps.keywordSearch(keyword, (data, status) => {
-                            if (status === kakao.maps.services.Status.OK) {
-                                const taggedData = data.map(place => ({ ...place, searchKeyword: keyword }));
-                                resolve(taggedData);
-                            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                                resolve([]);
-                            } else {
-                                reject(new Error(`'${keyword}' 검색 실패`));
+            keywords.forEach(keyword => {
+                ps.keywordSearch(keyword, (data, status) => {
+                    searchesCompleted++;
+
+                    if (status === kakao.maps.services.Status.OK) {
+                        data.forEach(place => {
+                            if (!allPlaces.has(place.id)) {
+                                allPlaces.set(place.id, { ...place, searchKeyword: keyword });
                             }
-                        }, { location: userLocation, radius: 1500 });
-                    });
-                    const places = await searchPromise;
-                    allPlaces.push(...places);
-                }
+                        });
+                    } else if (status !== kakao.maps.services.Status.ZERO_RESULT) {
+                        console.error(`'${keyword}' 검색 실패:`, status);
+                    }
 
-                const uniquePlaces = Array.from(new Map(allPlaces.map(place => [place.id, place])).values());
+                    // 모든 검색 작업이 완료되었는지 확인
+                    if (searchesCompleted === keywords.length) {
+                        loader.classList.add('hidden');
+                        const uniquePlaces = Array.from(allPlaces.values());
 
-                loader.classList.add('hidden');
-                if (uniquePlaces.length > 0) {
-                    statusDiv.textContent = `총 ${uniquePlaces.length}개의 장소를 찾았습니다!`;
-                    displayPlaces(uniquePlaces);
-                } else {
-                    statusDiv.textContent = '주변 1.5km 내에 장소 정보가 없습니다.';
-                }
-
-            } catch (error) {
-                loader.classList.add('hidden');
-                statusDiv.textContent = '검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
-                console.error("API 검색 중 오류 발생:", error);
-            }
+                        if (uniquePlaces.length > 0) {
+                            statusDiv.textContent = `총 ${uniquePlaces.length}개의 장소를 찾았습니다!`;
+                            displayPlaces(uniquePlaces);
+                        } else {
+                            statusDiv.textContent = '주변 1.5km 내에 장소 정보가 없습니다.';
+                        }
+                    }
+                }, { 
+                    location: new kakao.maps.LatLng(userPosition.coords.latitude, userPosition.coords.longitude), 
+                    radius: 1500 
+                });
+            });
         }
 
         function displayPlaces(places) {
+            // 기존 카드와 마커를 지우지 않고, 새로운 결과만 추가합니다.
             places.forEach(place => {
+                // 이미 표시된 장소인지 확인 (중복 방지)
+                if (document.getElementById(`card-${place.id}`)) return;
+
                 const card = document.createElement('div');
+                card.id = `card-${place.id}`; // 카드에 고유 ID 부여
                 card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-all duration-300';
                 
                 const isRestaurant = place.searchKeyword === '맛집';
