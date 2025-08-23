@@ -36,9 +36,9 @@
 
             <!-- 카테고리 선택 버튼 -->
             <div id="category-selector" class="flex justify-center gap-4 mb-8 hidden">
-                <button data-keyword="맛집" class="category-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition">🍜 맛집</button>
-                <button data-keyword="놀거리" class="category-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition">🎡 놀거리</button>
-                <button data-keyword="모두" class="category-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-lg transition">✨ 모두</button>
+                <button data-category="맛집" class="category-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition">🍜 맛집</button>
+                <button data-category="놀거리" class="category-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition">🎡 놀거리</button>
+                <button data-category="모두" class="category-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-lg transition">✨ 모두</button>
             </div>
 
             <div id="status" class="text-center text-gray-600 my-6"></div>
@@ -59,8 +59,8 @@
         const loader = document.getElementById('loader');
         const placeList = document.getElementById('place-list');
         const mapContainer = document.getElementById('map-container');
-        let userPosition; // 사용자의 위치 정보를 저장할 변수
-        let allPlaces = new Map(); // 검색 결과를 누적할 Map
+        let userPosition;
+        let allPlaces = new Map();
 
         findBtn.addEventListener('click', () => {
             placeList.innerHTML = '';
@@ -82,7 +82,7 @@
         });
         
         function success(position) {
-            userPosition = position; // 위치 정보 저장
+            userPosition = position;
             loader.classList.add('hidden');
             findBtn.disabled = false;
             statusDiv.textContent = '검색할 카테고리를 선택하세요.';
@@ -103,10 +103,23 @@
             statusDiv.textContent = message;
         }
 
+        // --- 키워드 목록 수정 ---
+        const restaurantKeywords = ['맛집', '카페'];
+        const entertainmentKeywords = ['공원', '시장', '전시회'];
+        const franchiseBlocklist = ['파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', '투썸플레이스'];
+
         categorySelector.addEventListener('click', (e) => {
             if (e.target.classList.contains('category-btn')) {
-                const keyword = e.target.dataset.keyword;
-                const keywords = keyword === '모두' ? ['맛집', '놀거리'] : [keyword];
+                const category = e.target.dataset.category;
+                let keywordsToSearch = [];
+
+                if (category === '맛집') {
+                    keywordsToSearch = restaurantKeywords;
+                } else if (category === '놀거리') {
+                    keywordsToSearch = entertainmentKeywords;
+                } else if (category === '모두') {
+                    keywordsToSearch = [...restaurantKeywords, ...entertainmentKeywords];
+                }
                 
                 placeList.innerHTML = '';
                 allPlaces.clear();
@@ -115,7 +128,7 @@
                 categorySelector.classList.add('hidden');
 
                 kakao.maps.load(() => {
-                    searchAndDisplay(keywords);
+                    searchAndDisplay(keywordsToSearch);
                 });
             }
         });
@@ -138,7 +151,8 @@
                     if (status === kakao.maps.services.Status.OK) {
                         data.forEach(place => {
                             if (!allPlaces.has(place.id)) {
-                                allPlaces.set(place.id, { ...place, searchKeyword: keyword });
+                                const category = restaurantKeywords.includes(keyword) ? '맛집' : '놀거리';
+                                allPlaces.set(place.id, { ...place, category: category });
                             }
                         });
                     } else if (status !== kakao.maps.services.Status.ZERO_RESULT) {
@@ -165,20 +179,27 @@
 
         function displayPlaces(places, map) {
             placeList.innerHTML = '';
+            let displayedCount = 0;
 
             places.forEach(place => {
+                // --- 프랜차이즈 필터링 로직 추가 ---
+                const isFranchise = franchiseBlocklist.some(franchise => place.place_name.includes(franchise));
+                if (place.category === '맛집' && isFranchise) {
+                    return; // 프랜차이즈인 경우 건너뛰기
+                }
+
+                displayedCount++;
                 const card = document.createElement('div');
                 card.id = `card-${place.id}`;
                 card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-all duration-300';
                 
-                const isRestaurant = place.searchKeyword === '맛집';
+                const isRestaurant = place.category === '맛집';
                 const tagColor = isRestaurant ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
 
-                // --- 수정된 부분: 이미지 태그 제거 ---
                 card.innerHTML = `
                     <div class="p-5">
                         <h3 class="text-xl font-bold mb-2">${place.place_name}</h3>
-                        <p class="text-sm ${tagColor} rounded-full px-3 py-1 inline-block mb-3">${place.searchKeyword}</p>
+                        <p class="text-sm ${tagColor} rounded-full px-3 py-1 inline-block mb-3">${place.category}</p>
                         <p class="text-gray-600">${place.road_address_name || place.address_name}</p>
                         <a href="https://map.kakao.com/link/to/${place.id}" target="_blank" class="text-indigo-500 hover:underline mt-3 inline-block">길찾기</a>
                     </div>
@@ -204,6 +225,13 @@
                 kakao.maps.event.addListener(marker, 'mouseover', () => infowindow.open(map, marker));
                 kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
             });
+
+            // 필터링 후 결과가 없는 경우 처리
+            if (displayedCount === 0) {
+                statusDiv.textContent = '주변 1.5km 내에 추천할 장소가 없습니다.';
+            } else {
+                 statusDiv.textContent = `총 ${displayedCount}개의 장소를 찾았습니다!`;
+            }
         }
     </script>
 
