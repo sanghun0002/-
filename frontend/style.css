@@ -1,13 +1,12 @@
 /* ------------------------------------------- */
-/* --               MAIN 화면                -- */
+/* -----------         MAIN        ----------- */
 /* ------------------------------------------- */
 
 /* 기본 설정: 여백 제거, 박스 크기 계산 방식 변경, 기본 폰트 설정 */
 * {
     box-sizing: border-box;
     margin: 0;
-    padding: 0;
-}
+    padding: 0; }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -16,51 +15,41 @@ body {
     line-height: 1.6;
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
+    align-items: center; }
 
-/* 페이지 상단 제목 - (쉬어가 -계곡) */
-.top-header {
-    width: 100%;
-    max-width: 1024px;
-    display: flex;
-    justify-content: left; /* 로고를 왼쪽으로 정렬 */
+.main-header {
+    width: 100%; max-width: 1024px; display: flex;
+    justify-content: center; /* 로고 중앙 정렬 */
     align-items: center;
-    padding: 20px;
+    padding: 20px; /* 세로 중앙 위치 */
     background-color: white;
-}
-
-.top-header .logo {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+.main-header .logo {
     font-weight: bold;
-    color: #007bff; /* 로고 색상 */
-    font-size: 1.5rem; /* 로고 크기를 약간 키움 */
-}
+    color: #007bff;
+    font-size: 2rem; }
 
-/* === 추가된 바로가기 메뉴 스타일(아이콘) === */
 .shortcuts {
-    width: 100%;
-    max-width: 1024px;
-    display: flex;
+    width: 100%; max-width: 1024px; display: flex;
     justify-content: space-around;
-    align-items: center; /* 세로 방향 가운데 정렬 추가 */
+    align-items: center;
     background-color: white;
     padding: 20px 0;
-    margin-top: 20px;
+    margin-top: 10px;
     border-radius: 12px;
     border: 1px solid #e9ecef;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
 .shortcut-item {
     display: flex;
-    flex-direction: column; /* 아이콘과 텍스트를 세로로 유지 */
+    flex-direction: column; /* 아이콘과 텍스트를 세로로 배치 */
     align-items: center;
     text-decoration: none;
     color: #333;
-    font-weight: 500;
-}
+    font-weight: 600; }
 .shortcut-item .icon {
-    font-size: 2.5rem;
-    margin-bottom: 8px;
+    font-size: 3rem;
+    margin-bottom: 6px;
 }
 
 /* ---   하단 푸터 (모든 페이지 공통)         --- */
