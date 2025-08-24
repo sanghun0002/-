@@ -44,6 +44,7 @@
 </div>
 
 <script>
+// --- 수정된 부분: 경상북도 및 삼계리 계곡 추가 ---
 const valleyData = {
     "서울특별시": [
         { name: "우이동 계곡", address: "서울 강북구 우이동", lat: 37.6631, lng: 127.0123 },
@@ -57,8 +58,12 @@ const valleyData = {
     "강원도": [
         { name: "무릉 계곡", address: "강원 동해시 삼화동", lat: 37.4583, lng: 129.0221 },
         { name: "흥정 계곡", address: "강원 평창군 봉평면", lat: 37.6251, lng: 128.4012 }
+    ],
+    "경상북도": [
+        { name: "삼계리 계곡", address: "경북 포항시 북구 죽장면", lat: 36.1025, lng: 129.2236 }
     ]
 };
+// --- 여기까지 수정 ---
 
 const mapContainer = document.getElementById('map');
 const selectedRegionNameSpan = document.getElementById('selected-region-name');
@@ -169,16 +174,11 @@ function updateValleyList(regionName) {
             const markerPosition = new kakao.maps.LatLng(valley.lat, valley.lng);
             bounds.extend(markerPosition);
 
-            // --- 수정된 부분: 클릭 시 다음 페이지로 이동 ---
             li.onclick = () => {
-                // 선택된 지역과 계곡 정보를 localStorage에 저장
                 localStorage.setItem('selectedRegion', regionName);
                 localStorage.setItem('selectedValley', valley.name);
-                
-                // 다음 예약 단계 페이지로 이동
                 window.location.href = 'booking-step3.html';
             };
-            // --- 여기까지 수정 ---
 
             valleyList.appendChild(li);
 
