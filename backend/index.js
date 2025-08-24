@@ -4,12 +4,29 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Netlify 주소에 대한 CORS 요청 허용 설정
+// ===== ▼▼▼ CORS 설정 수정 ▼▼▼ =====
+// 허용할 출처 목록
+const allowedOrigins = [
+    'https://restinginthevalley.netlify.app',
+    'http://localhost:3000', // 로컬 개발 환경 포트 (필요시 변경)
+    'http://127.0.0.1:5500'  // Live Server 같은 확장 프로그램 사용 시
+];
+
 const corsOptions = {
-    origin: 'https://restinginthevalley.netlify.app',
+    origin: function (origin, callback) {
+        // origin이 undefined인 경우 (예: Postman 등 서버 직접 요청) 허용
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     optionsSuccessStatus: 200
 };
-app.use(cors(corsOptions));
+
+app.use(cors(corsOptions)); // 수정된 CORS 옵션 적용
+// ===== ▲▲▲ CORS 설정 수정 완료 ▲▲▲ =====
+
 app.use(express.json());
 
 // 프론트엔드 파일 경로 설정
@@ -127,7 +144,7 @@ app.delete('/api/notices/:id', (req, res) => {
 
 
 // ===============================================================
-// ===== 후기(Review) API  -  여기에 새로 추가됨! =====
+// ===== 후기(Review) API =====
 // ===============================================================
 
 // [API 1] 후기 목록 가져오기
