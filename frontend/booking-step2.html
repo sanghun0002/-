@@ -70,9 +70,7 @@ let markers = [];
 kakao.maps.load(() => {
     const mapOption = {
         center: new kakao.maps.LatLng(36.5, 127.8),
-        level: 12,
-        // --- 수정된 부분: 지도 타입을 행정구역 지도로 변경 ---
-        mapTypeId: kakao.maps.MapTypeId.USE_DISTRICT
+        level: 12
     };
     map = new kakao.maps.Map(mapContainer, mapOption);
 
@@ -82,27 +80,37 @@ kakao.maps.load(() => {
     fetch('./skorea-provinces.json')
         .then(response => response.json())
         .then(geojson => {
+            // --- 수정된 부분: 안정적인 GeoJSON 파싱 로직으로 변경 ---
             const areas = geojson.features.map(feature => {
-                let coords = feature.geometry.coordinates;
+                const coords = feature.geometry.coordinates;
                 let paths = [];
 
                 if (feature.geometry.type === "Polygon") {
-                    paths = [coords[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0]))];
+                    paths = getPathFromCoords(coords);
                 } else if (feature.geometry.type === "MultiPolygon") {
-                    paths = coords.map(polygon =>
-                        polygon[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0]))
-                    );
+                    coords.forEach(polygonCoords => {
+                        paths.push(...getPathFromCoords(polygonCoords));
+                    });
                 }
-
-                return { name: feature.properties.name, paths };
+                return { name: feature.properties.name, path: paths };
             });
-
             displayArea(areas);
         })
         .catch(error => {
             console.error('행정구역 데이터를 불러오는 데 실패했습니다:', error);
+            mapContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-500 font-bold">지도 데이터를 불러오는 데 실패했습니다.</div>';
         });
 });
+
+// GeoJSON 좌표를 카카오맵 경로 배열로 변환하는 헬퍼 함수
+function getPathFromCoords(coords) {
+    const paths = [];
+    coords.forEach(ring => {
+        const path = ring.map(coord => new kakao.maps.LatLng(coord[1], coord[0]));
+        paths.push(path);
+    });
+    return paths;
+}
 
 function displayArea(areaData) {
     const colors = ['#F9E2AF', '#A8D8EA', '#F1A7A7', '#B5EAD7', '#C7CEEA',
@@ -116,7 +124,7 @@ function displayArea(areaData) {
 
         const polygon = new kakao.maps.Polygon({
             map: map,
-            path: area.paths,
+            path: area.path, // 'paths'가 아닌 'path'로 수정
             strokeWeight: 2,
             strokeColor: '#004c80',
             strokeOpacity: 0.8,
