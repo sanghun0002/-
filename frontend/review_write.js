@@ -14,6 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
             previewContainer.style.display = 'none';
         }
 
+        // 파일 개수 5개로 제한
+        if (files.length > 5) {
+            alert('사진은 최대 5장까지 첨부할 수 있습니다.');
+            imageInput.value = ''; // 선택된 파일 초기화
+            previewContainer.innerHTML = '';
+            previewContainer.style.display = 'none';
+            return;
+        }
+
         for (const file of files) {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -30,23 +39,26 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // FormData 객체를 사용하여 텍스트와 파일을 함께 보냄
+        const ratingInput = document.querySelector('input[name="rating"]:checked');
+        if (!ratingInput) {
+            alert('평점을 선택해주세요.');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('title', document.getElementById('title').value);
         formData.append('author', document.getElementById('author').value);
-        formData.append('rating', document.querySelector('input[name="rating"]:checked').value);
+        formData.append('rating', ratingInput.value);
         formData.append('content', document.getElementById('content').value);
 
-        // 선택된 이미지 파일들을 FormData에 추가
         for (const file of imageInput.files) {
             formData.append('images', file);
         }
 
         try {
-            const response = await fetch('https://o70albxd7n.onrender.com/api/reviews', {
+            // ▼▼▼ API 주소를 로컬 서버로 변경! ▼▼▼
+            const response = await fetch('http://localhost:3000/api/reviews', {
                 method: 'POST',
-                // 주의: FormData를 보낼 때는 'Content-Type' 헤더를 설정하지 않습니다.
-                // 브라우저가 알아서 올바른 형식(multipart/form-data)으로 설정해줍니다.
                 body: formData
             });
 
