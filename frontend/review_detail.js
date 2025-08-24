@@ -2,57 +2,115 @@ document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     const reviewId = params.get('id');
 
+    // DOM 요소 가져오기
+    const viewMode = document.getElementById('view-mode');
+    const editMode = document.getElementById('edit-mode');
+    const editForm = document.getElementById('edit-form');
+
     if (!reviewId) {
         alert('잘못된 접근입니다.');
         window.location.href = 'review.html';
         return;
     }
+    
+    let currentReview = null; // 현재 후기 데이터를 저장할 변수
 
     // 별점을 ⭐ 문자로 표시하는 함수
     function renderStars(rating) {
         return '⭐'.repeat(rating);
     }
-
-    try {
-        const response = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`);
-        if (!response.ok) {
-            throw new Error('후기를 불러오는 데 실패했습니다.');
-        }
-        const review = await response.json();
-
+    
+    // 후기 데이터를 화면에 표시하는 함수
+    function displayReview(review) {
         document.getElementById('detail-title').textContent = review.title;
         document.getElementById('detail-author').textContent = review.author;
         document.getElementById('detail-date').textContent = review.date;
         document.getElementById('detail-views').textContent = review.views;
         document.getElementById('detail-rating').textContent = `평점: ${renderStars(review.rating)}`;
         document.getElementById('detail-content').innerHTML = `<p>${review.content.replace(/\n/g, '<br>')}</p>`;
+    }
 
-        // 수정 버튼
-        const editBtn = document.getElementById('edit-btn');
-        editBtn.href = `review_edit.html?id=${reviewId}`;
-
-        // 삭제 버튼
-        const deleteBtn = document.getElementById('delete-btn');
-        deleteBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (confirm('정말로 이 후기를 삭제하시겠습니까?')) {
-                try {
-                    const deleteResponse = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`, {
-                        method: 'DELETE',
-                    });
-                    if (!deleteResponse.ok) throw new Error('삭제에 실패했습니다.');
-                    
-                    alert('후기가 삭제되었습니다.');
-                    window.location.href = 'review.html';
-                } catch (err) {
-                    alert(err.message);
-                }
-            }
-        });
-
+    // 서버에서 후기 데이터 불러오기
+    try {
+        const response = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`);
+        if (!response.ok) throw new Error('후기를 불러오는 데 실패했습니다.');
+        
+        currentReview = await response.json();
+        displayReview(currentReview);
     } catch (error) {
         console.error('Error:', error);
         alert(error.message);
         window.location.href = 'review.html';
     }
+
+    // "수정" 버튼 클릭 이벤트
+    const editBtn = document.getElementById('edit-btn');
+    editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // 기존 정보 숨기고 수정 폼 보여주기
+        viewMode.style.display = 'none';
+        editMode.style.display = 'block';
+
+        // 수정 폼에 기존 데이터 채우기
+        document.getElementById('edit-title').value = currentReview.title;
+        document.getElementById('edit-author').value = currentReview.author;
+        document.getElementById('edit-content').value = currentReview.content;
+        document.querySelector(`#edit-mode input[name="rating"][value="${currentReview.rating}"]`).checked = true;
+    });
+    
+    // "취소" 버튼 클릭 이벤트
+    const cancelBtn = document.getElementById('cancel-btn');
+    cancelBtn.addEventListener('click', () => {
+        // 수정 폼 숨기고 다시 기존 정보 보여주기
+        editMode.style.display = 'none';
+        viewMode.style.display = 'block';
+    });
+    
+    // 수정 폼 "저장" 이벤트
+    editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const updatedData = {
+            title: document.getElementById('edit-title').value,
+            author: document.getElementById('edit-author').value,
+            content: document.getElementById('edit-content').value,
+            rating: document.querySelector('#edit-mode input[name="rating"]:checked').value
+        };
+
+        try {
+            const response = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            });
+            if (!response.ok) throw new Error('수정에 실패했습니다.');
+
+            const updatedReview = await response.json();
+            currentReview = updatedReview; // 최신 데이터로 업데이트
+
+            alert('후기가 수정되었습니다.');
+            displayReview(currentReview); // 수정된 내용으로 화면 갱신
+            cancelBtn.click(); // 폼 숨기기
+
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // "삭제" 버튼 클릭 이벤트 (기존과 동일)
+    const deleteBtn = document.getElementById('delete-btn');
+    deleteBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (confirm('정말로 이 후기를 삭제하시겠습니까?')) {
+            try {
+                const deleteResponse = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`, { method: 'DELETE' });
+                if (!deleteResponse.ok) throw new Error('삭제에 실패했습니다.');
+                
+                alert('후기가 삭제되었습니다.');
+                window.location.href = 'review.html';
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+    });
 });
