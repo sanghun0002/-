@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function loadReviews(page = 1) {
         try {
-            const response = await fetch(`https://o70albxd7n.onrender.com/api/reviews?page=${page}`);
+            // ▼▼▼ API 주소 수정 ▼▼▼
+            const response = await fetch(`http://localhost:3000/api/reviews?page=${page}`);
             if (!response.ok) throw new Error('서버에서 데이터를 가져오지 못했습니다.');
             const data = await response.json();
             currentData = data;
@@ -49,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 별점을 ⭐ 문자로 표시하는 함수
     function renderStars(rating) {
         return '⭐'.repeat(rating);
     }
