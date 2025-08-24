@@ -6,12 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
         date: null
     };
 
-    // 캘린더 초기화 및 설정
     flatpickr("#calendar-area", {
         inline: true, // 캘린더를 항상 보이도록 설정
-        dateFormat: "Y-m-d", // 날짜 형식 설정
-        minDate: "today", // 오늘 이전 날짜는 선택할 수 없게 설정
-        locale: 'ko',
+        dateFormat: "Y-m-d", minDate: "today", locale: 'ko',
         // 캘린더가 렌더링될 때마다 실행되는 콜백 함수
         onReady: (selectedDates, dateStr, instance) => {
             // 초기 '다음' 버튼 비활성화
@@ -22,11 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dateStr) {
                 hiddenDateInput.value = dateStr;
                 bookingSelection.date = dateStr;
-                nextBtn.disabled = false; // '다음' 버튼 활성화
-            } else {
+                nextBtn.disabled = false; }// '다음' 버튼 활성화
+            else {
                 bookingSelection.date = null;
-                nextBtn.disabled = true; // 날짜 선택이 취소되면 비활성화
-            }
+                nextBtn.disabled = true; }// 날짜 선택이 취소되면 비활성화
         }
     });
 
