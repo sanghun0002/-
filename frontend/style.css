@@ -52,6 +52,27 @@ body {
     margin-bottom: 6px;
 }
 
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 80px 20px;
+    background-color: #f8f0e3; }
+.hero-section h1 {
+    font-size: 2.5em; color: #333; margin-bottom: 20px; line-height: 1.4; }
+.hero-section p {
+    font-size: 1.1em; color: #666; line-height: 1.6; margin-bottom: 30px; }
+.hero-section .main-button {
+    display: inline-block; padding: 12px 30px;
+    background-color: #5cb85c;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease; }
+.hero-section .main-button:hover {
+  background-color: #4cae4c; }
+
 /* ---   하단 푸터 (모든 페이지 공통)         --- */
 .main-footer {
     width: 100%;
