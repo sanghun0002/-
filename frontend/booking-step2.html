@@ -91,7 +91,7 @@
                 })
                 .catch(error => {
                     console.error('행정구역 데이터를 불러오는 데 실패했습니다:', error);
-                    mapContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-500 font-bold">지도 데이터를 불러오는 데 실패했습니다. 잠시 후 새로고침 해주세요.</div>';
+                    // 실패하더라도 기본 지도는 보이도록 유지하고, 에러 메시지는 콘솔에만 표시
                 });
         });
 
