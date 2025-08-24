@@ -4,13 +4,13 @@ document.getElementById('notice-form').addEventListener('submit', async function
     const title = document.getElementById('title').value;
     const department = document.getElementById('department').value;
     const isSticky = document.getElementById('is-sticky').checked;
-    const content = document.getElementById('content').value;
+    const content = document.getElementById('content').value; // '내용' 값을 가져옵니다.
 
     try {
-        // ▼▼▼ API 주소 수정 ▼▼▼
-        const response = await fetch('http://localhost:3000/api/notices', {
+        const response = await fetch('https://o70albxd7n.onrender.com/api/notices', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            // body에 content를 포함하여 전송합니다.
             body: JSON.stringify({ title, department, isSticky, content })
         });
 
