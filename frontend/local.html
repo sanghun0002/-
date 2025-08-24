@@ -22,7 +22,6 @@
 <body class="bg-gray-50 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8 max-w-4xl">
-        <!-- --- 수정된 부분: 헤더에 홈 버튼 추가 --- -->
         <header class="text-center mb-8 relative">
             <h1 class="text-4xl font-bold text-gray-900 mb-2">🗺️ 내 주변 뭐하지?</h1>
             <p class="text-lg text-gray-600">버튼을 눌러 주변의 장소 정보를 확인하세요.</p>
@@ -30,16 +29,13 @@
                 🏠 홈으로
             </a>
         </header>
-        <!-- --- 여기까지 수정 --- -->
 
         <main>
-            <!-- --- 수정된 부분: '내 주변 찾기' 버튼만 남김 --- -->
             <div class="text-center mb-8">
                 <button id="findBtn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
                     📍 내 주변 찾기
                 </button>
             </div>
-            <!-- --- 여기까지 수정 --- -->
 
             <!-- 카테고리 선택 버튼 -->
             <div id="category-selector" class="flex flex-wrap justify-center gap-4 mb-8 hidden">
@@ -114,11 +110,12 @@
         const restaurantKeywords = ['맛집', '카페'];
         const entertainmentKeywords = ['공원', '시장', '전시회'];
         const lodgingKeywords = ['숙소', '펜션', '호텔', '모텔', '게스트하우스'];
+        // --- 수정된 부분: '빽다방' 추가 ---
         const franchiseBlocklist = [
             '파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', 
             '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', 
             '투썸플레이스', '더벤티', '메가MGC커피', '봄봄', '더리터', '청솔로',
-            '컴포즈', '도미노피자'
+            '컴포즈', '도미노피자', '빽다방'
         ];
         const generalExclusionList = ['주차장'];
 
@@ -221,12 +218,17 @@
                 else if (place.category === '놀거리') tagColor = 'bg-green-100 text-green-800';
                 else if (place.category === '숙박') tagColor = 'bg-purple-100 text-purple-800';
 
+                const startLat = userPosition.coords.latitude;
+                const startLng = userPosition.coords.longitude;
+                const destinationName = encodeURIComponent(place.place_name);
+                const directionsUrl = `https://map.kakao.com/link/route/${destinationName},${place.y},${place.x}/내 위치,${startLat},${startLng}`;
+
                 card.innerHTML = `
                     <div class="p-5">
                         <h3 class="text-xl font-bold mb-2">${place.place_name}</h3>
                         <p class="text-sm ${tagColor} rounded-full px-3 py-1 inline-block mb-3">${place.category}</p>
                         <p class="text-gray-600">${place.road_address_name || place.address_name}</p>
-                        <a href="https://map.kakao.com/link/to/${place.id}" target="_blank" class="text-indigo-500 hover:underline mt-3 inline-block">길찾기</a>
+                        <a href="${directionsUrl}" target="_blank" class="text-indigo-500 hover:underline mt-3 inline-block">길찾기</a>
                     </div>
                 `;
                 placeList.appendChild(card);
