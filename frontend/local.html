@@ -110,7 +110,6 @@
         const restaurantKeywords = ['맛집', '카페'];
         const entertainmentKeywords = ['공원', '시장', '전시회'];
         const lodgingKeywords = ['숙소', '펜션', '호텔', '모텔', '게스트하우스'];
-        // --- 수정된 부분: '빽다방' 추가 ---
         const franchiseBlocklist = [
             '파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', 
             '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', 
@@ -138,7 +137,8 @@
                 allPlaces.clear();
                 statusDiv.textContent = '주변 장소를 검색하고 있습니다...';
                 loader.classList.remove('hidden');
-                categorySelector.classList.add('hidden');
+                // --- 수정된 부분: 카테고리 버튼을 숨기지 않음 ---
+                // categorySelector.classList.add('hidden');
 
                 kakao.maps.load(() => {
                     searchAndDisplay(keywordsToSearch);
