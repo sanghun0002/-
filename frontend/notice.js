@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function loadNotices(page = 1) {
         try {
-            const response = await fetch(`https://o70albxd7n.onrender.com/api/notices?page=${page}`);
+            // ▼▼▼ API 주소 수정 ▼▼▼
+            const response = await fetch(`http://localhost:3000/api/notices?page=${page}`);
             if (!response.ok) throw new Error('서버에서 데이터를 가져오지 못했습니다.');
             const data = await response.json();
             currentData = data;
@@ -62,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createRow(notice, number) {
         const tr = document.createElement('tr');
-        // ▼▼▼ 이 부분의 링크가 수정되었습니다! ▼▼▼
         tr.innerHTML = `
             <td>${number}</td>
             <td class="class-cell"><a href="detail.html?id=${notice.id}">${notice.title}</a></td>
