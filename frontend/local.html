@@ -22,20 +22,24 @@
 <body class="bg-gray-50 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8 max-w-4xl">
-        <header class="text-center mb-8">
+        <!-- --- 수정된 부분: 헤더에 홈 버튼 추가 --- -->
+        <header class="text-center mb-8 relative">
             <h1 class="text-4xl font-bold text-gray-900 mb-2">🗺️ 내 주변 뭐하지?</h1>
             <p class="text-lg text-gray-600">버튼을 눌러 주변의 장소 정보를 확인하세요.</p>
+            <a href="index.html" class="absolute top-0 right-0 bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition">
+                🏠 홈으로
+            </a>
         </header>
+        <!-- --- 여기까지 수정 --- -->
 
         <main>
-            <div class="text-center mb-8 flex justify-center items-center gap-4">
+            <!-- --- 수정된 부분: '내 주변 찾기' 버튼만 남김 --- -->
+            <div class="text-center mb-8">
                 <button id="findBtn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
                     📍 내 주변 찾기
                 </button>
-                 <a href="index.html" class="bg-gray-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-300">
-                    🏠 홈으로
-                </a>
             </div>
+            <!-- --- 여기까지 수정 --- -->
 
             <!-- 카테고리 선택 버튼 -->
             <div id="category-selector" class="flex flex-wrap justify-center gap-4 mb-8 hidden">
@@ -107,7 +111,6 @@
             statusDiv.textContent = message;
         }
 
-        // --- 키워드 목록 수정 ---
         const restaurantKeywords = ['맛집', '카페'];
         const entertainmentKeywords = ['공원', '시장', '전시회'];
         const lodgingKeywords = ['숙소', '펜션', '호텔', '모텔', '게스트하우스'];
