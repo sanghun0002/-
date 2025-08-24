@@ -6,16 +6,16 @@
     <title>카카오맵으로 지역 선택하기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 카카오 지도 API 로드 -->
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services,clusterer,drawing"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services,drawing"></script>
     <style>
-        #map { width: 100%; height: 500px; border-radius: 0.5rem; }
+        #map { width: 100%; height: 600px; border-radius: 0.5rem; }
         .valley-list-item { cursor: pointer; }
         .valley-list-item:hover { background-color: #f0f0f0; }
     </style>
 </head>
 <body class="bg-gray-100 p-8">
 
-    <div class="container mx-auto max-w-5xl bg-white p-6 rounded-lg shadow-lg">
+    <div class="container mx-auto max-w-6xl bg-white p-6 rounded-lg shadow-lg">
         <header class="text-center mb-6">
             <h1 class="text-3xl font-bold">계곡 예약하기</h1>
             <p class="text-gray-600">지도에서 원하시는 지역을 선택하세요.</p>
@@ -30,7 +30,7 @@
                 <h2 class="text-xl font-semibold mb-2">선택 지역</h2>
                 <p class="mb-4"><span id="selected-region-name" class="font-bold text-blue-600">지역을 선택해주세요.</span></p>
                 <h3 class="text-lg font-semibold border-t pt-4">계곡 목록</h3>
-                <ul id="valley-list" class="mt-2 space-y-2">
+                <ul id="valley-list" class="mt-2 space-y-2 h-96 overflow-y-auto">
                     <!-- 계곡 목록이 여기에 동적으로 추가됩니다 -->
                 </ul>
             </div>
@@ -38,7 +38,6 @@
     </div>
 
     <script>
-        // --- 1. 예시 데이터 ---
         const valleyData = {
             "서울특별시": [
                 { name: "우이동 계곡", address: "서울 강북구 우이동", lat: 37.6631, lng: 127.0123 },
@@ -63,53 +62,15 @@
         let markers = [];
 
         kakao.maps.load(() => {
-            // --- 지도 스타일 수정 ---
             const mapOption = {
-                center: new kakao.maps.LatLng(36.3, 127.8), // 대한민국 중심
-                level: 12,
-                // 지도 컨트롤 및 드래그/줌 기능 비활성화
-                mapTypeControl: false,
-                zoomControl: false,
-                draggable: false,
-                scrollwheel: false
+                center: new kakao.maps.LatLng(36.5, 127.8),
+                level: 12
             };
             map = new kakao.maps.Map(mapContainer, mapOption);
             
-            // 커스텀 지도 스타일 정의
-            const mapTypeId = kakao.maps.MapTypeId.ROADMAP;
-            const customMapStyle = [
-                {
-                    featureType: "all",
-                    elementType: "labels",
-                    stylers: [{ visibility: "off" }]
-                },
-                {
-                    featureType: "road",
-                    elementType: "geometry",
-                    stylers: [{ visibility: "off" }]
-                },
-                {
-                    featureType: "water",
-                    elementType: "geometry",
-                    stylers: [{ visibility: "off" }]
-                },
-                 {
-                    featureType: "administrative",
-                    elementType: "all",
-                    stylers: [{ visibility: "off" }]
-                },
-                {
-                    featureType: "land",
-                    elementType: "geometry",
-                    stylers: [{ color: "#f5f5f5" }]
-                }
-            ];
-            const customMapType = new kakao.maps.CustomOverlay({
-                name: 'CustomMap',
-                styles: customMapStyle
-            });
-            map.addOverlayMapTypeId(kakao.maps.MapTypeId.USE_DISTRICT);
-
+            // 지도 타입 컨트롤과 줌 컨트롤을 추가합니다
+            map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
+            map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 
             fetch('https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2013/json/skorea-provinces-2013-simple.json')
                 .then(response => response.json())
@@ -124,35 +85,40 @@
         });
 
         function displayArea(areaData) {
+            const colors = ['#F9E2AF', '#A8D8EA', '#F1A7A7', '#B5EAD7', '#C7CEEA', '#FFD1DC', '#E0BBE4', '#FFDAC1', '#D4F0F0'];
+            let colorIndex = 0;
             let selectedPolygon = null;
 
             areaData.forEach((area) => {
+                const color = colors[colorIndex % colors.length];
+                colorIndex++;
+
                 const polygon = new kakao.maps.Polygon({
                     map: map,
                     path: area.path,
                     strokeWeight: 2,
                     strokeColor: '#004c80',
                     strokeOpacity: 0.8,
-                    fillColor: '#E6F4FF',
-                    fillOpacity: 0.5
+                    fillColor: color,
+                    fillOpacity: 0.7
                 });
                 polygons.push(polygon);
 
                 kakao.maps.event.addListener(polygon, 'mouseover', () => {
-                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#a5d8ff' });
+                    if (polygon !== selectedPolygon) polygon.setOptions({ fillOpacity: 1 });
                     map.setCursor('pointer');
                 });
                 kakao.maps.event.addListener(polygon, 'mouseout', () => {
-                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#E6F4FF' });
+                    if (polygon !== selectedPolygon) polygon.setOptions({ fillOpacity: 0.7 });
                     map.setCursor('');
                 });
 
                 kakao.maps.event.addListener(polygon, 'click', () => {
                     if (selectedPolygon) {
-                        selectedPolygon.setOptions({ fillColor: '#E6F4FF' });
+                        selectedPolygon.setOptions({ fillOpacity: 0.7 });
                     }
                     
-                    polygon.setOptions({ fillColor: '#228be6' });
+                    polygon.setOptions({ fillOpacity: 1, strokeColor: '#ff0000' });
                     selectedPolygon = polygon;
 
                     updateValleyList(area.name);
@@ -168,20 +134,21 @@
             const valleys = valleyData[regionName];
 
             if (valleys && valleys.length > 0) {
+                const bounds = new kakao.maps.LatLngBounds();
+
                 valleys.forEach(valley => {
                     const li = document.createElement('li');
                     li.className = 'p-2 rounded valley-list-item';
                     li.textContent = valley.name;
+                    
+                    const markerPosition = new kakao.maps.LatLng(valley.lat, valley.lng);
+                    bounds.extend(markerPosition);
+
                     li.onclick = () => {
-                        const moveLatLon = new kakao.maps.LatLng(valley.lat, valley.lng);
-                        map.setDraggable(true); // 계곡 클릭 시 지도 이동 가능하도록 임시 활성화
-                        map.setLevel(7);
-                        map.panTo(moveLatLon);
-                        map.setDraggable(false); // 이동 후 다시 비활성화
+                        map.panTo(markerPosition);
                     };
                     valleyList.appendChild(li);
 
-                    const markerPosition = new kakao.maps.LatLng(valley.lat, valley.lng);
                     const marker = new kakao.maps.Marker({
                         position: markerPosition
                     });
@@ -194,6 +161,8 @@
                     kakao.maps.event.addListener(marker, 'mouseover', () => infowindow.open(map, marker));
                     kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
                 });
+
+                map.setBounds(bounds); // 선택된 지역의 계곡들이 모두 보이도록 지도 범위 조정
             } else {
                 valleyList.innerHTML = '<li class="text-gray-500">등록된 계곡이 없습니다.</li>';
             }
