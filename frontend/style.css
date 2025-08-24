@@ -85,86 +85,26 @@ body {
 /* ------------------------------------------- */
 /* -               예약 시스템                 - */
 /* ------------------------------------------- */
-
-.booking-card {
-    flex: 1;
-    text-align: center;
-}
-
-.booking-card .price {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #007bff;
-}
-
-.booking-card .booking-button {
-    display: block;
-    width: 100%;
-    background-color: #343a40;
-    color: white;
-    padding: 14px;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    margin: 20px 0;
-}
-
-.booking-card .contact-info strong {
-    color: #007bff;
-    font-size: 1.4rem;
-}
-
 .booking-container {
-    width: 100%;
-    max-width: 800px;
-    margin-top: 40px;
-    padding: 0 20px;
-}
-
-/* 단계 표시기 */
+    width: 100%; max-width: 1024px; display: flex;
+    background-color: #ffffff;
+    border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 10px; padding: 20px 0;
+    box-sizing: border-box; flex-direction: column; align-items: center; }
 .step-indicator {
     display: flex;
     justify-content: space-around;
-    width: 100%;
-    margin-bottom: 30px;
-}
-
+    width: 100%; margin-bottom: 30px; }
 .step {
-    display: flex;
-    align-items: center;
-    color: #868e96;
-    font-weight: 500;
-}
-
-.step .icon {
-    width: 32px;
-    height: 32px;
-    border: 2px solid #ced4da;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 8px;
-}
-
-/* 활성화된 단계 스타일 */
+    display: flex; align-items: center; color: #868e96; font-weight: 500; }
 .step.active {
-    color: #007bff;
-    font-weight: bold;
-}
+    display: flex; align-items: center; color: #007bff; font-weight: 1000; }
 
-.step.active .icon {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-}
-
-/* 달력 카드 */
 
 .flatpickr-calendar {
     font-size: 1rem;
-    width: 600px; /* 원하는 너비로 설정 */
-    max-width: none;
+    width: 100%; /* 원하는 너비로 설정 */
+    max-width: 1024px;
 }
 
 .flatpickr-day,
@@ -208,7 +148,7 @@ body {
 
 /* 이전/다음 버튼 */
 /* 버튼 컨테이너 스타일은 그대로 유지 */
-.nav-buttons {
+.buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 30px;
