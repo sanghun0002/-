@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function loadReviews(page = 1) {
         try {
-            // API 엔드포인트를 reviews로 변경
             const response = await fetch(`https://o70albxd7n.onrender.com/api/reviews?page=${page}`);
             if (!response.ok) throw new Error('서버에서 데이터를 가져오지 못했습니다.');
             const data = await response.json();
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
             boardBody.appendChild(row);
         });
     }
-
+    
     function renderPagination() {
         paginationContainer.innerHTML = '';
         const { totalPages, currentPage } = currentData;
