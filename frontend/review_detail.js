@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (review.images && review.images.length > 0) {
             review.images.forEach(imageUrl => {
                 const img = document.createElement('img');
-                img.src = `https://o70albxd7n.onrender.com${imageUrl}`;
+                // ▼▼▼ 이미지 주소를 로컬 서버 기준으로 변경! ▼▼▼
+                img.src = `http://localhost:3000${imageUrl}`;
                 img.classList.add('detail-image');
                 imagesContainer.appendChild(img);
             });
@@ -43,7 +44,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const response = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`);
+        // ▼▼▼ API 주소를 로컬 서버로 변경! ▼▼▼
+        const response = await fetch(`http://localhost:3000/api/reviews/${reviewId}`);
         if (!response.ok) throw new Error('후기를 불러오는 데 실패했습니다.');
         
         currentReview = await response.json();
@@ -83,7 +85,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
-            const response = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`, {
+            // ▼▼▼ API 주소를 로컬 서버로 변경! ▼▼▼
+            const response = await fetch(`http://localhost:3000/api/reviews/${reviewId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedData)
@@ -107,7 +110,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         if (confirm('정말로 이 후기를 삭제하시겠습니까?')) {
             try {
-                const deleteResponse = await fetch(`https://o70albxd7n.onrender.com/api/reviews/${reviewId}`, { method: 'DELETE' });
+                // ▼▼▼ API 주소를 로컬 서버로 변경! ▼▼▼
+                const deleteResponse = await fetch(`http://localhost:3000/api/reviews/${reviewId}`, { method: 'DELETE' });
                 if (!deleteResponse.ok) throw new Error('삭제에 실패했습니다.');
                 
                 alert('후기가 삭제되었습니다.');
@@ -117,4 +121,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     });
-});s
+});
