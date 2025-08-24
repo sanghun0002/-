@@ -137,8 +137,6 @@
                 allPlaces.clear();
                 statusDiv.textContent = '주변 장소를 검색하고 있습니다...';
                 loader.classList.remove('hidden');
-                // --- 수정된 부분: 카테고리 버튼을 숨기지 않음 ---
-                // categorySelector.classList.add('hidden');
 
                 kakao.maps.load(() => {
                     searchAndDisplay(keywordsToSearch);
@@ -218,10 +216,11 @@
                 else if (place.category === '놀거리') tagColor = 'bg-green-100 text-green-800';
                 else if (place.category === '숙박') tagColor = 'bg-purple-100 text-purple-800';
 
+                // --- 수정된 부분: 길찾기 URL 형식을 올바르게 수정 ---
                 const startLat = userPosition.coords.latitude;
                 const startLng = userPosition.coords.longitude;
                 const destinationName = encodeURIComponent(place.place_name);
-                const directionsUrl = `https://map.kakao.com/link/route/${destinationName},${place.y},${place.x}/내 위치,${startLat},${startLng}`;
+                const directionsUrl = `https://map.kakao.com/?sName=내 위치&sX=${startLng}&sY=${startLat}&eName=${destinationName}&eX=${place.x}&eY=${place.y}`;
 
                 card.innerHTML = `
                     <div class="p-5">
@@ -231,9 +230,11 @@
                         <a href="${directionsUrl}" target="_blank" class="text-indigo-500 hover:underline mt-3 inline-block">길찾기</a>
                     </div>
                 `;
+                // --- 여기까지 수정 ---
+
                 placeList.appendChild(card);
                 
-                let markerImageSrc = 'https://t1.daumcdn.net/mapjsapi/images/marker_red.png'; // 기본 마커
+                let markerImageSrc = 'https://t1.daumcdn.net/mapjsapi/images/marker_red.png';
                 if (place.category === '맛집') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
                 else if (place.category === '놀거리') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_blue.png';
                 else if (place.category === '숙박') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_purple.png';
