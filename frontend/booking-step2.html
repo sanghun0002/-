@@ -63,12 +63,54 @@
         let markers = [];
 
         kakao.maps.load(() => {
+            // --- 지도 스타일 수정 ---
             const mapOption = {
-                center: new kakao.maps.LatLng(36.5, 127.5), // 대한민국 중심
-                level: 12
+                center: new kakao.maps.LatLng(36.3, 127.8), // 대한민국 중심
+                level: 12,
+                // 지도 컨트롤 및 드래그/줌 기능 비활성화
+                mapTypeControl: false,
+                zoomControl: false,
+                draggable: false,
+                scrollwheel: false
             };
             map = new kakao.maps.Map(mapContainer, mapOption);
             
+            // 커스텀 지도 스타일 정의
+            const mapTypeId = kakao.maps.MapTypeId.ROADMAP;
+            const customMapStyle = [
+                {
+                    featureType: "all",
+                    elementType: "labels",
+                    stylers: [{ visibility: "off" }]
+                },
+                {
+                    featureType: "road",
+                    elementType: "geometry",
+                    stylers: [{ visibility: "off" }]
+                },
+                {
+                    featureType: "water",
+                    elementType: "geometry",
+                    stylers: [{ visibility: "off" }]
+                },
+                 {
+                    featureType: "administrative",
+                    elementType: "all",
+                    stylers: [{ visibility: "off" }]
+                },
+                {
+                    featureType: "land",
+                    elementType: "geometry",
+                    stylers: [{ color: "#f5f5f5" }]
+                }
+            ];
+            const customMapType = new kakao.maps.CustomOverlay({
+                name: 'CustomMap',
+                styles: customMapStyle
+            });
+            map.addOverlayMapTypeId(kakao.maps.MapTypeId.USE_DISTRICT);
+
+
             fetch('https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2013/json/skorea-provinces-2013-simple.json')
                 .then(response => response.json())
                 .then(geojson => {
@@ -81,7 +123,6 @@
                 .catch(error => console.error('행정구역 데이터를 불러오는 데 실패했습니다:', error));
         });
 
-        // --- 지도에 폴리곤(행정구역) 표시 (수정된 부분) ---
         function displayArea(areaData) {
             let selectedPolygon = null;
 
@@ -92,28 +133,26 @@
                     strokeWeight: 2,
                     strokeColor: '#004c80',
                     strokeOpacity: 0.8,
-                    fillColor: '#E6F4FF', // 기본 색상을 연한 하늘색으로 설정
+                    fillColor: '#E6F4FF',
                     fillOpacity: 0.5
                 });
                 polygons.push(polygon);
 
-                // 마우스 이벤트 리스너 추가
                 kakao.maps.event.addListener(polygon, 'mouseover', () => {
-                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#a5d8ff' }); // 마우스오버 색상
-                    map.setCursor('pointer'); // 커서를 포인터로 변경
+                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#a5d8ff' });
+                    map.setCursor('pointer');
                 });
                 kakao.maps.event.addListener(polygon, 'mouseout', () => {
-                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#E6F4FF' }); // 원래 색으로 복원
-                    map.setCursor(''); // 커서를 기본값으로 변경
+                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#E6F4FF' });
+                    map.setCursor('');
                 });
 
-                // 폴리곤 클릭 이벤트
                 kakao.maps.event.addListener(polygon, 'click', () => {
                     if (selectedPolygon) {
                         selectedPolygon.setOptions({ fillColor: '#E6F4FF' });
                     }
                     
-                    polygon.setOptions({ fillColor: '#228be6' }); // 선택된 지역 색상
+                    polygon.setOptions({ fillColor: '#228be6' });
                     selectedPolygon = polygon;
 
                     updateValleyList(area.name);
@@ -135,8 +174,10 @@
                     li.textContent = valley.name;
                     li.onclick = () => {
                         const moveLatLon = new kakao.maps.LatLng(valley.lat, valley.lng);
+                        map.setDraggable(true); // 계곡 클릭 시 지도 이동 가능하도록 임시 활성화
                         map.setLevel(7);
                         map.panTo(moveLatLon);
+                        map.setDraggable(false); // 이동 후 다시 비활성화
                     };
                     valleyList.appendChild(li);
 
