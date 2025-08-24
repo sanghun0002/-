@@ -1,83 +1,193 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>예약 Step2</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    select {
-      padding: 8px;
-      margin: 10px 0;
-      width: 200px;
-    }
-    label {
-      display: block;
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카카오맵으로 지역 선택하기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 카카오 지도 API (autoload=false) -->
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services,drawing&autoload=false">
+    </script>
+    <style>
+        #map { width: 100%; height: 600px; border-radius: 0.5rem; }
+        .valley-list-item { cursor: pointer; }
+        .valley-list-item:hover { background-color: #f0f0f0; }
+    </style>
 </head>
-<body>
-  <h2>예약 Step 2 - 지역 선택</h2>
+<body class="bg-gray-100 p-8">
+<div class="container mx-auto max-w-6xl bg-white p-6 rounded-lg shadow-lg">
+    <header class="text-center mb-6 relative">
+        <h1 class="text-3xl font-bold">계곡 예약하기</h1>
+        <p class="text-gray-600">지도에서 원하시는 지역을 선택하세요.</p>
+        <!-- 홈으로 버튼 -->
+        <a href="index.html"
+           class="absolute top-0 right-0 bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition">
+            🏠 홈으로
+        </a>
+    </header>
 
-  <label for="province">시/도 선택</label>
-  <select id="province">
-    <option value="">시/도를 선택하세요</option>
-  </select>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 지도 영역 -->
+        <div id="map" class="md:col-span-2"></div>
 
-  <label for="city">시/군/구 선택</label>
-  <select id="city" disabled>
-    <option value="">먼저 시/도를 선택하세요</option>
-  </select>
+        <!-- 선택 정보 및 계곡 목록 -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h2 class="text-xl font-semibold mb-2">선택 지역</h2>
+            <p class="mb-4">
+                <span id="selected-region-name" class="font-bold text-blue-600">지역을 선택해주세요.</span>
+            </p>
+            <h3 class="text-lg font-semibold border-t pt-4">계곡 목록</h3>
+            <ul id="valley-list" class="mt-2 space-y-2 h-96 overflow-y-auto"></ul>
+        </div>
+    </div>
+</div>
 
-  <script>
-    const provinceSelect = document.getElementById("province");
-    const citySelect = document.getElementById("city");
-    let provincesData = {};
+<script>
+const valleyData = {
+    "서울특별시": [
+        { name: "우이동 계곡", address: "서울 강북구 우이동", lat: 37.6631, lng: 127.0123 },
+        { name: "진관사 계곡", address: "서울 은평구 진관동", lat: 37.6369, lng: 126.9412 }
+    ],
+    "경기도": [
+        { name: "송추 계곡", address: "경기 양주시 장흥면", lat: 37.7311, lng: 127.0345 },
+        { name: "용추 계곡", address: "경기 가평군 가평읍", lat: 37.8683, lng: 127.5021 },
+        { name: "어비 계곡", address: "경기 가평군 설악면", lat: 37.7295, lng: 127.4987 }
+    ],
+    "강원도": [
+        { name: "무릉 계곡", address: "강원 동해시 삼화동", lat: 37.4583, lng: 129.0221 },
+        { name: "흥정 계곡", address: "강원 평창군 봉평면", lat: 37.6251, lng: 128.4012 }
+    ]
+};
 
-    // JSON 불러오기
-    fetch("./skorea-provinces.json")
-      .then(res => res.json())
-      .then(data => {
-        provincesData = data;
+const mapContainer = document.getElementById('map');
+const selectedRegionNameSpan = document.getElementById('selected-region-name');
+const valleyList = document.getElementById('valley-list');
+let map;
+let polygons = [];
+let markers = [];
 
-        // 시/도 목록 채우기
-        Object.keys(provincesData).forEach(province => {
-          const option = document.createElement("option");
-          option.value = province;
-          option.textContent = province;
-          provinceSelect.appendChild(option);
+kakao.maps.load(() => {
+    const mapOption = {
+        center: new kakao.maps.LatLng(36.5, 127.8),
+        level: 12
+    };
+    map = new kakao.maps.Map(mapContainer, mapOption);
+
+    map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
+    map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
+
+    // --- 수정된 부분: 로컬 JSON 파일 경로 수정 ---
+    fetch('./skorea-provinces.json')
+        .then(response => response.json())
+        .then(geojson => {
+            const areas = geojson.features.map(feature => {
+                let coords = feature.geometry.coordinates;
+                let paths = [];
+
+                if (feature.geometry.type === "Polygon") {
+                    paths = [coords[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0]))];
+                } else if (feature.geometry.type === "MultiPolygon") {
+                    paths = coords.map(polygon =>
+                        polygon[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0]))
+                    );
+                }
+
+                return { name: feature.properties.name, paths };
+            });
+
+            displayArea(areas);
+        })
+        .catch(error => {
+            console.error('행정구역 데이터를 불러오는 데 실패했습니다:', error);
         });
-      })
-      .catch(err => {
-        console.error("JSON 로드 실패:", err);
-      });
+});
 
-    // 시/도 선택 시 시/군/구 목록 채우기
-    provinceSelect.addEventListener("change", () => {
-      const selectedProvince = provinceSelect.value;
-      citySelect.innerHTML = "";
+function displayArea(areaData) {
+    const colors = ['#F9E2AF', '#A8D8EA', '#F1A7A7', '#B5EAD7', '#C7CEEA',
+                  '#FFD1DC', '#E0BBE4', '#FFDAC1', '#D4F0F0'];
+    let colorIndex = 0;
+    let selectedPolygon = null;
 
-      if (selectedProvince && provincesData[selectedProvince]) {
-        citySelect.disabled = false;
+    areaData.forEach((area) => {
+        const color = colors[colorIndex % colors.length];
+        colorIndex++;
 
-        provincesData[selectedProvince].forEach(city => {
-          const option = document.createElement("option");
-          option.value = city;
-          option.textContent = city;
-          citySelect.appendChild(option);
+        const polygon = new kakao.maps.Polygon({
+            map: map,
+            path: area.paths,
+            strokeWeight: 2,
+            strokeColor: '#004c80',
+            strokeOpacity: 0.8,
+            fillColor: color,
+            fillOpacity: 0.7
         });
-      } else {
-        citySelect.disabled = true;
-        const option = document.createElement("option");
-        option.value = "";
-        option.textContent = "먼저 시/도를 선택하세요";
-        citySelect.appendChild(option);
-      }
+        polygons.push(polygon);
+
+        kakao.maps.event.addListener(polygon, 'mouseover', () => {
+            if (polygon !== selectedPolygon) polygon.setOptions({ fillOpacity: 1 });
+            map.setCursor('pointer');
+        });
+
+        kakao.maps.event.addListener(polygon, 'mouseout', () => {
+            if (polygon !== selectedPolygon) polygon.setOptions({ fillOpacity: 0.7 });
+            map.setCursor('');
+        });
+
+        kakao.maps.event.addListener(polygon, 'click', () => {
+            if (selectedPolygon) {
+                selectedPolygon.setOptions({ fillOpacity: 0.7, strokeColor: '#004c80' });
+            }
+            polygon.setOptions({ fillOpacity: 1, strokeColor: '#ff0000' });
+            selectedPolygon = polygon;
+            updateValleyList(area.name);
+        });
     });
-  </script>
+}
+
+function updateValleyList(regionName) {
+    selectedRegionNameSpan.textContent = regionName;
+    valleyList.innerHTML = '';
+    removeMarkers();
+
+    const valleys = valleyData[regionName];
+    if (valleys && valleys.length > 0) {
+        const bounds = new kakao.maps.LatLngBounds();
+
+        valleys.forEach(valley => {
+            const li = document.createElement('li');
+            li.className = 'p-2 rounded valley-list-item';
+            li.textContent = valley.name;
+
+            const markerPosition = new kakao.maps.LatLng(valley.lat, valley.lng);
+            bounds.extend(markerPosition);
+
+            li.onclick = () => { map.panTo(markerPosition); };
+            valleyList.appendChild(li);
+
+            const marker = new kakao.maps.Marker({ position: markerPosition });
+            marker.setMap(map);
+            markers.push(marker);
+
+            const infowindow = new kakao.maps.InfoWindow({
+                content: `<div style="padding:5px;font-size:12px;">${valley.name}</div>`
+            });
+            kakao.maps.event.addListener(marker, 'mouseover', () => infowindow.open(map, marker));
+            kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
+        });
+
+        map.setBounds(bounds);
+    } else {
+        valleyList.innerHTML = '<li class="text-gray-500">등록된 계곡이 없습니다.</li>';
+    }
+}
+
+function removeMarkers() {
+    for (let i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    markers = [];
+}
+</script>
 </body>
 </html>
