@@ -38,7 +38,7 @@
     </div>
 
     <script>
-        // --- 1. 예시 데이터: 실제로는 서버에서 가져와야 합니다 ---
+        // --- 1. 예시 데이터 ---
         const valleyData = {
             "서울특별시": [
                 { name: "우이동 계곡", address: "서울 강북구 우이동", lat: 37.6631, lng: 127.0123 },
@@ -53,42 +53,35 @@
                 { name: "무릉 계곡", address: "강원 동해시 삼화동", lat: 37.4583, lng: 129.0221 },
                 { name: "흥정 계곡", address: "강원 평창군 봉평면", lat: 37.6251, lng: 128.4012 }
             ]
-            // ... 다른 지역 데이터
         };
 
-        // --- 2. 행정구역 경계 좌표 데이터 (카카오 예제 활용) ---
-        // 이 데이터는 매우 길어서 실제 서비스에서는 별도의 파일로 분리하는 것이 좋습니다.
-        // 여기서는 간단한 예시를 위해 일부만 포함합니다.
-        let areas = []; // 이 배열은 아래 fetch 로직으로 채워집니다.
-
-        // --- 3. 지도 초기화 및 설정 ---
         const mapContainer = document.getElementById('map');
         const selectedRegionNameSpan = document.getElementById('selected-region-name');
         const valleyList = document.getElementById('valley-list');
         let map;
-        let polygons = []; // 지도에 표시된 폴리곤들을 담을 배열
-        let markers = []; // 지도에 표시된 마커들을 담을 배열
+        let polygons = [];
+        let markers = [];
 
         kakao.maps.load(() => {
             const mapOption = {
-                center: new kakao.maps.LatLng(37.566826, 126.9786567), // 서울 중심
-                level: 11
+                center: new kakao.maps.LatLng(36.5, 127.5), // 대한민국 중심
+                level: 12
             };
             map = new kakao.maps.Map(mapContainer, mapOption);
             
-            // 행정구역 데이터(JSON)를 가져와서 폴리곤을 생성합니다.
             fetch('https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2013/json/skorea-provinces-2013-simple.json')
                 .then(response => response.json())
                 .then(geojson => {
-                    areas = geojson.features.map(feature => ({
+                    const areas = geojson.features.map(feature => ({
                         name: feature.properties.name,
                         path: feature.geometry.coordinates[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0]))
                     }));
                     displayArea(areas);
-                });
+                })
+                .catch(error => console.error('행정구역 데이터를 불러오는 데 실패했습니다:', error));
         });
 
-        // --- 4. 지도에 폴리곤(행정구역) 표시 ---
+        // --- 지도에 폴리곤(행정구역) 표시 (수정된 부분) ---
         function displayArea(areaData) {
             let selectedPolygon = null;
 
@@ -99,47 +92,44 @@
                     strokeWeight: 2,
                     strokeColor: '#004c80',
                     strokeOpacity: 0.8,
-                    fillColor: '#fff',
-                    fillOpacity: 0.7
+                    fillColor: '#E6F4FF', // 기본 색상을 연한 하늘색으로 설정
+                    fillOpacity: 0.5
                 });
                 polygons.push(polygon);
 
-                // 폴리곤에 마우스 이벤트 리스너 추가
+                // 마우스 이벤트 리스너 추가
                 kakao.maps.event.addListener(polygon, 'mouseover', () => {
-                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#09f' });
+                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#a5d8ff' }); // 마우스오버 색상
+                    map.setCursor('pointer'); // 커서를 포인터로 변경
                 });
                 kakao.maps.event.addListener(polygon, 'mouseout', () => {
-                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#fff' });
+                    if (polygon !== selectedPolygon) polygon.setOptions({ fillColor: '#E6F4FF' }); // 원래 색으로 복원
+                    map.setCursor(''); // 커서를 기본값으로 변경
                 });
 
                 // 폴리곤 클릭 이벤트
                 kakao.maps.event.addListener(polygon, 'click', () => {
-                    // 이전에 선택된 폴리곤이 있다면 원래 스타일로 되돌림
                     if (selectedPolygon) {
-                        selectedPolygon.setOptions({ fillColor: '#fff' });
+                        selectedPolygon.setOptions({ fillColor: '#E6F4FF' });
                     }
                     
-                    // 현재 폴리곤을 선택된 스타일로 변경
-                    polygon.setOptions({ fillColor: '#09f' });
+                    polygon.setOptions({ fillColor: '#228be6' }); // 선택된 지역 색상
                     selectedPolygon = polygon;
 
-                    // 선택 지역 이름 표시 및 계곡 목록 업데이트
                     updateValleyList(area.name);
                 });
             });
         }
 
-        // --- 5. 계곡 목록 업데이트 및 마커 표시 ---
         function updateValleyList(regionName) {
             selectedRegionNameSpan.textContent = regionName;
-            valleyList.innerHTML = ''; // 기존 목록 초기화
-            removeMarkers(); // 기존 마커 제거
+            valleyList.innerHTML = '';
+            removeMarkers();
 
             const valleys = valleyData[regionName];
 
             if (valleys && valleys.length > 0) {
                 valleys.forEach(valley => {
-                    // 목록에 아이템 추가
                     const li = document.createElement('li');
                     li.className = 'p-2 rounded valley-list-item';
                     li.textContent = valley.name;
@@ -150,7 +140,6 @@
                     };
                     valleyList.appendChild(li);
 
-                    // 지도에 마커 추가
                     const markerPosition = new kakao.maps.LatLng(valley.lat, valley.lng);
                     const marker = new kakao.maps.Marker({
                         position: markerPosition
@@ -158,7 +147,6 @@
                     marker.setMap(map);
                     markers.push(marker);
 
-                    // 마커에 인포윈도우 추가
                     const infowindow = new kakao.maps.InfoWindow({
                         content: `<div style="padding:5px;font-size:12px;">${valley.name}</div>`
                     });
@@ -170,7 +158,6 @@
             }
         }
 
-        // --- 6. 지도 위 마커 제거 함수 ---
         function removeMarkers() {
             for (let i = 0; i < markers.length; i++) {
                 markers[i].setMap(null);
