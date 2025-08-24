@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>내 주변 맛집 & 놀거리 찾기</title>
+    <title>내 주변 맛집, 놀거리 & 숙박 찾기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- autoload=false 파라미터를 추가하여 수동으로 로드하도록 변경 -->
@@ -28,22 +28,21 @@
         </header>
 
         <main>
-            <!-- --- 수정된 부분: 홈 버튼 추가 --- -->
             <div class="text-center mb-8 flex justify-center items-center gap-4">
                 <button id="findBtn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
                     📍 내 주변 찾기
                 </button>
-                <a href="index.html" class="bg-gray-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-300">
+                 <a href="index.html" class="bg-gray-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-300">
                     🏠 홈으로
                 </a>
             </div>
-            <!-- --- 여기까지 수정 --- -->
 
             <!-- 카테고리 선택 버튼 -->
-            <div id="category-selector" class="flex justify-center gap-4 mb-8 hidden">
+            <div id="category-selector" class="flex flex-wrap justify-center gap-4 mb-8 hidden">
                 <button data-category="맛집" class="category-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition">🍜 맛집</button>
                 <button data-category="놀거리" class="category-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition">🎡 놀거리</button>
-                <button data-category="모두" class="category-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-lg transition">✨ 모두</button>
+                <button data-category="숙박" class="category-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-lg transition">🏠 숙박</button>
+                <button data-category="모두" class="category-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-lg transition">✨ 모두</button>
             </div>
 
             <div id="status" class="text-center text-gray-600 my-6"></div>
@@ -108,8 +107,10 @@
             statusDiv.textContent = message;
         }
 
+        // --- 키워드 목록 수정 ---
         const restaurantKeywords = ['맛집', '카페'];
         const entertainmentKeywords = ['공원', '시장', '전시회'];
+        const lodgingKeywords = ['숙소', '펜션', '호텔', '모텔', '게스트하우스'];
         const franchiseBlocklist = [
             '파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', 
             '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', 
@@ -127,8 +128,10 @@
                     keywordsToSearch = restaurantKeywords;
                 } else if (category === '놀거리') {
                     keywordsToSearch = entertainmentKeywords;
+                } else if (category === '숙박') {
+                    keywordsToSearch = lodgingKeywords;
                 } else if (category === '모두') {
-                    keywordsToSearch = [...restaurantKeywords, ...entertainmentKeywords];
+                    keywordsToSearch = [...restaurantKeywords, ...entertainmentKeywords, ...lodgingKeywords];
                 }
                 
                 placeList.innerHTML = '';
@@ -161,7 +164,11 @@
                     if (status === kakao.maps.services.Status.OK) {
                         data.forEach(place => {
                             if (!allPlaces.has(place.id)) {
-                                const category = restaurantKeywords.includes(keyword) ? '맛집' : '놀거리';
+                                let category = '기타';
+                                if (restaurantKeywords.includes(keyword)) category = '맛집';
+                                else if (entertainmentKeywords.includes(keyword)) category = '놀거리';
+                                else if (lodgingKeywords.includes(keyword)) category = '숙박';
+                                
                                 allPlaces.set(place.id, { ...place, category: category, originalKeyword: keyword });
                             }
                         });
@@ -197,12 +204,8 @@
                 }
 
                 if (place.category === '놀거리') {
-                    if (place.originalKeyword === '시장' && !place.category_name.includes('> 시장')) {
-                        return;
-                    }
-                    if (place.category_name.includes('음식점')) {
-                        return;
-                    }
+                    if (place.originalKeyword === '시장' && !place.category_name.includes('> 시장')) return;
+                    if (place.category_name.includes('음식점')) return;
                 }
 
                 displayedCount++;
@@ -210,8 +213,10 @@
                 card.id = `card-${place.id}`;
                 card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-all duration-300';
                 
-                const isRestaurant = place.category === '맛집';
-                const tagColor = isRestaurant ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
+                let tagColor = 'bg-gray-100 text-gray-800';
+                if (place.category === '맛집') tagColor = 'bg-blue-100 text-blue-800';
+                else if (place.category === '놀거리') tagColor = 'bg-green-100 text-green-800';
+                else if (place.category === '숙박') tagColor = 'bg-purple-100 text-purple-800';
 
                 card.innerHTML = `
                     <div class="p-5">
@@ -223,10 +228,11 @@
                 `;
                 placeList.appendChild(card);
                 
-                const markerImageSrc = isRestaurant 
-                    ? 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png' // 맛집: 빨간색 핀
-                    : 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_blue.png'; // 놀거리: 파란색 핀
-                
+                let markerImageSrc = 'https://t1.daumcdn.net/mapjsapi/images/marker_red.png'; // 기본 마커
+                if (place.category === '맛집') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
+                else if (place.category === '놀거리') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_blue.png';
+                else if (place.category === '숙박') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_purple.png';
+
                 const imageSize = new kakao.maps.Size(31, 35);
                 const markerImage = new kakao.maps.MarkerImage(markerImageSrc, imageSize);
 
