@@ -52,8 +52,7 @@ const valleyData = {
     "경기도": [
         { name: "송추 계곡", address: "경기 양주시 장흥면", lat: 37.7311, lng: 127.0345 },
         { name: "용추 계곡", address: "경기 가평군 가평읍", lat: 37.8683, lng: 127.5021 },
-        { name: "어비 계곡", address: "경기 가평군 설악면", lat: 37.7295, lng: 127.4987 },
-        { name: "삼계리 계곡", address: "경기 포천시 이동면", lat: 38.0792, lng: 127.4015 }
+        { name: "어비 계곡", address: "경기 가평군 설악면", lat: 37.7295, lng: 127.4987 }
     ],
     "강원도": [
         { name: "무릉 계곡", address: "강원 동해시 삼화동", lat: 37.4583, lng: 129.0221 },
@@ -78,31 +77,38 @@ kakao.maps.load(() => {
     map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
     map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 
-    // --- 수정된 부분: 로컬 JSON 파일 경로 수정 ---
     fetch('./skorea-provinces.json')
         .then(response => response.json())
         .then(geojson => {
             const areas = geojson.features.map(feature => {
-                let coords = feature.geometry.coordinates;
+                const coords = feature.geometry.coordinates;
                 let paths = [];
 
                 if (feature.geometry.type === "Polygon") {
-                    paths = [coords[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0]))];
+                    paths = getPathFromCoords(coords);
                 } else if (feature.geometry.type === "MultiPolygon") {
-                    paths = coords.map(polygon =>
-                        polygon[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0]))
-                    );
+                    coords.forEach(polygonCoords => {
+                        paths.push(...getPathFromCoords(polygonCoords));
+                    });
                 }
-
-                return { name: feature.properties.name, paths };
+                return { name: feature.properties.name, path: paths };
             });
-
             displayArea(areas);
         })
         .catch(error => {
             console.error('행정구역 데이터를 불러오는 데 실패했습니다:', error);
+            mapContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-500 font-bold">지도 데이터를 불러오는 데 실패했습니다.</div>';
         });
 });
+
+function getPathFromCoords(coords) {
+    const paths = [];
+    coords.forEach(ring => {
+        const path = ring.map(coord => new kakao.maps.LatLng(coord[1], coord[0]));
+        paths.push(path);
+    });
+    return paths;
+}
 
 function displayArea(areaData) {
     const colors = ['#F9E2AF', '#A8D8EA', '#F1A7A7', '#B5EAD7', '#C7CEEA',
@@ -116,7 +122,7 @@ function displayArea(areaData) {
 
         const polygon = new kakao.maps.Polygon({
             map: map,
-            path: area.paths,
+            path: area.path,
             strokeWeight: 2,
             strokeColor: '#004c80',
             strokeOpacity: 0.8,
@@ -163,7 +169,17 @@ function updateValleyList(regionName) {
             const markerPosition = new kakao.maps.LatLng(valley.lat, valley.lng);
             bounds.extend(markerPosition);
 
-            li.onclick = () => { map.panTo(markerPosition); };
+            // --- 수정된 부분: 클릭 시 다음 페이지로 이동 ---
+            li.onclick = () => {
+                // 선택된 지역과 계곡 정보를 localStorage에 저장
+                localStorage.setItem('selectedRegion', regionName);
+                localStorage.setItem('selectedValley', valley.name);
+                
+                // 다음 예약 단계 페이지로 이동
+                window.location.href = 'booking-step3.html';
+            };
+            // --- 여기까지 수정 ---
+
             valleyList.appendChild(li);
 
             const marker = new kakao.maps.Marker({ position: markerPosition });
