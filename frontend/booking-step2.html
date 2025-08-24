@@ -70,14 +70,15 @@ let markers = [];
 kakao.maps.load(() => {
     const mapOption = {
         center: new kakao.maps.LatLng(36.5, 127.8),
-        level: 12
+        level: 12,
+        // --- 수정된 부분: 지도 타입을 행정구역 지도로 변경 ---
+        mapTypeId: kakao.maps.MapTypeId.USE_DISTRICT
     };
     map = new kakao.maps.Map(mapContainer, mapOption);
 
     map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
     map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 
-    // --- 수정된 부분: 로컬 JSON 파일 경로 수정 ---
     fetch('./skorea-provinces.json')
         .then(response => response.json())
         .then(geojson => {
