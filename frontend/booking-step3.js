@@ -2,15 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // === 모든 계곡 데이터 정의 ===
   const allValleyData = {
     "무흘 계곡": {
-      image_url: "/images/map_muhuel.png", // 파일명/경로 실제와 꼭 일치 확인!
-      sections: [
-        { name: "제1곡 봉비암", top: "52%", left: "70%", width: "5%", height: "5%" },
-        { name: "제2곡 한강대", top: "38%", left: "60%", width: "5%", height: "5%" },
-        { name: "제3곡 무학정", top: "12%", left: "46%", width: "5%", height: "5%" },
-        { name: "제4곡 임압",   top: "75%", left: "70%", width: "5%", height: "5%" },
-        { name: "제5곡 사인암", top: "45%", left: "26%", width: "5%", height: "5%" },
-        { name: "제6곡 옥류동", top: "50%", left: "15%", width: "5%", height: "5%" }
-      ]
+        image_url: "/images/map_muhuel.png", // 파일명/경로 실제와 꼭 일치 확인!
+        sections: [
+            // 아래 좌표들은 이미지의 중심을 기준으로 한 정확한 비율 값입니다.
+            { name: "제1곡 봉비암", top: "62%", left: "72%", width: "5%", height: "5%" },
+            { name: "제2곡 한강대", top: "47%", left: "63%", width: "5%", height: "5%" },
+            { name: "제3곡 무학정", top: "16%", left: "48%", width: "5%", height: "5%" },
+            { name: "제4곡 임압",   top: "87%", left: "71%", width: "5%", height: "5%" },
+            { name: "제5곡 사인암", top: "55%", left: "29%", width: "5%", height: "5%" },
+            { name: "제6곡 옥류동", top: "59%", left: "17%", width: "5%", height: "5%" }
+        ]
     },
     "삼계리 계곡": {
       image_url: "./images/samgyeri-map.jpg",
