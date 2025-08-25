@@ -397,6 +397,11 @@ body {
     cursor: pointer; transition: background-color 0.2s; }
 .section-clickable-area:hover {
     background-color: rgba(59, 130, 246, 0.3); }
+.section-clickable-area:focus {
+  outline: none;
+  border-color: rgba(37, 99, 235, 0.9); /* blue-600 */
+  background: rgba(59, 130, 246, 0.25);
+}
 
 /* ============================= */
 /*            공지사항            */
