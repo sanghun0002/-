@@ -387,13 +387,16 @@ body {
 /* -             예약 시스템1-END              - */
 /* ------------------------------------------- */
 /* booking-step3.css */
-.section-area {
-    outline: 2px solid transparent; transition: outline 0.2s ease-in-out; }
-.section-area:hover {
-    outline: 2px solid #3b82f6; outline-offset: 4px; }
 #valley-map-image {
     width: 80%; height: auto; }
-
+#valley-map-image {
+    width: 100%; height: auto; }
+.section-clickable-area {
+    background-color: transparent;
+    /* 테두리(개발자용) - 실제 배포 시에는 삭제하거나 주석 처리 */
+    cursor: pointer; transition: background-color 0.2s; }
+.section-clickable-area:hover {
+    background-color: rgba(59, 130, 246, 0.3); }
 
 /* ============================= */
 /*            공지사항            */
