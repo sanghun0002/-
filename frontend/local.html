@@ -152,6 +152,19 @@
             mapContainer.classList.remove('hidden');
             const map = new kakao.maps.Map(document.getElementById('map'), { center: userLocation, level: 5 });
 
+            // --- 수정된 부분: 현재 위치 마커 추가 ---
+            const currentPosMarker = new kakao.maps.Marker({
+                map: map,
+                position: userLocation
+            });
+
+            const infoWindow = new kakao.maps.InfoWindow({
+                content: '<div style="padding:5px; text-align:center;">현재 위치</div>',
+                removable: true
+            });
+            infoWindow.open(map, currentPosMarker);
+            // --- 여기까지 수정 ---
+
             const ps = new kakao.maps.services.Places();
             let searchesCompleted = 0;
 
@@ -216,7 +229,6 @@
                 else if (place.category === '놀거리') tagColor = 'bg-green-100 text-green-800';
                 else if (place.category === '숙박') tagColor = 'bg-purple-100 text-purple-800';
 
-                // --- 수정된 부분: 길찾기 URL을 공식 지원 방식으로 수정 ---
                 const destinationName = encodeURIComponent(place.place_name);
                 const directionsUrl = `https://map.kakao.com/link/to/${destinationName},${place.y},${place.x}`;
 
@@ -228,7 +240,6 @@
                         <a href="${directionsUrl}" target="_blank" class="text-indigo-500 hover:underline mt-3 inline-block">길찾기</a>
                     </div>
                 `;
-                // --- 여기까지 수정 ---
 
                 placeList.appendChild(card);
                 
