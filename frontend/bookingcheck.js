@@ -1,81 +1,79 @@
-// 웹 페이지의 모든 요소가 로드된 후에 스크립트가 실행되도록 합니다.
 document.addEventListener('DOMContentLoaded', () => {
-    // HTML에서 필요한 요소들을 미리 찾아 변수에 저장합니다.
-    const imageInput = document.getElementById('imageInput');
-    const preview = document.getElementById('preview');
-    const uploadButton = document.getElementById('uploadButton');
-    const resultDiv = document.getElementById('result');
+    // HTML 요소 가져오기
+    const qrScannerSection = document.getElementById('qr-scanner-section');
+    const userInfoSection = document.getElementById('user-info-section');
+    const scanStatus = document.getElementById('scan-status');
+    const scannedPyeongsangId = document.getElementById('scanned-pyeongsang-id');
+    const authForm = document.getElementById('auth-form');
+    const nameInput = document.getElementById('name-input');
+    const phoneInput = document.getElementById('phone-input');
+    const resultMessage = document.getElementById('result-message');
 
     // --- 💻 백엔드 서버 주소를 여기에 설정 ---
-    // PC에서 실행 중인 ngrok 주소나 IP 주소를 입력하세요.
-    // 예시: const backendUrl = 'https://1a2b-3c4d.ngrok-free.app/predict';
-    const backendUrl = '여기에_백엔드_서버_주소를_입력하세요/predict';
+    const backendUrl = '여기에_백엔드_서버_주소를_입력하세요/verify-booking';
 
-    // 사진을 선택(촬영)하면 미리보기를 보여주는 기능
-    if (imageInput) {
-        imageInput.addEventListener('change', (event) => {
-            const file = event.target.files?.[0]; // 사용자가 촬영한 사진 파일
-            if (file) {
-                preview.src = URL.createObjectURL(file); // 이미지 미리보기 생성
-                uploadButton.disabled = false; // 파일이 선택되면 버튼 활성화
-                resultDiv.textContent = '사진이 준비되었습니다. 인증 버튼을 눌러주세요.';
-            }
-        });
+    // QR 코드 스캔 성공 시 실행될 함수
+    function onScanSuccess(decodedText, decodedResult) {
+        console.log(`QR 코드 스캔 성공: ${decodedText}`);
+        
+        // QR 스캐너 중지 및 숨기기
+        html5QrcodeScanner.clear();
+        qrScannerSection.style.display = 'none';
+
+        // 사용자 정보 입력 폼 보여주기
+        scannedPyeongsangId.textContent = decodedText;
+        userInfoSection.style.display = 'block';
     }
 
-    // '인증하기' 버튼 클릭 이벤트 처리
-    if (uploadButton) {
-        uploadButton.disabled = true; // 페이지 로드 시에는 버튼 비활성화
-
-        uploadButton.addEventListener('click', async () => {
-            const file = imageInput.files?.[0];
-            if (!file) {
-                alert('사진을 먼저 촬영해주세요!');
-                return;
-            }
-
-            // 사용자에게 분석 중임을 알림
-            resultDiv.textContent = '🤖 AI가 사진을 분석 중입니다...';
-            uploadButton.disabled = true; // 분석 중에는 버튼 비활성화
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                // fetch API를 사용해 백엔드 서버로 사진 데이터 전송
-                const response = await fetch(backendUrl, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    throw new Error(`서버 응답 오류: ${response.status}`);
-                }
-
-                const data = await response.json(); // 서버로부터 받은 결과(JSON)
-
-                // 결과에 따라 적절한 메시지를 화면에 표시
-                switch (data.status) {
-                    case 'CLEAN':
-                        resultDiv.textContent = '✅ 반납 되었습니다. 이용해 주셔서 감사합니다.';
-                        break;
-                    case 'DIRTY':
-                        resultDiv.textContent = '❌ 다시 청소한 후 인증 부탁드립니다.';
-                        break;
-                    case 'NO_PYEONGSANG':
-                        resultDiv.textContent = '⚠️ 평상이 인식되지 않았습니다. 평상이 보이도록 다시 촬영해주세요.';
-                        break;
-                    default:
-                        resultDiv.textContent = '알 수 없는 오류가 발생했습니다.';
-                }
-
-            } catch (error) {
-                console.error('통신 오류:', error);
-                resultDiv.textContent = '🔌 서버와 통신 중 오류가 발생했습니다. PC 서버가 켜져 있는지 확인해주세요.';
-            } finally {
-                // 성공하든 실패하든 버튼을 다시 활성화하여 재시도할 수 있게 함
-                uploadButton.disabled = false;
-            }
-        });
+    // QR 코드 스캔 실패 시 (선택 사항)
+    function onScanFailure(error) {
+        // console.warn(`QR 코드 스캔 오류: ${error}`);
     }
+
+    // QR 코드 스캐너 초기 설정 및 시작
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader", 
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        false // verbose
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    scanStatus.textContent = "QR 코드를 스캔해주세요.";
+
+    // '확인' 버튼 클릭 시 폼 제출 이벤트 처리
+    authForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // 폼의 기본 제출 동작 방지
+        
+        resultMessage.textContent = '예약 정보를 확인 중입니다...';
+
+        const pyeongsangId = scannedPyeongsangId.textContent;
+        const name = nameInput.value;
+        const phone = phoneInput.value;
+
+        try {
+            const response = await fetch(backendUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ pyeongsangId, name, phone }),
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                resultMessage.textContent = `✅ ${data.message}`;
+                resultMessage.style.color = 'green';
+                // 성공 후 입력 폼 숨기기 (선택 사항)
+                userInfoSection.style.display = 'none';
+            } else {
+                resultMessage.textContent = `❌ ${data.message}`;
+                resultMessage.style.color = 'red';
+            }
+
+        } catch (error) {
+            console.error('통신 오류:', error);
+            resultMessage.textContent = '🔌 서버와 통신 중 오류가 발생했습니다.';
+            resultMessage.style.color = 'red';
+        }
+    });
 });
