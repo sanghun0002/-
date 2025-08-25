@@ -104,6 +104,7 @@ body {
     font-size: 3rem;
     margin-bottom: 10px;
     text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* 글자에 그림자 추가 */
+    color: white;
 }
 
 .hero-content p {
