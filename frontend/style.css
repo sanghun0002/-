@@ -22,7 +22,7 @@ body {
 }
 /* 1. 헤더 스타일 */
 .main-header {
-    width: 100%; max-width: 1024px; display: flex;
+    width: 100%; max-width: 1200px; display: flex;
     justify-content: center; /* 로고 중앙 정렬 */
     align-items: center;
     padding: 20px; /* 세로 중앙 위치 */
