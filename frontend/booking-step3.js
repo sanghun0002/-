@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 모든 계곡 데이터 정의 ===
     const allValleyData = {
         "무흘 계곡": {
-            image_url: "muhuel.map.jpg",
+            image_url: "./images/muhuel.map.jpg",
             sections: [
                 { name: "제1곡 봉비암", coords: "206,12,305,10,367,100,344,142,279,161,208,129,149,114,153,52" },
                 { name: "제2곡 한강대", coords: "12,185,123,178,168,228,154,260,107,266,42,238,10,215" },
