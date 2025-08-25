@@ -15,8 +15,11 @@
                     <span id="detail-author"></span> | <span id="detail-date"></span> | <span>조회수 <span id="detail-views"></span></span> | <span id="detail-rating"></span>
                 </div>
                 <hr>
-                <div class="detail-images-container" id="detail-images-container">
-                    </div>
+                
+                <div id="detail-images-container" class="slider-container">
+                    <div class="slider-wrapper">
+                        </div>
+                </div>
                 <div class="detail-content" id="detail-content">
                     <p>... 내용을 불러오는 중 ...</p>
                 </div>
@@ -24,36 +27,7 @@
             </div>
 
             <div id="edit-mode" style="display: none;">
-                <form id="edit-form">
-                    <div class="form-group">
-                        <label for="edit-title">제목</label>
-                        <input type="text" id="edit-title" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-author">작성자</label>
-                        <input type="text" id="edit-author" required>
-                    </div>
-                    <div class="form-group">
-                        <label>평점</label>
-                        <div class="rating">
-                            <input type="radio" id="edit-star5" name="rating" value="5" required><label for="edit-star5">⭐⭐⭐⭐⭐</label>
-                            <input type="radio" id="edit-star4" name="rating" value="4"><label for="edit-star4">⭐⭐⭐⭐</label>
-                            <input type="radio" id="edit-star3" name="rating" value="3"><label for="edit-star3">⭐⭐⭐</label>
-                            <input type="radio" id="edit-star2" name="rating" value="2"><label for="edit-star2">⭐⭐</label>
-                            <input type="radio" id="edit-star1" name="rating" value="1"><label for="edit-star1">⭐</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-content">내용</label>
-                        <textarea id="edit-content" rows="10" required></textarea>
-                    </div>
-                    <div class="edit-actions">
-                        <button type="submit" class="save-btn">저장</button>
-                        <button type="button" id="cancel-btn" class="cancel-btn">취소</button>
-                    </div>
-                </form>
-            </div>
-
+                </div>
             <div class="detail-footer">
                 <a href="review.html" class="list-btn">목록으로</a>
                 <div class="detail-actions">
