@@ -231,10 +231,10 @@
                 placeList.appendChild(card);
                 
                 // ✅ 로컬 PNG 파일 사용
-                let markerImageSrc = 'frontend/marker_default.png';
-                if (place.category === '맛집') markerImageSrc = 'frontend/marker_red.png';
-                else if (place.category === '놀거리') markerImageSrc = 'frontend/marker_green.png';
-                else if (place.category === '숙박') markerImageSrc = 'frontend/marker_blue.png';
+                let markerImageSrc = 'marker_default.png';
+                if (place.category === '맛집') markerImageSrc = 'marker_red.png';
+                else if (place.category === '놀거리') markerImageSrc = 'marker_green.png';
+                else if (place.category === '숙박') markerImageSrc = 'marker_blue.png';
 
                 const imageSize = new kakao.maps.Size(31, 35);
                 const markerImage = new kakao.maps.MarkerImage(markerImageSrc, imageSize);
