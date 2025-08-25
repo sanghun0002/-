@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // ID가 있으면 화면에 표시하고 각 버튼의 링크를 설정합니다.
         pyeongsangIdElement.textContent = pyeongsangId;
         checkInBtn.href = `checkQR.html?id=${pyeongsangId}`;
-        
-        returnBtn.href = `cleancheck.html?id=${pyeongsangId}`; 
+        // '반납' 페이지의 파일 이름이 'return.html'이라고 가정합니다.
+        returnBtn.href = `return.html?id=${pyeongsangId}`; 
     } else {
         // URL에 ID가 없으면 에러 메시지를 표시합니다.
         pyeongsangIdElement.textContent = '유효하지 않은 QR 코드입니다.';
