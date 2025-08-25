@@ -373,85 +373,204 @@ h2 {
 /*            공지사항            */
 /* ============================= */
 
-/* 페이지의 모든 요소를 감싸는 최상위 컨테이너 */
+/* Google Fonts에서 Noto Sans KR 폰트 가져오기 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+/* 색상 변수 선언: 이 부분의 색상 코드만 바꾸면 사이트 전체 테마색이 변경됩니다. */
+:root {
+    --primary-color: #5865F2; /* 메인 색상 (세련된 파란색) */
+    --background-color: #f8f9fa; /* 페이지 배경색 (아주 연한 회색) */
+    --border-color: #dee2e6;     /* 테두리 색상 */
+    --text-color: #343a40;       /* 기본 글자 색상 */
+    --text-secondary-color: #868e96; /* 보조 글자 색상 */
+}
+
+/* 모든 요소에 폰트 및 기본 스타일 적용 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+}
+
+/* ============================= */
+/* 전체 레이아웃         */
+/* ============================= */
+
 .board-container {
-    margin: 40px auto; /* 위아래 여백을 주고, 좌우는 자동으로 계산하여 화면 중앙에 배치합니다. */
+    max-width: 1100px;
+    margin: 0 auto; /* 페이지 중앙 정렬 */
 }
 
 /* '쉬어가~ 계곡' 헤더 스타일 */
 .main-header {
     background-color: white;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
 /* 공지사항 제목과 표를 감싸는 main 영역 */
 .board-container main {
     background-color: white;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    width: 1100px;
-    min-height: 650px; /* 내용이 적더라도 최소 높이를 650px로 유지하여 넉넉한 공간을 확보합니다. */
+    padding: 35px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 650px;
 }
 
 /* ============================= */
-/* 게시판 스타일         */
+/* 버튼 및 헤더          */
 /* ============================= */
 
-/* 테이블 스타일 */
+/* '홈', '글쓰기'가 있는 헤더 */
+.board-header {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝으로 정렬 */
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f1f3f5;
+}
+
+/* '홈' 링크 스타일 */
+.home-link {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.home-link:hover {
+    color: var(--primary-color);
+}
+.home-link .fa-home {
+    margin-right: 6px;
+}
+
+/* '글쓰기' 버튼 스타일 */
+.write-btn-nav {
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px; /* 버튼 크기 조절 */
+    border-radius: 8px; /* 버튼 모서리 둥글게 */
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: filter 0.2s;
+}
+.write-btn-nav:hover {
+    filter: brightness(90%); /* 마우스 올리면 살짝 어두워지는 효과 */
+}
+
+/* ============================= */
+/* 게시판 테이블         */
+/* ============================= */
+
+.board-title {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
 .board-table {
-    width: 100%; /* 테이블이 main 영역의 너비를 100% 꽉 채우도록 설정합니다. */
-    border-collapse: collapse; /* 테이블 테두리 사이의 간격을 없애 깔끔하게 만듭니다. */
-    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
 }
 
-/* 중요 공지(sticky) 행 스타일 */
+/* 테이블 헤더(thead) 스타일 */
+.board-table thead {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.board-table th {
+    padding: 15px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-color);
+}
+
+/* 테이블 내용(tbody) 스타일 */
+.board-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    color: #495057;
+}
+
+/* 테이블 제목 셀만 왼쪽 정렬 */
+.board-table td.class-cell {
+    text-align: left;
+}
+
+/* 테이블의 마지막 줄은 밑줄 제거 */
+.board-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 테이블 행에 마우스 올리면 배경색 변경 */
+.board-table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+/* 중요 공지 행 스타일 */
 .board-table tbody tr.sticky {
-    background-color: #f8f9fa; /* 연한 회색 배경 */
-    font-weight: bold; /* 글씨 굵게 */
+    background-color: #f0f4ff;
+    font-weight: 500;
 }
-
-/* 중요 공지 아이콘 */
 .board-table tbody tr.sticky td:first-child::before {
-    content: '📢'; /* 맨 앞에 아이콘 추가 */
+    content: '📢';
     margin-right: 8px;
 }
 
-/* 페이지네이션 컨테이너 스타일 */
+/* 테이블 안의 링크 스타일 */
+.board-table a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.board-table a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* ============================= */
+/* 페이지네이션          */
+/* ============================= */
+
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
+    margin-top: 40px;
     gap: 8px;
 }
 
-/* 페이지네이션 버튼(a 태그) 스타일 */
 .pagination a {
-    color: #007bff;
+    color: var(--text-secondary-color);
     text-decoration: none;
     padding: 8px 16px;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    transition: background-color 0.2s, color 0.2s;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
-/* 페이지네이션 버튼에 마우스를 올렸을 때 */
 .pagination a:hover {
     background-color: #e9ecef;
+    border-color: #ced4da;
 }
 
-/* 현재 활성화된 페이지 버튼 스타일 */
 .pagination a.active {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
-    border-color: #007bff;
+    border-color: var(--primary-color);
+    font-weight: 500;
     cursor: default;
 }
