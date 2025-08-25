@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>평상 반납 인증</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        #preview { max-width: 80%; max-height: 400px; margin-top: 20px; border: 1px solid #ccc; }
+        #result { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
+        button { padding: 10px 20px; font-size: 1em; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>평상 청결 상태 인증</h1>
+    
+    <input type="file" id="imageInput" accept="image/*" capture="environment">
+    <br>
+    <img id="preview" src="" alt="미리보기">
+    <br><br>
+    <button id="uploadButton">인증하기</button>
+    
+    <div id="result"></div>
 
+    <script>
+        // --- 1. ngrok 주소를 여기에 붙여넣으세요! (https ~~~ /predict) ---
+        const apiUrl = 'https://ead8344897c8.ngrok-free.app/predict';
+
+        const imageInput = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+        const uploadButton = document.getElementById('uploadButton');
+        const resultDiv = document.getElementById('result');
+
+        // 사진을 선택하면 미리보기를 보여주는 기능
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+            }
+        });
+
+        uploadButton.addEventListener('click', async () => {
+            const file = imageInput.files[0];
+            if (!file) {
+                alert('사진을 먼저 촬영해주세요!');
+                return;
+            }
+
+            resultDiv.textContent = '분석 중...';
+            
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+                
+                // 결과에 따라 메시지 표시
+                if (data.status === 'CLEAN') {
+                    resultDiv.textContent = '✅ 반납 되었습니다. 이용해 주셔서 감사합니다.';
+                } else if (data.status === 'DIRTY') {
+                    resultDiv.textContent = '❌ 다시 청소한 후 인증 부탁드립니다.';
+                } else if (data.status === 'NO_PYEONGSANG') {
+                    resultDiv.textContent = '⚠️ 평상이 인식되지 않습니다. 평상이 보이도록 다시 촬영해주세요.';
+                } else {
+                    resultDiv.textContent = '오류가 발생했습니다: ' + data.error;
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.textContent = '서버와 통신 중 오류가 발생했습니다.';
+            }
+        });
+    </script>
+</body>
+</html>
