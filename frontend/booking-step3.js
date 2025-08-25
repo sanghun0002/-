@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         image_url: "/images/map_muhuel.png", // 파일명/경로 실제와 꼭 일치 확인!
         sections: [
             // 아래 좌표들은 이미지의 중심을 기준으로 한 정확한 비율 값입니다.
-            { name: "제1곡 봉비암", top: "62%", left: "72%", width: "5%", height: "5%" },
+            { name: "제1곡 봉비암", top: "65%", left: "75%", width: "5%", height: "5%" },
             { name: "제2곡 한강대", top: "47%", left: "63%", width: "5%", height: "5%" },
             { name: "제3곡 무학정", top: "16%", left: "48%", width: "5%", height: "5%" },
             { name: "제4곡 임압",   top: "87%", left: "71%", width: "5%", height: "5%" },
