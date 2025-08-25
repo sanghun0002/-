@@ -854,3 +854,45 @@ body {
     object-fit: cover; /* 이미지가 잘리지 않고 비율에 맞게 채워짐 */
     border-radius: 8px;
 }
+/* ============================= */
+/* 후기 상세 페이지 이미지 슬라이더 */
+/* ============================= */
+
+.slider-container {
+    width: 100%;
+    overflow-x: auto; /* 내용이 넘칠 때 가로 스크롤바 생성 */
+    -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤 효과 */
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f1f1f1;
+    margin: 20px 0;
+}
+
+/* 스크롤바 디자인 (Chrome, Safari, Edge) */
+.slider-container::-webkit-scrollbar {
+    height: 8px;
+}
+.slider-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+.slider-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.slider-container::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+.slider-wrapper {
+    display: flex; /* 이미지들을 가로로 나란히 배치 */
+    gap: 15px; /* 이미지 사이의 간격 */
+    padding-bottom: 15px; /* 스크롤바와의 시각적 간격 */
+}
+
+.slide img {
+    width: 400px;  /* 슬라이드 이미지 가로 크기 */
+    height: 300px; /* 슬라이드 이미지 세로 크기 */
+    object-fit: cover; /* 이미지가 비율에 맞게 채워지도록 */
+    border-radius: 8px;
+    display: block;
+}
