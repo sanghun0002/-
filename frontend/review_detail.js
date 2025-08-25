@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // 실제 운영 서버 주소로 적용했습니다.
+    // 실제 운영 서버 주소를 사용합니다.
     const API_BASE_URL = 'https://o70albxd7n.onrender.com';
 
     const params = new URLSearchParams(window.location.search);
@@ -23,8 +23,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (review.images && review.images.length > 0) {
             review.images.forEach(imageUrl => {
                 const img = document.createElement('img');
-                // Cloudinary는 전체 URL을 반환하므로 그대로 사용합니다.
-                img.src = imageUrl;
+                
+                // [적용됨] Cloudinary URL을 수정하여 이미지 크기 조절
+                // 원본 URL을 '/upload/' 기준으로 분리합니다.
+                const parts = imageUrl.split('/upload/');
+                // 중간에 원하는 크기 옵션을 추가합니다. (예: 가로 1024px로 제한)
+                const transformedUrl = `${parts[0]}/upload/w_1024,c_limit/${parts[1]}`;
+                
+                img.src = transformedUrl; // 크기가 조절된 이미지 URL을 사용합니다.
+
                 img.classList.add('detail-image');
                 imagesContainer.appendChild(img);
             });
@@ -41,6 +48,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert(error.message);
         window.location.href = 'review.html';
     }
-    
-    // (수정/삭제 관련 로직은 이전 답변을 참고하여 추가하세요)
 });
