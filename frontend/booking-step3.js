@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
         image_url: "/images/map_muhuel.png", // 파일명/경로 실제와 꼭 일치 확인!
         sections: [
             // 아래 좌표들은 이미지의 중심을 기준으로 한 정확한 비율 값입니다.
-            { name: "제1곡 봉비암", top: "70%", left: "74%", width: "5%", height: "5%" },
+            { name: "제1곡 봉비암", top: "72%", left: "74%", width: "5%", height: "5%" },
             { name: "제2곡 한강대", top: "65%", left: "72%", width: "5%", height: "5%" },
-            { name: "제3곡 무학정", top: "18%", left: "49%", width: "5%", height: "5%" },
+            { name: "제3곡 무학정", top: "18%", left: "45%", width: "5%", height: "5%" },
             { name: "제4곡 임압",   top: "90%", left: "83%", width: "5%", height: "5%" },
-            { name: "제5곡 사인암", top: "36%", left: "32%", width: "5%", height: "5%" },
-            { name: "제6곡 옥류동", top: "49%", left: "18%", width: "5%", height: "5%" }
+            { name: "제5곡 사인암", top: "36%", left: "30%", width: "5%", height: "5%" },
+            { name: "제6곡 옥류동", top: "45%", left: "19%", width: "5%", height: "5%" }
         ]
     },
     "삼계리 계곡": {
