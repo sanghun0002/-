@@ -392,7 +392,7 @@ body {
 .section-area:hover {
     outline: 2px solid #3b82f6; outline-offset: 4px; }
 #valley-map-image {
-    width: 100%; height: auto; }
+    width: 80%; height: auto; }
 
 
 /* ============================= */
