@@ -386,7 +386,13 @@ body {
 /* ------------------------------------------- */
 /* -             예약 시스템1-END              - */
 /* ------------------------------------------- */
-
+/* booking-step3.css */
+.section-area {
+    outline: 2px solid transparent; transition: outline 0.2s ease-in-out; }
+.section-area:hover {
+    outline: 2px solid #3b82f6; outline-offset: 4px; }
+#valley-map-image {
+    width: 100%; height: auto; }
 
 
 /* ============================= */
