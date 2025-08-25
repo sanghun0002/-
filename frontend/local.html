@@ -237,14 +237,14 @@
 
                 placeList.appendChild(card);
                 
-                // --- 수정된 부분: 로컬 PNG 파일 경로 사용 ---
-                let markerImageSrc = 'marker_red.png'; // 기본 마커
+                // --- 수정된 부분: images 폴더 기준 상대 경로로 변경 ---
+                let markerImageSrc = 'images/marker_red.png'; // 기본 마커
                 if (place.category === '맛집') {
-                    markerImageSrc = 'marker_red.png';
+                    markerImageSrc = 'images/marker_red.png';
                 } else if (place.category === '놀거리') {
-                    markerImageSrc = 'marker_yellow.png';
+                    markerImageSrc = 'images/marker_yellow.png';
                 } else if (place.category === '숙박') {
-                    markerImageSrc = 'marker_green.png';
+                    markerImageSrc = 'images/marker_green.png';
                 }
 
                 const imageSize = new kakao.maps.Size(31, 35);
