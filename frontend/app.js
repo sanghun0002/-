@@ -38,7 +38,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             noticeListWidget.innerHTML = '<li>공지사항을 불러올 수 없습니다.</li>';
         }
     }
-
+    // ===================================
+    // ===== 사이드 메뉴 기능 =====
+    // ===================================
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (sidebar) {
+        const toggleIcon = sidebar.querySelector('.sidebar-toggle i');
+    
+        sidebar.addEventListener('mouseenter', () => {
+            toggleIcon.classList.replace('fa-chevron-right', 'fa-chevron-left');
+        });
+    
+        sidebar.addEventListener('mouseleave', () => {
+            toggleIcon.classList.replace('fa-chevron-left', 'fa-chevron-right');
+        });
+    }
     // ===================================
     // ===== 히어로 섹션 슬라이더 기능 =====
     // ===================================
