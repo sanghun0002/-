@@ -72,7 +72,7 @@ app.get('/api/reviews', (req, res) => {
 });
 
 // POST: 새 후기 작성 (이미지 포함)
-app.post('/api/reviews', upload.array('newImages', 5), (req, res) => {
+app.post('/api/reviews', upload.array('images', 5), (req, res) => {
     const { title, author, rating, content } = req.body;
     const images = req.files ? req.files.map(file => file.path) : [];
 
