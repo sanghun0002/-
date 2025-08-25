@@ -896,39 +896,102 @@ body {
     border-radius: 8px;
     display: block;
 }
-/* 후기 수정 페이지 - 기존 이미지 삭제 UI */
+/* ============================= */
+/* 폼 페이지 스타일 (공통)   */
+/* ============================= */
+
+.form-main {
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.form-divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 25px 0;
+}
+
+.form-group, .form-group-static {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.form-group label, .form-group-static label {
+    flex-basis: 120px; /* 라벨 너비 조정 */
+    flex-shrink: 0;
+    font-weight: 500;
+    padding-top: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="file"],
+.form-group textarea {
+    flex-grow: 1;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 별점 수정 UI */
+.rating-edit {
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+}
+.rating-edit input { display: none; }
+.rating-edit label { color: #ccc; cursor: pointer; font-size: 1.5rem; padding: 0 2px; }
+.rating-edit input:checked ~ label,
+.rating-edit label:hover,
+.rating-edit label:hover ~ label { color: #fcc419; }
+.rating-edit { flex-direction: row-reverse; justify-content: flex-end; }
+
+/* 기존 이미지 표시 영역 */
+.existing-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 기존 이미지 삭제 UI */
 .image-preview-wrapper {
     position: relative;
     width: 150px;
     height: 150px;
 }
-
-.image-preview-wrapper .delete-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+.image-preview-wrapper img {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0); /* 평소에는 투명 */
+    object-fit: cover;
+    border-radius: 8px;
+}
+.image-preview-wrapper .delete-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0);
     display: flex;
     justify-content: center;
     align-items: center;
     transition: background-color 0.2s;
+    border-radius: 8px;
 }
 .image-preview-wrapper:hover .delete-overlay {
-    background-color: rgba(0, 0, 0, 0.5); /* 마우스 올리면 어두워짐 */
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 .delete-overlay label {
-    display: none; /* 평소에는 숨김 */
+    display: none;
     color: white;
     font-weight: bold;
     cursor: pointer;
 }
 .image-preview-wrapper:hover .delete-overlay label {
-    display: block; /* 마우스 올리면 나타남 */
-}
-
-.delete-overlay input[type="checkbox"] {
-    margin-right: 5px;
+    display: block;
 }
