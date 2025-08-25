@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // === 모든 계곡 데이터 정의 ===
   const allValleyData = {
     "무흘 계곡": {
-        image_url: "/images/map_muhuel.png", // 파일명/경로 실제와 꼭 일치 확인!
+        image_url: "/images/map_muhuel.png",
         sections: [
             // 아래 좌표들은 이미지의 중심을 기준으로 한 정확한 비율 값입니다.
             { name: "제1곡 봉비암", top: "72%", left: "74%", width: "5%", height: "5%" },
@@ -14,23 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     },
     "삼계리 계곡": {
-      image_url: "./images/samgyeri-map.jpg",
+      image_url: "/images/map_samgyeri.png",
       sections: [
-        // TODO: 실제 값 채우기 전까지는 비활성 처리하거나 제외하세요.
-        // { name: "A 구역", top: "...", left: "...", width: "...", height: "..." },
-        // { name: "B 구역", top: "...", left: "...", width: "...", height: "..." }
+            { name: "삼계리 1구역", top: "27%", left: "76%", width: "5%", height: "5%" },
+            { name: "삼계리 2구역", top: "38%", left: "68%", width: "5%", height: "5%" },
+            { name: "삼계리 3구역", top: "19%", left: "61%", width: "5%", height: "5%" },
+            { name: "삼계리 4구역", top: "32%", left: "56%", width: "5%", height: "5%" },
+            { name: "삼계리 5구역", top: "52%", left: "58%", width: "5%", height: "5%" },
+            { name: "삼계리 6구역", top: "83%", left: "51%", width: "5%", height: "5%" },
+            { name: "삼계리 7구역", top: "87%", left: "43%", width: "5%", height: "5%" }
       ]
     }
   };
 
-  // 선택값
   let selectedValley = localStorage.getItem('selectedValley');
   const displayElement = document.getElementById('selected-valley-display');
   const mapContainer = document.getElementById('image-map-container');
   const nextBtn = document.getElementById('next-step-btn');
   const loadingMsg = document.getElementById('loading-message');
 
-  // (선택) 이름 normalize: 공백 차이 방지
   if (!allValleyData[selectedValley]) {
     const key = Object.keys(allValleyData).find(
       k => k.replace(/\s/g, '') === (selectedValley || '').replace(/\s/g, '')
@@ -47,12 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const valley = allValleyData[selectedValley];
   displayElement.textContent = selectedValley;
 
-  // 1) 로딩 메시지는 유지, 이미지는 append로 추가 (innerHTML로 덮어쓰지 않기)
   const img = new Image();
   img.id = 'valley-map-image';
   img.alt = `${selectedValley} 구역 지도`;
   img.src = valley.image_url;
-  // Tailwind 유틸: 반응형 + 선택 방지
   img.className = 'block max-w-full h-auto select-none';
 
   // 2) 이미지 로드 성공 시
