@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData();
         formData.append('title', document.getElementById('title').value);
+        // ▼▼▼ 여기서 'author'라는 이름으로 FormData에 추가합니다. (HTML id와 일치) ▼▼▼
         formData.append('author', document.getElementById('author').value);
         formData.append('rating', ratingInput.value);
         formData.append('content', document.getElementById('content').value);
@@ -56,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // ▼▼▼ API 주소를 로컬 서버로 변경! ▼▼▼
             const response = await fetch('http://localhost:3000/api/reviews', {
                 method: 'POST',
                 body: formData

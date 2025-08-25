@@ -163,7 +163,9 @@ app.get('/api/reviews', (req, res) => {
         reviewsPerPage: reviewsPerPage
     });
 });
+
 app.post('/api/reviews', upload.array('images', 5), (req, res) => {
+    // ▼▼▼ 서버는 여기서 'author' 필드를 찾습니다 ▼▼▼
     const { title, author, rating, content } = req.body;
     if (!title || !author || !rating || !content) {
         return res.status(400).json({ message: '제목, 작성자, 평점, 내용은 필수입니다.' });
@@ -182,6 +184,7 @@ app.post('/api/reviews', upload.array('images', 5), (req, res) => {
     reviews.unshift(newReview);
     res.status(201).json(newReview);
 });
+
 app.get('/api/reviews/:id', (req, res) => {
     const reviewId = parseInt(req.params.id, 10);
     const review = reviews.find(r => r.id === reviewId);
