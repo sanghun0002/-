@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // 수정 버튼 이벤트 리스너
         const editBtn = document.getElementById('edit-btn');
-        editBtn.href = `edit.html?id=${noticeId}`;
+        // ▼▼▼ 링크가 notice_edit.html로 수정되었습니다 ▼▼▼
+        editBtn.href = `notice_edit.html?id=${noticeId}`;
 
         // 삭제 버튼 이벤트 리스너
         const deleteBtn = document.getElementById('delete-btn');

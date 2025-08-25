@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) throw new Error('수정에 실패했습니다.');
 
             alert('공지사항이 수정되었습니다.');
-            window.location.href = `detail.html?id=${noticeId}`;
+            // ▼▼▼ 링크가 notice_detail.html로 수정되었습니다 ▼▼▼
+            window.location.href = `notice_detail.html?id=${noticeId}`;
         } catch (error) {
             alert(error.message);
         }

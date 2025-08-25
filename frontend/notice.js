@@ -62,10 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createRow(notice, number) {
         const tr = document.createElement('tr');
-        // ▼▼▼ 이 부분의 링크가 수정되었습니다! ▼▼▼
+        // ▼▼▼ 링크가 notice_detail.html로 수정되었습니다! ▼▼▼
         tr.innerHTML = `
             <td>${number}</td>
-            <td class="class-cell"><a href="detail.html?id=${notice.id}">${notice.title}</a></td>
+            <td class="class-cell"><a href="notice_detail.html?id=${notice.id}">${notice.title}</a></td>
             <td class="class-dept">${notice.department}</td>
             <td class="class-date">${notice.date}</td>
             <td class="class-views">${notice.views}</td>
