@@ -54,11 +54,84 @@ let nextReviewId = 3;
 // ===============================================================
 // ===== 공지사항(Notice) API =====
 // ===============================================================
-app.get('/api/notices', (req, res) => { /* 이전과 동일 */ });
-app.post('/api/notices', (req, res) => { /* 이전과 동일 */ });
-app.get('/api/notices/:id', (req, res) => { /* 이전과 동일 */ });
-app.put('/api/notices/:id', (req, res) => { /* 이전과 동일 */ });
-app.delete('/api/notices/:id', (req, res) => { /* 이전과 동일 */ });
+
+app.get('/api/notices', (req, res) => {
+    const page = parseInt(req.query.page || '1', 10);
+    const noticesPerPage = 10;
+    const stickyNotices = notices.filter(n => n.isSticky).sort((a, b) => b.id - a.id);
+    const normalNotices = notices.filter(n => !n.isSticky).sort((a, b) => b.id - a.id);
+    
+    // 페이지네이션 로직 (프론트엔드와 호환되도록)
+    const normalNoticesOnFirstPage = Math.max(0, noticesPerPage - stickyNotices.length);
+    const remainingNotices = normalNotices.length - normalNoticesOnFirstPage;
+    const totalPages = remainingNotices > 0 ? 1 + Math.ceil(remainingNotices / noticesPerPage) : 1;
+    let paginatedNotices;
+    if (page === 1) {
+        paginatedNotices = normalNotices.slice(0, normalNoticesOnFirstPage);
+    } else {
+        const startIndex = normalNoticesOnFirstPage + (page - 2) * noticesPerPage;
+        const endIndex = startIndex + noticesPerPage;
+        paginatedNotices = normalNotices.slice(startIndex, endIndex);
+    }
+
+    res.json({
+        notices: paginatedNotices,
+        stickyNotices: stickyNotices,
+        totalPages: totalPages,
+        currentPage: page,
+        totalNormalNotices: normalNotices.length,
+        normalNoticesOnFirstPage: normalNoticesOnFirstPage
+    });
+});
+
+app.post('/api/notices', (req, res) => {
+    const { title, department, isSticky, content } = req.body;
+    if (!title || !department || !content) {
+        return res.status(400).json({ message: '제목, 작성부서, 내용은 필수입니다.' });
+    }
+    const newNotice = {
+        id: nextNoticeId++,
+        title, department,
+        date: new Date().toISOString().split('T')[0],
+        views: 0,
+        isSticky: isSticky || false,
+        content: content
+    };
+    notices.unshift(newNotice);
+    res.status(201).json(newNotice);
+});
+
+app.get('/api/notices/:id', (req, res) => {
+    const notice = notices.find(n => n.id === parseInt(req.params.id));
+    if (notice) {
+        notice.views++;
+        res.json(notice);
+    } else {
+        res.status(404).json({ message: '공지사항을 찾을 수 없습니다.' });
+    }
+});
+
+app.put('/api/notices/:id', (req, res) => {
+    const noticeIndex = notices.findIndex(n => n.id === parseInt(req.params.id));
+    if (noticeIndex !== -1) {
+        const { title, department, isSticky, content } = req.body;
+        notices[noticeIndex] = { ...notices[noticeIndex], title, department, isSticky, content };
+        res.json(notices[noticeIndex]);
+    } else {
+        res.status(404).json({ message: '공지사항을 찾을 수 없습니다.' });
+    }
+});
+
+app.delete('/api/notices/:id', (req, res) => {
+    const noticeIndex = notices.findIndex(n => n.id === parseInt(req.params.id));
+    if (noticeIndex !== -1) {
+        notices.splice(noticeIndex, 1);
+        res.status(200).json({ message: '삭제 완료' });
+    } else {
+        res.status(404).json({ message: '공지사항을 찾을 수 없습니다.' });
+    }
+});
+
 
 
 // ===============================================================
