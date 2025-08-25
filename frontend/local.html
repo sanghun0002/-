@@ -216,11 +216,11 @@
                 else if (place.category === '놀거리') tagColor = 'bg-green-100 text-green-800';
                 else if (place.category === '숙박') tagColor = 'bg-purple-100 text-purple-800';
 
-                // --- 수정된 부분: 길찾기 URL 형식을 올바르게 수정 ---
+                // --- 수정된 부분: 길찾기 URL을 안정적인 버전으로 되돌림 ---
                 const startLat = userPosition.coords.latitude;
                 const startLng = userPosition.coords.longitude;
                 const destinationName = encodeURIComponent(place.place_name);
-                const directionsUrl = `https://map.kakao.com/?sName=내 위치&sX=${startLng}&sY=${startLat}&eName=${destinationName}&eX=${place.x}&eY=${place.y}`;
+                const directionsUrl = `https://map.kakao.com/link/route/내 위치,${startLat},${startLng},${destinationName},${place.y},${place.x}`;
 
                 card.innerHTML = `
                     <div class="p-5">
