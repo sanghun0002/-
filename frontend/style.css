@@ -55,7 +55,7 @@ body {
 /* 2. 히어로 섹션 (대문 이미지) */
 .hero-section {
     height: 450px;
-    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/frontend/images/background.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('images/background.jpg');
     background-size: cover;
     background-position: center;
     display: flex;
