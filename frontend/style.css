@@ -825,3 +825,32 @@ body {
 .save-btn:hover {
     filter: brightness(90%);
 }
+/*                                */
+/*후기                        작성*/
+/*                                */
+/* 후기 수정 페이지의 기존 이미지 표시 영역 스타일 */
+.form-group-static {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.form-group-static label {
+    flex-basis: 100px;
+    flex-shrink: 0;
+    font-weight: 500;
+    padding-top: 8px;
+}
+
+.existing-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.existing-images img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover; /* 이미지가 잘리지 않고 비율에 맞게 채워짐 */
+    border-radius: 8px;
+}
