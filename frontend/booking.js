@@ -2,31 +2,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('next-step-btn');
     const hiddenDateInput = document.getElementById('date-input');
 
-    let bookingSelection = { // 사용자의 선택을 저장하는 객체
+    let bookingSelection = {
         date: null
     };
 
+    // 오늘 날짜로부터 14일 뒤의 날짜를 계산합니다.
+    const today = new Date();
+    const twoWeeksLater = new Date();
+    twoWeeksLater.setDate(today.getDate() + 14);
+
     flatpickr("#calendar-area", {
-        inline: true, // 캘린더를 항상 보이도록 설정
-        dateFormat: "Y-m-d", minDate: "today", maxDate: "today + 14 days", locale: 'ko',
-        // 캘린더가 렌더링될 때마다 실행되는 콜백 함수
+        inline: true,
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        maxDate: twoWeeksLater, // Date 객체를 사용하여 maxDate 설정
+        locale: 'ko',
+
         onReady: (selectedDates, dateStr, instance) => {
-            // 초기 '다음' 버튼 비활성화
             nextBtn.disabled = true;
         },
-        // 날짜를 선택할 때마다 실행되는 콜백 함수
         onChange: (selectedDates, dateStr, instance) => {
             if (dateStr) {
                 hiddenDateInput.value = dateStr;
                 bookingSelection.date = dateStr;
-                nextBtn.disabled = false; }// '다음' 버튼 활성화
-            else {
+                nextBtn.disabled = false;
+            } else {
                 bookingSelection.date = null;
-                nextBtn.disabled = true; }// 날짜 선택이 취소되면 비활성화
+                nextBtn.disabled = true;
+            }
         }
     });
 
-    // '다음' 버튼 클릭 시 다음 페이지로 이동
     if (nextBtn) {
         nextBtn.onclick = () => {
             if (bookingSelection.date) {
