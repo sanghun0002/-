@@ -22,10 +22,9 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'reviews',
-        format: async (req, file) => 'jpg',
+        folder: 'reviews', // Cloudinary에 'reviews'라는 폴더를 만들어 저장
+        format: async (req, file) => 'jpg', // 파일 포맷을 jpg로 통일
         public_id: (req, file) => Date.now().toString() + '-' + file.originalname,
-        transformation: [{ width: 1024, height: 1024, crop: "limit" }]
     },
 });
 
@@ -35,20 +34,17 @@ const upload = multer({ storage: storage });
 // ===== 데이터베이스 영역 (임시 인메모리) =====
 // ===============================================================
 
-// 공지사항 데이터
+// ▼▼▼ 공지사항 데이터 ▼▼▼
 let notices = [
-    { id: 3, title: "우천시 예약 취소 정책", department: "운영팀", date: "2025-08-03", views: 78, isSticky: true, content: "기상청 예보 기준..." },
-    { id: 2, title: "보증금 현장 인증 시스템 도입", department: "개발팀", date: "2025-08-10", views: 120, isSticky: true, content: "이제 QR코드를 통해..." },
-    { id: 1, title: "여름 성수기 예약 안내", department: "운영팀", date: "2025-08-11", views: 256, isSticky: false, content: "7월에서 8월 사이..." },
+    { id: 3, title: "우천시 예약 취소 정책", department: "운영팀", date: "2025-08-03", views: 78, isSticky: true, content: "기상청 예보 기준, 방문 예정일의 강수 확률이 70% 이상일 경우 위약금 없이 예약을 취소할 수 있습니다. 취소는 방문 하루 전까지 가능합니다." },
+    { id: 2, title: "보증금 현장 인증 시스템 도입", department: "개발팀", date: "2025-08-10", views: 120, isSticky: true, content: "이제 QR코드를 통해 보증금을 현장에서 즉시 인증하고 반환받을 수 있습니다. 퇴실 시 비치된 QR코드를 스캔해주세요." },
+    { id: 1, title: "여름 성수기 예약 안내", department: "운영팀", date: "2025-08-11", views: 256, isSticky: false, content: "7월에서 8월 사이 여름 성수기 기간 동안 예약이 폭주할 수 있으니 미리 예약해주시기 바랍니다. 원활한 운영을 위해 보증금 제도가 함께 시행됩니다." },
 ];
 let nextNoticeId = 4;
 
-// 후기 데이터 (예시 데이터 포함)
-let reviews = [
-    { id: 1, title: "계곡 바로 앞이라 너무 좋았어요!", author: "김철수", rating: 5, date: "2025-08-15", views: 45, content: "물놀이하고 바로 들어와서 쉴 수 있어서 최고였습니다.", images: [] },
-    { id: 2, title: "가족들과 좋은 시간 보냈습니다.", author: "이영희", rating: 4, date: "2025-08-12", views: 88, content: "부모님 모시고 갔는데 다들 만족하셨어요.", images: [] },
-];
-let nextReviewId = 3;
+// ▼▼▼ 후기 데이터 ▼▼▼
+let reviews = [];
+let nextReviewId = 1;
 
 
 // ===============================================================
@@ -133,12 +129,45 @@ app.delete('/api/notices/:id', (req, res) => {
 });
 
 
-
 // ===============================================================
 // ===== 후기(Review) API =====
 // ===============================================================
 
 // GET: 모든 후기 목록 조회
+app.get('/api/reviews', (req, res) => {
+    const sortedReviews = [...reviews].sort((a, b) => b.id - a.id);
+    res.json({ reviews: sortedReviews });
+});
+
+// POST: 새 후기 작성 (이미지 포함)
+app.post('/api/reviews', upload.array('images', 5), (req, res) => {
+    const { title, author, rating, content } = req.body;
+    const images = req.files ? req.files.map(file => file.path) : []; // Cloudinary URL
+
+    const newReview = {
+        id: nextReviewId++,
+        title, author,
+        rating: parseInt(rating, 10),
+        date: new Date().toISOString().split('T')[0],
+        views: 0,
+        content,
+        images
+    };
+    reviews.unshift(newReview);
+    res.status(201).json(newReview);
+});
+
+// GET: 특정 ID의 후기 상세 조회
+app.get('/api/reviews/:id', (req, res) => {
+    const review = reviews.find(r => r.id === parseInt(req.params.id));
+    if (review) {
+        review.views++;
+        res.json(review);
+    } else {
+        res.status(404).json({ message: '후기를 찾을 수 없습니다.' });
+    }
+});
+
 app.get('/api/reviews', (req, res) => {
     const sortedReviews = [...reviews].sort((a, b) => b.id - a.id);
     res.json({ reviews: sortedReviews });
@@ -219,11 +248,11 @@ app.delete('/api/reviews/:id', (req, res) => {
         res.status(404).json({ message: '후기를 찾을 수 없습니다.' });
     }
 });
-// ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 // ===============================================================
 // ===== 서버 실행 =====
 // ===============================================================
+
 app.listen(PORT, () => {
     console.log(`🚀 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
 });
