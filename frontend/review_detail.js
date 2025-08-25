@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             // ▼▼▼ API 주소를 로컬 서버로 변경! ▼▼▼
-            const response = await fetch(`http://localhost:3000/api/reviews/${reviewId}`, {
+            const response = await fetch(`https://o70albxd7n.onrender.com`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedData)
