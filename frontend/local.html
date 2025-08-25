@@ -1,55 +1,265 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <title>카카오맵 길찾기 예제</title>
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=여기에_본인_JAVASCRIPT_KEY"></script>
-  <style>
-    #map {width:100%;height:500px;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 주변 맛집, 놀거리 & 숙박 찾기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- autoload=false 파라미터를 추가하여 수동으로 로드하도록 변경 -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a27bfefd7b461ecd35f7533947ff19&libraries=services&autoload=false"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid #3498db;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #map { width: 100%; height: 400px; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    </style>
 </head>
-<body>
-  <div id="map"></div>
+<body class="bg-gray-50 text-gray-800">
 
-  <script>
-    // 지도 생성
-    const container = document.getElementById('map');
-    const options = {
-      center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 좌표
-      level: 7
-    };
-    const map = new kakao.maps.Map(container, options);
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <header class="text-center mb-8 relative">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">🗺️ 내 주변 뭐하지?</h1>
+            <p class="text-lg text-gray-600">버튼을 눌러 주변의 장소 정보를 확인하세요.</p>
+            <a href="index.html" class="absolute top-0 right-0 bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition">
+                🏠 홈으로
+            </a>
+        </header>
 
-    // 예시 장소
-    const place = {
-      place_name: "남산타워",
-      y: 37.5512,
-      x: 126.9882
-    };
+        <main>
+            <div class="text-center mb-8">
+                <button id="findBtn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                    📍 내 주변 찾기
+                </button>
+            </div>
 
-    // 마커 표시
-    const marker = new kakao.maps.Marker({
-      position: new kakao.maps.LatLng(place.y, place.x),
-      map: map
-    });
+            <!-- 카테고리 선택 버튼 -->
+            <div id="category-selector" class="flex flex-wrap justify-center gap-4 mb-8 hidden">
+                <button data-category="맛집" class="category-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition">🍜 맛집</button>
+                <button data-category="놀거리" class="category-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition">🎡 놀거리</button>
+                <button data-category="숙박" class="category-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-lg transition">🏠 숙박</button>
+                <button data-category="모두" class="category-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-lg transition">✨ 모두</button>
+            </div>
 
-    // 인포윈도우에 길찾기 버튼 추가
-    const content = `
-      <div style="padding:5px;font-size:13px;">
-        ${place.place_name}<br/>
-        <a href="https://map.kakao.com/link/to/${encodeURIComponent(place.place_name)},${place.y},${place.x}"
-           target="_blank"
-           style="color:blue">🚗 길찾기</a>
-      </div>
-    `;
+            <div id="status" class="text-center text-gray-600 my-6"></div>
+            <div id="loader" class="hidden mx-auto loader"></div>
+            <div id="map-container" class="mb-8 hidden"><div id="map"></div></div>
+            <div id="place-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </main>
 
-    const infowindow = new kakao.maps.InfoWindow({
-      content: content
-    });
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2025 주변 찾기. All rights reserved.</p>
+        </footer>
+    </div>
 
-    kakao.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map, marker);
-    });
-  </script>
+    <script>
+        const findBtn = document.getElementById('findBtn');
+        const categorySelector = document.getElementById('category-selector');
+        const statusDiv = document.getElementById('status');
+        const loader = document.getElementById('loader');
+        const placeList = document.getElementById('place-list');
+        const mapContainer = document.getElementById('map-container');
+        let userPosition;
+        let allPlaces = new Map();
+
+        findBtn.addEventListener('click', () => {
+            placeList.innerHTML = '';
+            statusDiv.textContent = '';
+            mapContainer.classList.add('hidden');
+            loader.classList.remove('hidden');
+            findBtn.disabled = true;
+            categorySelector.classList.add('hidden');
+            
+            if ('geolocation' in navigator) {
+                statusDiv.textContent = '위치 정보를 가져오는 중입니다...';
+                const options = { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 };
+                navigator.geolocation.getCurrentPosition(success, error, options);
+            } else {
+                statusDiv.textContent = '이 브라우저에서는 위치 정보를 사용할 수 없습니다.';
+                loader.classList.add('hidden');
+                findBtn.disabled = false;
+            }
+        });
+        
+        function success(position) {
+            userPosition = position;
+            loader.classList.add('hidden');
+            findBtn.disabled = false;
+            statusDiv.textContent = '검색할 카테고리를 선택하세요.';
+            categorySelector.classList.remove('hidden');
+        }
+
+        function error(err) {
+            loader.classList.add('hidden');
+            findBtn.disabled = false;
+            let message = '위치 정보를 가져오는 데 실패했습니다. ';
+            if (err.code === 1) {
+                message += '브라우저에서 위치 정보 접근을 차단하셨습니다. 주소창의 🔒 아이콘을 눌러 권한을 허용해주세요.';
+            } else if (err.code === 3) {
+                message += '시간이 초과되었습니다. 인터넷 연결을 확인하거나 잠시 후 다시 시도해주세요.';
+            } else {
+                message += '잠시 후 다시 시도해주세요.';
+            }
+            statusDiv.textContent = message;
+        }
+
+        const restaurantKeywords = ['맛집', '카페'];
+        const entertainmentKeywords = ['공원', '시장', '전시회'];
+        const lodgingKeywords = ['숙소', '펜션', '호텔', '모텔', '게스트하우스'];
+        const franchiseBlocklist = [
+            '파리바게뜨', '맘스터치', '스타벅스', '버거킹', '롯데리아', 
+            '뚜레쥬르', '배스킨라빈스', '던킨', '서브웨이', '이디야', 
+            '투썸플레이스', '더벤티', '메가MGC커피', '봄봄', '더리터', '청솔로',
+            '컴포즈', '도미노피자', '빽다방'
+        ];
+        const generalExclusionList = ['주차장'];
+
+        categorySelector.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                const category = e.target.dataset.category;
+                let keywordsToSearch = [];
+
+                if (category === '맛집') {
+                    keywordsToSearch = restaurantKeywords;
+                } else if (category === '놀거리') {
+                    keywordsToSearch = entertainmentKeywords;
+                } else if (category === '숙박') {
+                    keywordsToSearch = lodgingKeywords;
+                } else if (category === '모두') {
+                    keywordsToSearch = [...restaurantKeywords, ...entertainmentKeywords, ...lodgingKeywords];
+                }
+                
+                placeList.innerHTML = '';
+                allPlaces.clear();
+                statusDiv.textContent = '주변 장소를 검색하고 있습니다...';
+                loader.classList.remove('hidden');
+
+                kakao.maps.load(() => {
+                    searchAndDisplay(keywordsToSearch);
+                });
+            }
+        });
+
+        function searchAndDisplay(keywords) {
+            const latitude = userPosition.coords.latitude;
+            const longitude = userPosition.coords.longitude;
+            const userLocation = new kakao.maps.LatLng(latitude, longitude);
+
+            mapContainer.classList.remove('hidden');
+            const map = new kakao.maps.Map(document.getElementById('map'), { center: userLocation, level: 5 });
+
+            const ps = new kakao.maps.services.Places();
+            let searchesCompleted = 0;
+
+            keywords.forEach(keyword => {
+                ps.keywordSearch(keyword, (data, status) => {
+                    searchesCompleted++;
+
+                    if (status === kakao.maps.services.Status.OK) {
+                        data.forEach(place => {
+                            if (!allPlaces.has(place.id)) {
+                                let category = '기타';
+                                if (restaurantKeywords.includes(keyword)) category = '맛집';
+                                else if (entertainmentKeywords.includes(keyword)) category = '놀거리';
+                                else if (lodgingKeywords.includes(keyword)) category = '숙박';
+                                
+                                allPlaces.set(place.id, { ...place, category: category, originalKeyword: keyword });
+                            }
+                        });
+                    } else if (status !== kakao.maps.services.Status.ZERO_RESULT) {
+                        console.error(`'${keyword}' 검색 실패:`, status);
+                    }
+
+                    if (searchesCompleted === keywords.length) {
+                        loader.classList.add('hidden');
+                        const uniquePlaces = Array.from(allPlaces.values());
+                        displayPlaces(uniquePlaces, map);
+                    }
+                }, { 
+                    location: userLocation, 
+                    radius: 1500 
+                });
+            });
+        }
+
+        function displayPlaces(places, map) {
+            placeList.innerHTML = '';
+            let displayedCount = 0;
+
+            places.forEach(place => {
+                const placeName = place.place_name.replace(/\s/g, '');
+
+                const isGenerallyExcluded = generalExclusionList.some(exclude => place.place_name.includes(exclude));
+                if (isGenerallyExcluded) return;
+
+                if (place.category === '맛집') {
+                    const isFranchise = franchiseBlocklist.some(franchise => placeName.includes(franchise.replace(/\s/g, '')));
+                    if (isFranchise) return;
+                }
+
+                if (place.category === '놀거리') {
+                    if (place.originalKeyword === '시장' && !place.category_name.includes('> 시장')) return;
+                    if (place.category_name.includes('음식점')) return;
+                }
+
+                displayedCount++;
+                const card = document.createElement('div');
+                card.id = `card-${place.id}`;
+                card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-all duration-300';
+                
+                let tagColor = 'bg-gray-100 text-gray-800';
+                if (place.category === '맛집') tagColor = 'bg-blue-100 text-blue-800';
+                else if (place.category === '놀거리') tagColor = 'bg-green-100 text-green-800';
+                else if (place.category === '숙박') tagColor = 'bg-purple-100 text-purple-800';
+
+                // --- 수정된 부분: 길찾기 URL을 공식 지원 방식으로 수정 ---
+                const destinationName = encodeURIComponent(place.place_name);
+                const directionsUrl = `https://map.kakao.com/link/to/${destinationName},${place.y},${place.x}`;
+
+                card.innerHTML = `
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">${place.place_name}</h3>
+                        <p class="text-sm ${tagColor} rounded-full px-3 py-1 inline-block mb-3">${place.category}</p>
+                        <p class="text-gray-600">${place.road_address_name || place.address_name}</p>
+                        <a href="${directionsUrl}" target="_blank" class="text-indigo-500 hover:underline mt-3 inline-block">길찾기</a>
+                    </div>
+                `;
+                // --- 여기까지 수정 ---
+
+                placeList.appendChild(card);
+                
+                let markerImageSrc = 'https://t1.daumcdn.net/mapjsapi/images/marker_red.png';
+                if (place.category === '맛집') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
+                else if (place.category === '놀거리') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_blue.png';
+                else if (place.category === '숙박') markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_purple.png';
+
+                const imageSize = new kakao.maps.Size(31, 35);
+                const markerImage = new kakao.maps.MarkerImage(markerImageSrc, imageSize);
+
+                const marker = new kakao.maps.Marker({
+                    map: map,
+                    position: new kakao.maps.LatLng(place.y, place.x),
+                    image: markerImage
+                });
+
+                const infowindow = new kakao.maps.InfoWindow({
+                    content: `<div style="padding:5px;font-size:12px;min-width:150px;">${place.place_name}</div>`
+                });
+                kakao.maps.event.addListener(marker, 'mouseover', () => infowindow.open(map, marker));
+                kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
+            });
+
+            if (displayedCount === 0) {
+                statusDiv.textContent = '주변 1.5km 내에 추천할 장소가 없습니다.';
+            } else {
+                 statusDiv.textContent = `총 ${displayedCount}개의 장소를 찾았습니다!`;
+            }
+        }
+    </script>
+
 </body>
 </html>
