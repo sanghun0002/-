@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     flatpickr("#calendar-area", {
         inline: true, // 캘린더를 항상 보이도록 설정
-        dateFormat: "Y-m-d", minDate: "today", locale: 'ko',
+        dateFormat: "Y-m-d", minDate: "today", maxDate: "today + 14 days", locale: 'ko',
         // 캘린더가 렌더링될 때마다 실행되는 콜백 함수
         onReady: (selectedDates, dateStr, instance) => {
             // 초기 '다음' 버튼 비활성화
