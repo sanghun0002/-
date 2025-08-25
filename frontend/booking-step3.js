@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: "제1곡 봉비암", top: "52%", left: "73%", width: "5%", height: "5%" },
             { name: "제2곡 한강대", top: "46%", left: "70%", width: "5%", height: "5%" },
             { name: "제3곡 무학정", top: "18%", left: "49%", width: "5%", height: "5%" },
-            { name: "제4곡 임압",   top: "78%", left: "90%", width: "5%", height: "5%" },
+            { name: "제4곡 임압",   top: "85%", left: "90%", width: "5%", height: "5%" },
             { name: "제5곡 사인암", top: "36%", left: "32%", width: "5%", height: "5%" },
             { name: "제6곡 옥류동", top: "49%", left: "18%", width: "5%", height: "5%" }
         ]
