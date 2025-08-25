@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('detail-date').textContent = review.date;
         document.getElementById('detail-views').textContent = review.views;
         document.getElementById('detail-rating').textContent = `평점: ${'⭐'.repeat(review.rating)}`;
-        document.getElementById('detail-content').innerHTML = `<p>${review.content.replace(/\n/g, '<br>')}</p>`;
+        document.getElementById('detail-content').innerHTML = `<p>${(review.content || '').replace(/\n/g, '<br>')}</p>`;
 
         const sliderWrapper = document.querySelector('.slider-wrapper');
         const imagesContainer = document.getElementById('detail-images-container');
