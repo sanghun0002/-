@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: "제2곡 한강대", top: "65%", left: "72%", width: "5%", height: "5%" },
             { name: "제3곡 무학정", top: "18%", left: "45%", width: "5%", height: "5%" },
             { name: "제4곡 임압",   top: "90%", left: "83%", width: "5%", height: "5%" },
-            { name: "제5곡 사인암", top: "36%", left: "30%", width: "5%", height: "5%" },
-            { name: "제6곡 옥류동", top: "45%", left: "19%", width: "5%", height: "5%" }
+            { name: "제5곡 사인암", top: "36%", left: "28%", width: "5%", height: "5%" },
+            { name: "제6곡 옥류동", top: "42%", left: "20%", width: "5%", height: "5%" }
         ]
     },
     "삼계리 계곡": {
