@@ -168,7 +168,34 @@ app.get('/api/reviews/:id', (req, res) => {
     }
 });
 
-// (PUT, DELETE 등 나머지 후기 API도 필요 시 여기에 추가)
+app.put('/api/reviews/:id', (req, res) => {
+    const reviewIndex = reviews.findIndex(r => r.id === parseInt(req.params.id));
+    if (reviewIndex !== -1) {
+        const { title, author, rating, content } = req.body;
+        // 이미지는 수정하지 않고 기존 텍스트 데이터만 업데이트
+        reviews[reviewIndex] = { 
+            ...reviews[reviewIndex], 
+            title, 
+            author, 
+            rating: parseInt(rating), 
+            content 
+        };
+        res.json(reviews[reviewIndex]);
+    } else {
+        res.status(404).json({ message: '후기를 찾을 수 없습니다.' });
+    }
+});
+
+// DELETE: 특정 ID의 후기 삭제
+app.delete('/api/reviews/:id', (req, res) => {
+    const reviewIndex = reviews.findIndex(r => r.id === parseInt(req.params.id));
+    if (reviewIndex !== -1) {
+        reviews.splice(reviewIndex, 1);
+        res.status(200).json({ message: '삭제 완료' });
+    } else {
+        res.status(404).json({ message: '후기를 찾을 수 없습니다.' });
+    }
+});
 
 // ===============================================================
 // ===== 서버 실행 =====
