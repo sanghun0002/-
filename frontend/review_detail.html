@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>후기 상세</title>
+    <title>공지사항 상세</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -21,51 +21,37 @@
             <a href="index.html" class="text-3xl font-bold text-gray-800">쉬어가~ 계곡</a>
         </header>
 
-        <!-- 후기 상세 내용 -->
+        <!-- 공지사항 상세 내용 -->
         <main class="bg-white p-8 rounded-lg shadow-md">
-            <div id="view-mode">
-                <!-- 제목 -->
-                <h1 id="detail-title" class="text-3xl font-bold text-gray-900 mb-4">가족들이랑 정말 잘 쉬다 갑니다!</h1>
-                
-                <!-- 작성자, 날짜, 조회수, 별점 정보 -->
-                <div class="detail-meta text-sm text-gray-500 flex items-center flex-wrap gap-x-2 mb-6">
-                    <span id="detail-author">김*현</span>
-                    <span>|</span>
-                    <span id="detail-date">2025-08-24</span>
-                    <span>|</span>
-                    <span>조회수 <span id="detail-views">152</span></span>
-                    <span>|</span>
-                    <span id="detail-rating" class="text-yellow-500">★★★★★</span>
-                </div>
-                
-                <!-- 구분선 -->
-                <hr class="border-gray-200">
-
-                <!-- 첨부 사진 -->
-                <div id="detail-images-container" class="py-8">
-                    <img src="https://placehold.co/800x400/a8d8ea/ffffff?text=계곡+사진+1" alt="후기 사진" class="rounded-lg shadow-md w-full">
-                </div>
-                
-                <!-- 본문 내용 -->
-                <div class="detail-content text-gray-800 leading-relaxed" id="detail-content">
-                    <p>물이 정말 깨끗하고 아이들이 놀기 좋았어요. 평상도 넓어서 여러 가족이 함께 갔는데도 넉넉했습니다.</p>
-                    <p class="mt-4">사장님도 친절하시고 필요한 거 말씀드리면 바로바로 챙겨주셔서 감사했습니다. 내년에 또 올게요!</p>
-                </div>
-                
-                <!-- 구분선 -->
-                <hr class="border-gray-200 mt-8">
+            <!-- 제목 -->
+            <h1 id="detail-title" class="text-3xl font-bold text-gray-900 mb-4">우천시 예약 취소 정책</h1>
+            
+            <!-- 작성자, 날짜, 조회수 정보 -->
+            <div class="detail-meta text-sm text-gray-500 flex items-center space-x-2 mb-6">
+                <span id="detail-department">운영팀</span>
+                <span>|</span>
+                <span id="detail-date">2025-08-03</span>
+                <span>|</span>
+                <span>조회수 <span id="detail-views">80</span></span>
             </div>
-
-            <!-- 수정 모드 (초기에는 숨김) -->
-            <div id="edit-mode" style="display: none;">
-                <!-- 수정용 폼이 여기에 들어갑니다. -->
-                <p>수정 모드 화면입니다.</p>
+            
+            <!-- 구분선 -->
+            <hr class="border-gray-200">
+            
+            <!-- 본문 내용 -->
+            <div class="detail-content text-gray-800 leading-relaxed py-8" id="detail-content">
+                <p>기상청 예보 기준, 방문 예정일의 강수 확률이 70% 이상일 경우 위약금 없이 예약을 취소할 수 있습니다.</p>
+                <p class="mt-4">취소는 방문 하루 전까지 가능합니다.</p>
+                <p class="mt-4">자세한 내용은 유선으로 문의해주시기 바랍니다.</p>
             </div>
+            
+            <!-- 구분선 -->
+            <hr class="border-gray-200">
 
             <!-- 하단 버튼 영역 -->
             <div class="detail-footer mt-6 flex justify-between items-center">
                 <!-- 목록으로 버튼 -->
-                <a href="review.html" class="list-btn bg-gray-200 text-gray-800 font-bold py-2 px-5 rounded-lg hover:bg-gray-300 transition">
+                <a href="notice.html" class="list-btn bg-gray-200 text-gray-800 font-bold py-2 px-5 rounded-lg hover:bg-gray-300 transition">
                     목록으로
                 </a>
                 <!-- 수정/삭제 버튼 -->
@@ -79,36 +65,29 @@
 
     <!-- 실제 데이터를 불러오는 스크립트 -->
     <script>
-        // 이 스크립트는 예시이며, 실제로는 review_detail.js에서
+        // 이 스크립트는 예시이며, 실제로는 notice_detail.js에서
         // URL 파라미터 등을 이용해 서버에서 데이터를 가져와야 합니다.
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const reviewId = urlParams.get('id');
+            const noticeId = urlParams.get('id'); // 예: notice_detail.html?id=1
 
-            const reviewData = {
-                title: "가족들이랑 정말 잘 쉬다 갑니다!",
-                author: "김*현",
-                date: "2025-08-24",
-                views: 152,
-                rating: 5, // 1~5
-                imageUrl: "https://placehold.co/800x400/a8d8ea/ffffff?text=계곡+사진+1",
-                content: `<p>물이 정말 깨끗하고 아이들이 놀기 좋았어요. 평상도 넓어서 여러 가족이 함께 갔는데도 넉넉했습니다.</p>
-                          <p class="mt-4">사장님도 친절하시고 필요한 거 말씀드리면 바로바로 챙겨주셔서 감사했습니다. 내년에 또 올게요!</p>`
+            // noticeId를 기반으로 서버에 데이터를 요청하고 아래 내용을 채웁니다.
+            // 지금은 예시 데이터를 직접 넣습니다.
+            const noticeData = {
+                title: "우천시 예약 취소 정책",
+                department: "운영팀",
+                date: "2025-08-03",
+                views: 80,
+                content: `<p>기상청 예보 기준, 방문 예정일의 강수 확률이 70% 이상일 경우 위약금 없이 예약을 취소할 수 있습니다.</p>
+                          <p class="mt-4">취소는 방문 하루 전까지 가능합니다.</p>
+                          <p class="mt-4">자세한 내용은 유선으로 문의해주시기 바랍니다.</p>`
             };
             
-            document.getElementById('detail-title').textContent = reviewData.title;
-            document.getElementById('detail-author').textContent = reviewData.author;
-            document.getElementById('detail-date').textContent = reviewData.date;
-            document.getElementById('detail-views').textContent = reviewData.views;
-            document.getElementById('detail-rating').textContent = '★'.repeat(reviewData.rating) + '☆'.repeat(5 - reviewData.rating);
-            document.getElementById('detail-content').innerHTML = reviewData.content;
-            
-            const imageContainer = document.getElementById('detail-images-container');
-            if (reviewData.imageUrl) {
-                imageContainer.querySelector('img').src = reviewData.imageUrl;
-            } else {
-                imageContainer.style.display = 'none';
-            }
+            document.getElementById('detail-title').textContent = noticeData.title;
+            document.getElementById('detail-department').textContent = noticeData.department;
+            document.getElementById('detail-date').textContent = noticeData.date;
+            document.getElementById('detail-views').textContent = noticeData.views;
+            document.getElementById('detail-content').innerHTML = noticeData.content;
         });
     </script>
 </body>
