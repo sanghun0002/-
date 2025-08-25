@@ -55,7 +55,7 @@ body {
 /* 2. 히어로 섹션 (대문 이미지) */
 .hero-section {
     height: 450px;
-    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://googleusercontent.com/file_content/1');
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('images/background.jpg');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -184,8 +184,6 @@ body {
     color: #868e96;
     font-size: 0.9rem;
 }
-
-/* (이 아래에 기존 booking.css, notice.css 등 다른 페이지 스타일을 붙여넣으세요) */
 
 /* ------------------------------------------- */
 /* --               MAIN 화면 ---END         -- */
