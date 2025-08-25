@@ -22,6 +22,7 @@ body {
 }
 /* 1. 헤더 스타일 */
 .main-header {
+    width: 100%; max-width: 1024px; display: flex;
     background-color: white;
     padding: 0 40px;
     border-bottom: 1px solid var(--border-color);
