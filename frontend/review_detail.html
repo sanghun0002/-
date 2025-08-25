@@ -10,6 +10,24 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* 간단한 이미지 슬라이더를 위한 스타일 */
+        .slider-wrapper {
+            display: flex;
+            overflow-x: auto; /* 이미지가 많을 경우 가로 스크롤 */
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+        }
+        .slide {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+        }
+        .slide img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -41,9 +59,11 @@
                 <!-- 구분선 -->
                 <hr class="border-gray-200">
 
-                <!-- --- 수정된 부분: 이미지 표시 영역 --- -->
-                <div id="detail-image-container" class="py-8" style="display: none;">
-                    <img src="" alt="후기 이미지" class="rounded-lg shadow-md w-full h-auto object-cover">
+                <!-- 첨부 사진 (슬라이더 구조) -->
+                <div id="detail-images-container" class="py-8" style="display: none;">
+                    <div class="slider-wrapper">
+                        <!-- 이미지가 여기에 동적으로 추가됩니다. -->
+                    </div>
                 </div>
                 
                 <!-- 본문 내용 -->
@@ -89,15 +109,21 @@
                 document.getElementById('detail-rating').textContent = '⭐'.repeat(review.rating || 0);
                 document.getElementById('detail-content').innerHTML = `<p>${(review.content || '').replace(/\n/g, '<br>')}</p>`;
 
-                const imageContainer = document.getElementById('detail-image-container');
+                const sliderWrapper = document.querySelector('.slider-wrapper');
+                const imagesContainer = document.getElementById('detail-images-container');
                 
-                // --- 수정된 부분: 단일 이미지 처리 로직 ---
+                sliderWrapper.innerHTML = '';
+                
                 if (review.images && review.images.length > 0) {
-                    imageContainer.style.display = 'block';
-                    // 첫 번째 이미지만 표시
-                    imageContainer.querySelector('img').src = review.images[0];
+                    imagesContainer.style.display = 'block';
+                    review.images.forEach(imageUrl => {
+                        const slideDiv = document.createElement('div');
+                        slideDiv.className = 'slide';
+                        slideDiv.innerHTML = `<img src="${imageUrl}" alt="후기 이미지" loading="lazy">`;
+                        sliderWrapper.appendChild(slideDiv);
+                    });
                 } else {
-                    imageContainer.style.display = 'none';
+                    imagesContainer.style.display = 'none';
                 }
             }
 
