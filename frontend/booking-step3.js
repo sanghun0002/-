@@ -2,10 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 모든 계곡 데이터 정의 ===
     const allValleyData = {
         "무흘 계곡": {
-            image_url: "./images/map_muhuel.png",
+            image_url: "/images/map_muhuel.png",
             sections: [
-                // 각 구역의 위치와 크기를 '상대적인 비율(%)'로 정의
-                // top: 이미지 상단에서부터의 거리, left: 이미지 왼쪽에서부터의 거리
                 // width/height: 클릭 영역의 크기
                 { name: "제1곡 봉비암", top: "52%", left: "70%", width: "5%", height: "5%" },
                 { name: "제2곡 한강대", top: "38%", left: "60%", width: "5%", height: "5%" },
