@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쉬어가~ 계곡</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
     
@@ -12,42 +13,57 @@
         <div class="logo">쉬어가~ 계곡</div>
     </header>
 
-    <section class="shortcuts">
-        <a href="notice.html" class="shortcut-item">
-            <div class="icon">📢</div>
-            <div>공지사항</div>
-        </a>
-        <a href="booking.html" class="shortcut-item">
-            <div class="icon">📅</div>
-            <div>예약하기</div>
-        </a>
-        <a href="local.html" class="shortcut-item">
-            <div class="icon">💡</div>
-            <div>편의사항</div>
-        </a>
-        <a href="bookingcheck.html" class="shortcut-item">
-            <div class="icon">✅</div>
-            <div>예약확인</div>
-        </a>
-        <a href="review.html" class="shortcut-item">
-            <div class="icon">⭐</div>
-            <div>사용후기</div>
-        </a>
-    </section>
+   <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>전국 자연휴양림을 한곳에!</h1>
+                <p>자연과 함께, 쉼과 여유를 더하는 특별한 공간으로 여러분을 초대합니다.</p>
+            </div>
+        </section>
 
-    <main class="hero-section">
-        <p>깨끗한 자연환경과 편리한 시설을 갖춘 계곡 평상을 예약하고<br>가족, 친구들과 특별한 시간을 보내세요.</p>
-        <a href="booking.html" class="main-button">지금 예약하기</a>
+        <section class="shortcuts">
+            <a href="notice.html" class="shortcut-item">
+                <div class="icon">📢</div> <div>공지사항</div>
+            </a>
+            <a href="booking.html" class="shortcut-item">
+                <div class="icon">📅</div> <div>예약하기</div>
+            </a>
+            <a href="local.html" class="shortcut-item">
+                <div class="icon">💡</div> <div>편의사항</div>
+            </a>
+            <a href="bookingcheck.html" class="shortcut-item">
+                <div class="icon">✅</div> <div>예약확인</div>
+            </a>
+            <a href="review.html" class="shortcut-item">
+                <div class="icon">⭐</div> <div>사용후기</div>
+            </a>
+        </section>
+        
+        <section class="content-section">
+            <div class="content-left">
+                <div class="card map-card">
+                    <h3>한 눈에 보는 자연휴양림</h3>
+                    <p>지역별 자연휴양림 정보를 확인하실 수 있습니다.</p>
+                    <div class="map-image-placeholder"></div>
+                </div>
+            </div>
+            <div class="content-right">
+                <div class="card notice-preview">
+                    <div class="card-header">
+                        <h3>공지사항</h3>
+                        <a href="notice.html" class="more-link">더보기 +</a>
+                    </div>
+                    <ul id="notice-list-widget">
+                        <li>공지사항을 불러오는 중...</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
     </main>
     
-    <section class="notice-preview">
-        </section>
-
-    <section class="location-section">
-        </section>
-
     <footer class="main-footer">
-        </footer>
+        <p>&copy; 2025 쉬어가~ 계곡. All Rights Reserved.</p>
+    </footer>
 
     <script src="app.js"></script>
 </body>
