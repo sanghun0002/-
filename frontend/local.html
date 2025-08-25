@@ -152,6 +152,13 @@
             mapContainer.classList.remove('hidden');
             const map = new kakao.maps.Map(document.getElementById('map'), { center: userLocation, level: 5 });
 
+            const currentPosMarker = new kakao.maps.Marker({ map: map, position: userLocation });
+            const infoWindow = new kakao.maps.InfoWindow({
+                content: '<div style="padding:5px; text-align:center;">현재 위치</div>',
+                removable: true
+            });
+            infoWindow.open(map, currentPosMarker);
+
             const ps = new kakao.maps.services.Places();
             let searchesCompleted = 0;
 
@@ -230,11 +237,15 @@
 
                 placeList.appendChild(card);
                 
-                // ✅ 로컬 PNG 파일 사용
-                let markerImageSrc = 'marker_default.png';
-                if (place.category === '맛집') markerImageSrc = './marker_red.png';
-                else if (place.category === '놀거리') markerImageSrc = './marker_green.png';
-                else if (place.category === '숙박') markerImageSrc = './marker_blue.png';
+                // --- 수정된 부분: 로컬 PNG 파일 경로 사용 ---
+                let markerImageSrc = 'marker_red.png'; // 기본 마커
+                if (place.category === '맛집') {
+                    markerImageSrc = 'marker_red.png';
+                } else if (place.category === '놀거리') {
+                    markerImageSrc = 'marker_yellow.png';
+                } else if (place.category === '숙박') {
+                    markerImageSrc = 'marker_green.png';
+                }
 
                 const imageSize = new kakao.maps.Size(31, 35);
                 const markerImage = new kakao.maps.MarkerImage(markerImageSrc, imageSize);
