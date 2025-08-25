@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const contentInput = document.getElementById('content');
     const newImagesInput = document.getElementById('new-images');
     const imagesContainer = document.getElementById('existing-images-container');
-    let existingImageUrls = []; // 기존 이미지 URL들을 저장할 배열
 
     if (!reviewId) {
         alert('잘못된 접근입니다.');
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         contentInput.value = review.content;
         document.querySelector(`input[name="rating"][value="${review.rating}"]`).checked = true;
         
-        existingImageUrls = review.images || [];
+        const existingImageUrls = review.images || [];
         
         if (existingImageUrls.length > 0) {
             imagesContainer.innerHTML = '';
@@ -60,32 +59,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // 삭제하기로 선택된 이미지 URL들을 가져옴
         const imagesToDelete = Array.from(document.querySelectorAll('.delete-image-cb:checked'))
                                      .map(cb => cb.value);
 
-        // FormData 객체 생성
         const formData = new FormData();
         formData.append('title', titleInput.value);
         formData.append('author', authorInput.value);
         formData.append('content', contentInput.value);
         formData.append('rating', document.querySelector('input[name="rating"]:checked').value);
-        
-        // 삭제할 이미지 목록을 JSON 문자열 형태로 추가
         formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
         
-        // 새로 추가할 이미지들을 추가
         for (const file of newImagesInput.files) {
             formData.append('newImages', file);
         }
 
         try {
+            // 서버에 PUT 요청 시에는 FormData를 사용하므로 Content-Type 헤더를 명시하지 않습니다.
             const response = await fetch(`${API_BASE_URL}/api/reviews/${reviewId}`, {
                 method: 'PUT',
-                body: formData // FormData는 Content-Type을 자동으로 설정하므로 headers 불필요
+                body: formData
             });
 
-            if (!response.ok) throw new Error('수정에 실패했습니다.');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || '수정에 실패했습니다.');
+            }
 
             alert('후기가 수정되었습니다.');
             window.location.href = `review_detail.html?id=${reviewId}`;
@@ -93,4 +91,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert(error.message);
         }
     });
-});ㄴ
+});
