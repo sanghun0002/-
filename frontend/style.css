@@ -392,9 +392,9 @@ body {
 #valley-map-image {
     width: 100%; height: auto; }
 
-/*.section-clickable-area {
+.section-clickable-area {
     background-color: transparent;
-    cursor: pointer; transition: background-color 0.2s; } */
+    cursor: pointer; transition: background-color 0.2s; }
 
 .section-clickable-area:hover {
     background-color: rgba(59, 130, 246, 0.3); }
@@ -402,13 +402,6 @@ body {
   outline: none;
   border-color: rgba(37, 99, 235, 0.9); /* blue-600 */
   background: rgba(59, 130, 246, 0.25);
-}
-
-.section-clickable-area {
-    /* 기존 코드에 아래 한 줄 추가 */
-    background-color: rgba(255, 0, 0, 0.4); /* 빨간색 반투명 */
-    border: 1px solid red; /* 클릭 영역의 경계선 */
-    cursor: pointer;
 }
 /* ============================= */
 /*            공지사항            */
