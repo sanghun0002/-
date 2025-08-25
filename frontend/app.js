@@ -1,23 +1,38 @@
-// app.js
+document.addEventListener('DOMContentLoaded', async () => {
+    // 실제 운영 서버 주소를 사용합니다.
+    const API_BASE_URL = 'https://o70albxd7n.onrender.com';
+    const noticeListWidget = document.getElementById('notice-list-widget');
 
-// 이 함수는 웹페이지의 모든 요소가 로드된 후에 실행됩니다.
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. 공지사항 목록 불러오기 (나중에 구현)
-    // fetch('/api/notices')
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         const noticeList = document.getElementById('notice-list');
-    //         // 받아온 데이터로 목록 채우기
-    //     });
+    if (noticeListWidget) { // notice-list-widget이 있는 페이지에서만 실행
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/notices`);
+            if (!response.ok) throw new Error('데이터 로딩 실패');
+            
+            const data = await response.json();
+            
+            // 중요 공지와 일반 공지를 합쳐서 최신 5개만 선택
+            const allNotices = [...data.stickyNotices, ...data.notices];
+            const latestNotices = allNotices.slice(0, 5);
+            
+            noticeListWidget.innerHTML = '';
+            
+            if (latestNotices.length === 0) {
+                noticeListWidget.innerHTML = '<li>등록된 공지사항이 없습니다.</li>';
+                return;
+            }
 
-    // 2. 지도 API 연동하기 (나중에 구현)
-    // const mapContainer = document.getElementById('map');
-    // new kakao.maps.Map(mapContainer, options);
+            latestNotices.forEach(notice => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <a href="notice_detail.html?id=${notice.id}">${notice.title}</a>
+                    <span class="date">${notice.date}</span>
+                `;
+                noticeListWidget.appendChild(listItem);
+            });
 
-    // 3. 추천 장소 목록 불러오기 (나중에 구현)
-    // fetch('/api/recommendations')
-    // ...
-
-    console.log('웹사이트가 성공적으로 로드되었습니다.');
+        } catch (error) {
+            console.error('Error fetching notices:', error);
+            noticeListWidget.innerHTML = '<li>공지사항을 불러올 수 없습니다.</li>';
+        }
+    }
 });
