@@ -1,65 +1,60 @@
-// qr-scanner 라이브러리를 불러옵니다.
-import QrScanner from './node_modules/qr-scanner/qr-scanner.min.js';
+document.addEventListener('DOMContentLoaded', () => {
+    // URL에서 평상 ID 값을 읽어옵니다.
+    const urlParams = new URLSearchParams(window.location.search);
+    const pyeongsangId = urlParams.get('id');
 
-// --- 설정 영역 ---
-// ❗️여기에 배포된 백엔드 서버의 주소를 입력하세요.
-const API_ENDPOINT = 'http://localhost:3000/check-qr'; 
+    // HTML 요소 가져오기
+    const pyeongsangIdDisplay = document.getElementById('pyeongsang-id-display');
+    const authForm = document.getElementById('auth-form');
+    const nameInput = document.getElementById('name-input');
+    const phoneInput = document.getElementById('phone-input');
+    const resultMessage = document.getElementById('result-message');
 
-// HTML 요소들을 가져옵니다.
-const videoElem = document.getElementById('qr-video');
-const resultDiv = document.getElementById('result');
+    // --- 💻 백엔드 서버 주소를 여기에 설정 ---
+    const backendUrl = '여기에_백엔드_서버_주소를_입력하세요/verify-booking';
 
-// QR 코드 스캐너 객체 생성
-const qrScanner = new QrScanner(
-    videoElem,
-    // QR 코드가 성공적으로 스캔되었을 때 실행될 함수
-    async (result) => {
-        console.log('스캔된 QR 데이터:', result.data);
+    // 화면에 평상 ID 표시
+    if (pyeongsangId) {
+        pyeongsangIdDisplay.textContent = pyeongsangId;
+    } else {
+        pyeongsangIdDisplay.textContent = '오류: 평상 ID 없음';
+        pyeongsangIdDisplay.style.color = 'red';
+    }
+
+    // '인증하기' 버튼 클릭 시 폼 제출 이벤트 처리
+    authForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
         
-        // 스캔이 완료되면 잠시 스캐너를 멈춥니다.
-        qrScanner.stop();
-        resultDiv.textContent = '인증 중...';
-        resultDiv.style.backgroundColor = 'lightgray';
+        resultMessage.textContent = '예약 정보를 확인 중입니다...';
+
+        const name = nameInput.value;
+        const phone = phoneInput.value;
 
         try {
-            // 백엔드 서버로 스캔된 데이터를 POST 방식으로 전송합니다.
-            const response = await fetch(API_ENDPOINT, {
+            const response = await fetch(backendUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ qrData: result.data }), // 데이터를 JSON 형태로 보냅니다.
+                // 백엔드로 평상 ID, 이름, 전화번호를 모두 보냅니다.
+                body: JSON.stringify({ pyeongsangId, name, phone }),
             });
 
-            const data = await response.json(); // 서버로부터 받은 응답을 JSON으로 변환합니다.
+            const data = await response.json();
 
-            // 서버 응답에 따라 결과 메시지를 화면에 표시합니다.
-            if (data.success) {
-                resultDiv.textContent = `✅ ${data.message}`;
-                resultDiv.style.backgroundColor = 'lightgreen';
+            if (data.status === 'success') {
+                resultMessage.textContent = `✅ ${data.message}`;
+                resultMessage.style.color = 'green';
+                authForm.style.display = 'none'; // 성공 후 폼 숨기기
             } else {
-                resultDiv.textContent = `❌ ${data.message}`;
-                resultDiv.style.backgroundColor = 'salmon';
+                resultMessage.textContent = `❌ ${data.message}`;
+                resultMessage.style.color = 'red';
             }
+
         } catch (error) {
-            console.error('서버 통신 오류:', error);
-            resultDiv.textContent = '⚠️ 서버와 통신 중 오류가 발생했습니다.';
-            resultDiv.style.backgroundColor = 'orange';
+            console.error('통신 오류:', error);
+            resultMessage.textContent = '🔌 서버와 통신 중 오류가 발생했습니다.';
+            resultMessage.style.color = 'red';
         }
-
-        // 3초 후에 다시 스캔을 시작합니다.
-        setTimeout(() => {
-            resultDiv.textContent = '카메라를 QR 코드에 비춰주세요.';
-            resultDiv.style.backgroundColor = 'transparent';
-            qrScanner.start();
-        }, 3000);
-    },
-    {
-        /* 스캐너 옵션 */
-        highlightScanRegion: true,
-        highlightCodeOutline: true,
-    }
-);
-
-// 페이지가 로드되면 바로 스캔을 시작합니다.
-qrScanner.start().catch(err => console.error(err));
+    });
+});
