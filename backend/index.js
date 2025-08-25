@@ -132,7 +132,12 @@ app.delete('/api/notices/:id', (req, res) => {
 // ===============================================================
 // ===== 후기(Review) API =====
 // ===============================================================
-
+// ▼▼▼ 후기 데이터에 예시 추가 ▼▼▼
+let reviews = [
+    { id: 1, title: "계곡 바로 앞이라 너무 좋았어요!", author: "김철수", rating: 5, date: "2025-08-15", views: 45, content: "물놀이하고 바로 들어와서 쉴 수 있어서 최고였습니다.", images: [] },
+    { id: 2, title: "가족들과 좋은 시간 보냈습니다.", author: "이영희", rating: 4, date: "2025-08-12", views: 88, content: "부모님 모시고 갔는데 다들 만족하셨어요.", images: [] },
+];
+let nextReviewId = 3; // 다음 ID를 3부터 시작하도록 수정
 // GET: 모든 후기 목록 조회
 app.get('/api/reviews', (req, res) => {
     const sortedReviews = [...reviews].sort((a, b) => b.id - a.id);
