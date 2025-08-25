@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // 원본 URL을 '/upload/' 기준으로 분리합니다.
                 const parts = imageUrl.split('/upload/');
                 // 중간에 원하는 크기 옵션을 추가합니다. (예: 가로 1024px로 제한)
-                const transformedUrl = `${parts[0]}/upload/w_1024,c_limit/${parts[1]}`;
+                const transformedUrl = `${parts[0]}/upload/w_960,c_limit/${parts[1]}`;
                 
                 img.src = transformedUrl; // 크기가 조절된 이미지 URL을 사용합니다.
 
