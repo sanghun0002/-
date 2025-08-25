@@ -2,16 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 모든 계곡 데이터 정의 ===
     const allValleyData = {
         "무흘 계곡": {
-            image_url: "/images/map_muhuel.png", // 파일명이 올바른지 다시 확인하세요.
+            // 이번에 업로드하신 이미지 파일명과 경로를 기준으로 수정
+            image_url: "/images/map_muhuel.jpg",
             sections: [
-                // 아래 좌표들은 제공해주신 최신 사진(image_8a2abd.jpg)에 맞춰 재조정된 값입니다.
+                // 아래 좌표는 'map_muhuel.jpg' 파일에 맞게 재측정되었습니다.
                 // 형식: "x좌표, y좌표, 반지름"
-                { name: "제1곡 봉비암", coords: "710,500, 20" },
-                { name: "제2곡 한강대", coords: "620,400, 20" },
-                { name: "제3곡 무학정", coords: "480,140, 20" },
-                { name: "제4곡 임압", coords: "710,770, 20" },
-                { name: "제5곡 사인암", coords: "280,480, 20" },
-                { name: "제6곡 옥류동", coords: "170,520, 20" }
+                { name: "제1곡 봉비암", coords: "718,550,20" },
+                { name: "제2곡 한강대", coords: "625,415,20" },
+                { name: "제3곡 무학정", coords: "485,145,20" },
+                { name: "제4곡 임압", coords: "715,775,20" },
+                { name: "제5곡 사인암", coords: "288,488,20" },
+                { name: "제6곡 옥류동", coords: "172,530,20" }
             ]
         },
         "삼계리 계곡": {
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     valley.sections.forEach(section => {
         const areaElement = document.createElement('area');
         areaElement.className = 'section-area';
-        // 'poly'를 'circle'로 수정
+        // 'poly'가 아닌 'circle'로 수정해야 원형 영역을 인식합니다.
         areaElement.shape = 'circle';
         areaElement.coords = section.coords;
         areaElement.href = '#';
