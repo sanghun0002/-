@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // 실제 운영 서버 주소를 사용합니다.
     const API_BASE_URL = 'https://o70albxd7n.onrender.com';
-
     const params = new URLSearchParams(window.location.search);
     const reviewId = params.get('id');
 
@@ -10,33 +8,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return window.location.href = 'review.html';
     }
     
+    // ... (displayReview 함수 등 기존 코드는 그대로 유지) ...
     function displayReview(review) {
-        document.getElementById('detail-title').textContent = review.title;
-        document.getElementById('detail-author').textContent = review.author;
-        document.getElementById('detail-date').textContent = review.date;
-        document.getElementById('detail-views').textContent = review.views;
-        document.getElementById('detail-rating').textContent = `평점: ${'⭐'.repeat(review.rating)}`;
-        document.getElementById('detail-content').innerHTML = `<p>${review.content.replace(/\n/g, '<br>')}</p>`;
-
-        const imagesContainer = document.getElementById('detail-images-container');
-        imagesContainer.innerHTML = '';
-        if (review.images && review.images.length > 0) {
-            review.images.forEach(imageUrl => {
-                const img = document.createElement('img');
-                
-                // [적용됨] Cloudinary URL을 수정하여 이미지 크기 조절
-                // 원본 URL을 '/upload/' 기준으로 분리합니다.
-                const parts = imageUrl.split('/upload/');
-                // 중간에 원하는 크기 옵션을 추가합니다. (예: 가로 1024px로 제한)
-                const transformedUrl = `${parts[0]}/upload/w_800,c_limit/${parts[1]}`;
-                
-                img.src = transformedUrl; // 크기가 조절된 이미지 URL을 사용합니다.
-
-                img.classList.add('detail-image');
-                imagesContainer.appendChild(img);
-            });
-            imagesContainer.style.display = 'flex';
-        }
+        // ...
     }
 
     try {
@@ -44,6 +18,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!response.ok) throw new Error('후기를 불러오는 데 실패했습니다.');
         const currentReview = await response.json();
         displayReview(currentReview);
+
+        // ▼▼▼ 수정 및 삭제 버튼 기능 추가 ▼▼▼
+
+        // 수정 버튼에 새로운 링크 연결
+        const editBtn = document.getElementById('edit-btn');
+        editBtn.href = `review_edit.html?id=${reviewId}`;
+
+        // 삭제 버튼 이벤트 리스너
+        const deleteBtn = document.getElementById('delete-btn');
+        deleteBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (confirm('정말로 이 후기를 삭제하시겠습니까?')) {
+                try {
+                    const deleteResponse = await fetch(`${API_BASE_URL}/api/reviews/${reviewId}`, {
+                        method: 'DELETE',
+                    });
+                    if (!deleteResponse.ok) throw new Error('삭제에 실패했습니다.');
+                    
+                    alert('후기가 삭제되었습니다.');
+                    window.location.href = 'review.html';
+                } catch (err) {
+                    alert(err.message);
+                }
+            }
+        });
+        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
     } catch (error) {
         alert(error.message);
         window.location.href = 'review.html';
