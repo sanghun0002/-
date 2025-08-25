@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
             image_url: "/images/map_muhuel.png",
             sections: [
                 // width/height: 클릭 영역의 크기
-                { name: "제1곡 봉비암", top: "52%", left: "70%", width: "5%", height: "5%" },
-                { name: "제2곡 한강대", top: "38%", left: "60%", width: "5%", height: "5%" },
-                { name: "제3곡 무학정", top: "12%", left: "46%", width: "5%", height: "5%" },
-                { name: "제4곡 임압", top: "75%", left: "70%", width: "5%", height: "5%" },
-                { name: "제5곡 사인암", top: "45%", left: "26%", width: "5%", height: "5%" },
-                { name: "제6곡 옥류동", top: "50%", left: "15%", width: "5%", height: "5%" }
+                { name: "제1곡 봉비암", top: "52%", left: "70%", width: "10%", height: "10%" },
+                { name: "제2곡 한강대", top: "38%", left: "60%", width: "10%", height: "10%" },
+                { name: "제3곡 무학정", top: "12%", left: "46%", width: "10%", height: "10%" },
+                { name: "제4곡 임압", top: "75%", left: "70%", width: "10%", height: "10%" },
+                { name: "제5곡 사인암", top: "45%", left: "26%", width: "10%", height: "10%" },
+                { name: "제6곡 옥류동", top: "50%", left: "15%", width: "10%", height: "10%" }
             ]
         },
         "삼계리 계곡": {
