@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공지사항 상세</title>
+    <title>후기 상세</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -21,37 +21,44 @@
             <a href="index.html" class="text-3xl font-bold text-gray-800">쉬어가~ 계곡</a>
         </header>
 
-        <!-- 공지사항 상세 내용 -->
+        <!-- 후기 상세 내용 -->
         <main class="bg-white p-8 rounded-lg shadow-md">
-            <!-- 제목 -->
-            <h1 id="detail-title" class="text-3xl font-bold text-gray-900 mb-4">우천시 예약 취소 정책</h1>
-            
-            <!-- 작성자, 날짜, 조회수 정보 -->
-            <div class="detail-meta text-sm text-gray-500 flex items-center space-x-2 mb-6">
-                <span id="detail-department">운영팀</span>
-                <span>|</span>
-                <span id="detail-date">2025-08-03</span>
-                <span>|</span>
-                <span>조회수 <span id="detail-views">80</span></span>
+            <div id="view-mode">
+                <!-- 제목 -->
+                <h1 id="detail-title" class="text-3xl font-bold text-gray-900 mb-4">...</h1>
+                
+                <!-- 작성자, 날짜, 조회수, 별점 정보 -->
+                <div class="detail-meta text-sm text-gray-500 flex items-center flex-wrap gap-x-2 mb-6">
+                    <span id="detail-author"></span>
+                    <span>|</span>
+                    <span id="detail-date"></span>
+                    <span>|</span>
+                    <span>조회수 <span id="detail-views"></span></span>
+                    <span>|</span>
+                    <span id="detail-rating" class="text-yellow-500"></span>
+                </div>
+                
+                <!-- 구분선 -->
+                <hr class="border-gray-200">
+
+                <!-- --- 수정된 부분: 이미지 표시 영역 --- -->
+                <div id="detail-image-container" class="py-8" style="display: none;">
+                    <img src="" alt="후기 이미지" class="rounded-lg shadow-md w-full h-auto object-cover">
+                </div>
+                
+                <!-- 본문 내용 -->
+                <div class="detail-content text-gray-800 leading-relaxed" id="detail-content">
+                    <p>... 내용을 불러오는 중 ...</p>
+                </div>
+                
+                <!-- 구분선 -->
+                <hr class="border-gray-200 mt-8">
             </div>
-            
-            <!-- 구분선 -->
-            <hr class="border-gray-200">
-            
-            <!-- 본문 내용 -->
-            <div class="detail-content text-gray-800 leading-relaxed py-8" id="detail-content">
-                <p>기상청 예보 기준, 방문 예정일의 강수 확률이 70% 이상일 경우 위약금 없이 예약을 취소할 수 있습니다.</p>
-                <p class="mt-4">취소는 방문 하루 전까지 가능합니다.</p>
-                <p class="mt-4">자세한 내용은 유선으로 문의해주시기 바랍니다.</p>
-            </div>
-            
-            <!-- 구분선 -->
-            <hr class="border-gray-200">
 
             <!-- 하단 버튼 영역 -->
             <div class="detail-footer mt-6 flex justify-between items-center">
                 <!-- 목록으로 버튼 -->
-                <a href="notice.html" class="list-btn bg-gray-200 text-gray-800 font-bold py-2 px-5 rounded-lg hover:bg-gray-300 transition">
+                <a href="review.html" class="list-btn bg-gray-200 text-gray-800 font-bold py-2 px-5 rounded-lg hover:bg-gray-300 transition">
                     목록으로
                 </a>
                 <!-- 수정/삭제 버튼 -->
@@ -63,31 +70,67 @@
         </main>
     </div>
 
-    <!-- 실제 데이터를 불러오는 스크립트 -->
     <script>
-        // 이 스크립트는 예시이며, 실제로는 notice_detail.js에서
-        // URL 파라미터 등을 이용해 서버에서 데이터를 가져와야 합니다.
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const noticeId = urlParams.get('id'); // 예: notice_detail.html?id=1
+        document.addEventListener('DOMContentLoaded', async () => {
+            const API_BASE_URL = 'https://o70albxd7n.onrender.com';
+            const params = new URLSearchParams(window.location.search);
+            const reviewId = params.get('id');
 
-            // noticeId를 기반으로 서버에 데이터를 요청하고 아래 내용을 채웁니다.
-            // 지금은 예시 데이터를 직접 넣습니다.
-            const noticeData = {
-                title: "우천시 예약 취소 정책",
-                department: "운영팀",
-                date: "2025-08-03",
-                views: 80,
-                content: `<p>기상청 예보 기준, 방문 예정일의 강수 확률이 70% 이상일 경우 위약금 없이 예약을 취소할 수 있습니다.</p>
-                          <p class="mt-4">취소는 방문 하루 전까지 가능합니다.</p>
-                          <p class="mt-4">자세한 내용은 유선으로 문의해주시기 바랍니다.</p>`
-            };
+            if (!reviewId) {
+                document.body.innerHTML = `<div class="text-center p-8">잘못된 접근입니다. <a href="review.html" class="text-blue-500">목록으로 돌아가기</a></div>`;
+                return;
+            }
             
-            document.getElementById('detail-title').textContent = noticeData.title;
-            document.getElementById('detail-department').textContent = noticeData.department;
-            document.getElementById('detail-date').textContent = noticeData.date;
-            document.getElementById('detail-views').textContent = noticeData.views;
-            document.getElementById('detail-content').innerHTML = noticeData.content;
+            function displayReview(review) {
+                document.getElementById('detail-title').textContent = review.title;
+                document.getElementById('detail-author').textContent = review.author;
+                document.getElementById('detail-date').textContent = new Date(review.date).toISOString().split('T')[0];
+                document.getElementById('detail-views').textContent = review.views;
+                document.getElementById('detail-rating').textContent = '⭐'.repeat(review.rating || 0);
+                document.getElementById('detail-content').innerHTML = `<p>${(review.content || '').replace(/\n/g, '<br>')}</p>`;
+
+                const imageContainer = document.getElementById('detail-image-container');
+                
+                // --- 수정된 부분: 단일 이미지 처리 로직 ---
+                if (review.images && review.images.length > 0) {
+                    imageContainer.style.display = 'block';
+                    // 첫 번째 이미지만 표시
+                    imageContainer.querySelector('img').src = review.images[0];
+                } else {
+                    imageContainer.style.display = 'none';
+                }
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/reviews/${reviewId}`);
+                if (!response.ok) throw new Error('후기를 불러오는 데 실패했습니다.');
+                const currentReview = await response.json();
+                displayReview(currentReview);
+
+                const editBtn = document.getElementById('edit-btn');
+                editBtn.href = `review_edit.html?id=${reviewId}`;
+
+                const deleteBtn = document.getElementById('delete-btn');
+                deleteBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (confirm('정말로 이 후기를 삭제하시겠습니까?')) {
+                        try {
+                            const deleteResponse = await fetch(`${API_BASE_URL}/api/reviews/${reviewId}`, {
+                                method: 'DELETE',
+                            });
+                            if (!deleteResponse.ok) throw new Error('삭제에 실패했습니다.');
+                            
+                            alert('후기가 삭제되었습니다.');
+                            window.location.href = 'review.html';
+                        } catch (err) {
+                            alert(err.message);
+                        }
+                    }
+                });
+
+            } catch (error) {
+                document.getElementById('view-mode').innerHTML = `<p class="text-center text-red-500">${error.message}</p>`;
+            }
         });
     </script>
 </body>
