@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const allValleyData = {
         "무흘 계곡": {
             // 이번에 업로드하신 이미지 파일명과 경로를 기준으로 수정
-            image_url: "/images/map_muhuel.png",
+            image_url: "./images/map_muhuel.png",
             sections: [
                 // 아래 좌표는 'map_muhuel.jpg' 파일에 맞게 재측정되었습니다.
                 // 형식: "x좌표, y좌표, 반지름"
