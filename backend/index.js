@@ -18,7 +18,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Multer-Cloudinary 스토리지 엔진 설정
+// Multer-Cloudinary 스토리지 엔진 설정 (후기 이미지용)
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -30,9 +30,108 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-// 임시 데이터베이스 역할
+// ===============================================================
+// ===== 데이터베이스 영역 (임시 인메모리) =====
+// ===============================================================
+
+// ▼▼▼ 공지사항 데이터 ▼▼▼
+let notices = [
+    { id: 3, title: "우천시 예약 취소 정책", department: "운영팀", date: "2025-08-03", views: 78, isSticky: true, content: "기상청 예보 기준, 방문 예정일의 강수 확률이 70% 이상일 경우 위약금 없이 예약을 취소할 수 있습니다. 취소는 방문 하루 전까지 가능합니다." },
+    { id: 2, title: "보증금 현장 인증 시스템 도입", department: "개발팀", date: "2025-08-10", views: 120, isSticky: true, content: "이제 QR코드를 통해 보증금을 현장에서 즉시 인증하고 반환받을 수 있습니다. 퇴실 시 비치된 QR코드를 스캔해주세요." },
+    { id: 1, title: "여름 성수기 예약 안내", department: "운영팀", date: "2025-08-11", views: 256, isSticky: false, content: "7월에서 8월 사이 여름 성수기 기간 동안 예약이 폭주할 수 있으니 미리 예약해주시기 바랍니다. 원활한 운영을 위해 보증금 제도가 함께 시행됩니다." },
+];
+let nextNoticeId = 4;
+
+// ▼▼▼ 후기 데이터 ▼▼▼
 let reviews = [];
 let nextReviewId = 1;
+
+
+// ===============================================================
+// ===== 공지사항(Notice) API =====
+// ===============================================================
+
+app.get('/api/notices', (req, res) => {
+    const page = parseInt(req.query.page || '1', 10);
+    const noticesPerPage = 10;
+    const stickyNotices = notices.filter(n => n.isSticky).sort((a, b) => b.id - a.id);
+    const normalNotices = notices.filter(n => !n.isSticky).sort((a, b) => b.id - a.id);
+    
+    // 페이지네이션 로직 (프론트엔드와 호환되도록)
+    const normalNoticesOnFirstPage = Math.max(0, noticesPerPage - stickyNotices.length);
+    const remainingNotices = normalNotices.length - normalNoticesOnFirstPage;
+    const totalPages = remainingNotices > 0 ? 1 + Math.ceil(remainingNotices / noticesPerPage) : 1;
+    let paginatedNotices;
+    if (page === 1) {
+        paginatedNotices = normalNotices.slice(0, normalNoticesOnFirstPage);
+    } else {
+        const startIndex = normalNoticesOnFirstPage + (page - 2) * noticesPerPage;
+        const endIndex = startIndex + noticesPerPage;
+        paginatedNotices = normalNotices.slice(startIndex, endIndex);
+    }
+
+    res.json({
+        notices: paginatedNotices,
+        stickyNotices: stickyNotices,
+        totalPages: totalPages,
+        currentPage: page,
+        totalNormalNotices: normalNotices.length,
+        normalNoticesOnFirstPage: normalNoticesOnFirstPage
+    });
+});
+
+app.post('/api/notices', (req, res) => {
+    const { title, department, isSticky, content } = req.body;
+    if (!title || !department || !content) {
+        return res.status(400).json({ message: '제목, 작성부서, 내용은 필수입니다.' });
+    }
+    const newNotice = {
+        id: nextNoticeId++,
+        title, department,
+        date: new Date().toISOString().split('T')[0],
+        views: 0,
+        isSticky: isSticky || false,
+        content: content
+    };
+    notices.unshift(newNotice);
+    res.status(201).json(newNotice);
+});
+
+app.get('/api/notices/:id', (req, res) => {
+    const notice = notices.find(n => n.id === parseInt(req.params.id));
+    if (notice) {
+        notice.views++;
+        res.json(notice);
+    } else {
+        res.status(404).json({ message: '공지사항을 찾을 수 없습니다.' });
+    }
+});
+
+app.put('/api/notices/:id', (req, res) => {
+    const noticeIndex = notices.findIndex(n => n.id === parseInt(req.params.id));
+    if (noticeIndex !== -1) {
+        const { title, department, isSticky, content } = req.body;
+        notices[noticeIndex] = { ...notices[noticeIndex], title, department, isSticky, content };
+        res.json(notices[noticeIndex]);
+    } else {
+        res.status(404).json({ message: '공지사항을 찾을 수 없습니다.' });
+    }
+});
+
+app.delete('/api/notices/:id', (req, res) => {
+    const noticeIndex = notices.findIndex(n => n.id === parseInt(req.params.id));
+    if (noticeIndex !== -1) {
+        notices.splice(noticeIndex, 1);
+        res.status(200).json({ message: '삭제 완료' });
+    } else {
+        res.status(404).json({ message: '공지사항을 찾을 수 없습니다.' });
+    }
+});
+
+
+// ===============================================================
+// ===== 후기(Review) API =====
+// ===============================================================
 
 // GET: 모든 후기 목록 조회
 app.get('/api/reviews', (req, res) => {
@@ -54,7 +153,7 @@ app.post('/api/reviews', upload.array('images', 5), (req, res) => {
         content,
         images
     };
-    reviews.push(newReview);
+    reviews.unshift(newReview);
     res.status(201).json(newReview);
 });
 
@@ -69,7 +168,11 @@ app.get('/api/reviews/:id', (req, res) => {
     }
 });
 
-// (PUT, DELETE 등 나머지 API는 여기서 직접 추가하거나 이전 코드를 참고하세요)
+// (PUT, DELETE 등 나머지 후기 API도 필요 시 여기에 추가)
+
+// ===============================================================
+// ===== 서버 실행 =====
+// ===============================================================
 
 app.listen(PORT, () => {
     console.log(`🚀 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
