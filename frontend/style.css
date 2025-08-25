@@ -2,81 +2,190 @@
 /* -----------         MAIN        ----------- */
 /* ------------------------------------------- */
 
-/* 기본 설정: 여백 제거, 박스 크기 계산 방식 변경, 기본 폰트 설정 */
-* {
-    box-sizing: border-box; margin: 0; padding: 0; }
+/* Google Fonts에서 Noto Sans KR 폰트 가져오기 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
+/* 색상 변수 */
+:root {
+    --primary-green: #008080;
+    --text-dark: #333;
+    --text-light: #777;
+    --border-color: #eee;
+    --background-light: #f9f9f9;
+}
+
+/* 기본 설정 */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f8f9fa; /* 전체 페이지 배경색 */
-    color: #333; /* 기본 글자색 */
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-    align-items: center; }
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+}
 
+/* 1. 헤더 스타일 */
 .main-header {
-    width: 100%; max-width: 1024px; display: flex;
-    justify-content: center; /* 로고 중앙 정렬 */
-    align-items: center;
-    padding: 20px; /* 세로 중앙 위치 */
     background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
-.main-header .logo {
-    font-weight: bold; color: #007bff; font-size: 2rem; }
-
-.shortcuts {
-    width: 100%; max-width: 1024px; display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: white;
-    padding: 20px 0;
-    margin-top: 10px;
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
-.shortcut-item {
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border-color);
+}
+.header-content {
     display: flex;
-    flex-direction: column; /* 아이콘과 텍스트를 세로로 배치 */
+    justify-content: space-between;
     align-items: center;
+    height: 70px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-green);
+}
+.main-nav a {
+    margin: 0 15px;
     text-decoration: none;
-    color: #333;
-    font-weight: 600; }
-.shortcut-item .icon {
-    font-size: 3rem; margin-bottom: 6px; }
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.main-nav a:hover {
+    color: var(--primary-green);
+}
 
+/* 2. 히어로 섹션 (대문 이미지) */
 .hero-section {
-    width: 100%; max-width: 1024px; display: flex;
-    flex-direction: column;
-    align-items: center; justify-content: center; text-align: center;
-    margin-top: 10px;
-    padding: 20px 0;
-    background-color: #fff5cb;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
-.hero-section p {
-    font-size: 1.1em; color: #363636; line-height: 1.5; margin-bottom: 20px; }
-.hero-section .main-button {
-    display: inline-block; padding: 12px 30px;
-    background-color: #8cd08c;
+    height: 450px;
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://googleusercontent.com/file_content/1');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease; }
-.hero-section .main-button:hover {
-  background-color: #349534; }
+}
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+.hero-content p {
+    font-size: 1.2rem;
+}
 
-/* ---   하단 푸터 (모든 페이지 공통)         --- */
+/* 3. 바로가기 아이콘 섹션 */
+.shortcuts {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1400px;
+    margin: -60px auto 40px; /* 히어로 섹션 위로 살짝 올라오게 배치 */
+    position: relative;
+    z-index: 10;
+}
+.shortcut-item {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+    text-decoration: none;
+    color: var(--text-dark);
+    text-align: center;
+    width: 140px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.shortcut-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+.shortcut-item .icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--primary-green);
+}
+
+/* 4. 메인 컨텐츠 섹션 (2단 레이아웃) */
+.content-section {
+    padding: 20px 40px 60px;
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2:1 비율의 2단 그리드 */
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+.card-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+.more-link {
+    text-decoration: none;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* 5. 공지사항 미리보기 위젯 */
+#notice-list-widget {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#notice-list-widget li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 5px;
+}
+#notice-list-widget li a {
+    text-decoration: none;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s;
+}
+#notice-list-widget li a:hover {
+    color: var(--primary-green);
+}
+#notice-list-widget li .date {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding-left: 20px;
+}
+
+/* 6. 왼쪽 맵 카드 */
+.map-card h3 { margin-top: 0; }
+.map-image-placeholder {
+    height: 300px;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    margin-top: 20px;
+    color: #aaa;
+}
+
+/* 7. 하단 푸터 */
 .main-footer {
-    width: 100%;
     text-align: center;
     padding: 40px 20px;
-    margin-top: 40px;
     color: #868e96;
     font-size: 0.9rem;
 }
+
+/* (이 아래에 기존 booking.css, notice.css 등 다른 페이지 스타일을 붙여넣으세요) */
 
 /* ------------------------------------------- */
 /* --               MAIN 화면 ---END         -- */
