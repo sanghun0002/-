@@ -13,7 +13,6 @@
     --border-color: #eee;
     --background-light: #f9f9f9;
 }
-
 /* 기본 설정 */
 body {
     font-family: 'Noto Sans KR', sans-serif;
@@ -21,7 +20,6 @@ body {
     background-color: var(--background-light);
     color: var(--text-dark);
 }
-
 /* 1. 헤더 스타일 */
 .main-header {
     background-color: white;
@@ -51,7 +49,6 @@ body {
 .main-nav a:hover {
     color: var(--primary-green);
 }
-
 /* 2. 히어로 섹션 (슬라이드 쇼) */
 .hero-section {
     position: relative; /* 자식 요소인 버튼을 위치시키기 위한 기준점 */
@@ -59,18 +56,15 @@ body {
     height: 450px;
     overflow: hidden; /* 컨테이너 밖으로 나가는 슬라이드를 숨김 */
 }
-
 .slider-container {
     width: 100%;
     height: 100%;
 }
-
 .slider-wrapper {
     display: flex; /* 슬라이드들을 가로로 나란히 배치 */
     height: 100%;
     transition: transform 0.5s ease-in-out; /* 부드러운 슬라이드 효과 */
 }
-
 .slide {
     min-width: 100%; /* 각 슬라이드가 화면 너비를 꽉 채우도록 */
     height: 100%;
@@ -84,7 +78,6 @@ body {
     /* 텍스트가 잘 보이도록 어두운 배경 오버레이 추가 */
     position: relative;
 }
-
 .slide::before {
     content: '';
     position: absolute;
@@ -94,25 +87,20 @@ body {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.4);
 }
-
 .hero-content {
     position: relative; /* 오버레이 위에 텍스트가 오도록 */
     z-index: 2;
 }
-
 .hero-content h1 {
     font-size: 3rem;
     margin-bottom: 10px;
     text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* 글자에 그림자 추가 */
     color: white;
 }
-
 .hero-content p {
     font-size: 1.2rem;
     text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
 }
-
-
 /* 좌우 버튼 스타일 */
 .slider-btn {
     position: absolute;
@@ -129,19 +117,15 @@ body {
     z-index: 10;
     transition: background-color 0.2s;
 }
-
 .slider-btn:hover {
     background-color: rgba(0, 0, 0, 0.7);
 }
-
 .prev-btn {
     left: 20px;
 }
-
 .next-btn {
     right: 20px;
 }
-
 /* 3. 바로가기 아이콘 섹션 */
 .shortcuts {
     display: flex;
@@ -172,7 +156,6 @@ body {
     margin-bottom: 10px;
     color: var(--primary-green);
 }
-
 /* (이하 컨텐츠, 공지사항, 푸터 등 나머지 스타일은 이전과 동일) */
 .content-section {
     padding: 20px 40px 60px;
@@ -248,12 +231,8 @@ body {
     color: #868e96;
     font-size: 0.9rem;
 }
-
 /* ============================= */
 /* 사이드 메뉴 스타일 (최종 수정) */
-/* ============================= */
-
-/* 사이드바 전체 컨테이너 */
 .sidebar {
     position: fixed;
     top: 50%;
@@ -295,7 +274,6 @@ body {
     padding: 20px 0;
 }
 
-/* ▼▼▼ 이 부분이 핵심 수정 사항입니다 ▼▼▼ */
 .sidebar-nav ul {
     list-style: none;
     padding: 0;
@@ -303,13 +281,10 @@ body {
     display: flex;             /* Flexbox 컨테이너로 지정 */
     flex-direction: column;    /* Flexbox의 방향을 '세로'로 강제 */
 }
-/* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
-
 /* 각 메뉴 항목(li)은 이제 Flexbox의 아이템이 됩니다. */
 .sidebar-nav li {
     width: 100%; /* 너비는 100%로 유지 */
 }
-
 /* 메뉴 링크(a)는 아이콘과 텍스트를 가로로 정렬하기 위해 flex를 사용합니다. */
 .sidebar-nav li a {
     display: flex;
@@ -341,6 +316,8 @@ body {
 .sidebar-nav li a span {
     flex-grow: 1;
 }
+/* ============================= */
+/* 사이드바 전체 컨테이너 */
 
 /* ------------------------------------------- */
 /* --               MAIN 화면 ---END         -- */
