@@ -377,41 +377,6 @@ body {
 /* -             예약 시스템1-END              - */
 /* ------------------------------------------- */
 
-/* ============================= */
-/*         예약시스템step2         */
-/* ============================= */
-body {
-    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-
-h1 {
-    margin: 0;
-    font-size: 24px;
-    color: #333;
-}
-
-.selection-info {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #555;
-    min-height: 20px; /* 선택 정보가 없을 때도 높이 유지 */
-}
-
-/* 버튼 그룹 */
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
-/* ------------------------------------------- */
-/* -            예약 시스템 step2       --END  - */
-/* ------------------------------------------- */
 
 
 /* ============================= */
